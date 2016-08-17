@@ -13,7 +13,7 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 
 #### [Carthage] (https://github.com/Carthage/Carthage)
 
-- Insert github `1amageek/Salada` to your Cartfile.
+- Insert `github "1amageek/Salada"` to your Cartfile.
 - Run `carthage update`
 - Link your app with Salada.framework in Carthage/Checkouts.
 
