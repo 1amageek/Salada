@@ -37,6 +37,7 @@ protocol Tasting {
 }
 
 extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
+    
     static func observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void) {
         self.ref.observeSingleEventOfType(eventType, withBlock: { (snapshot) in
             var children: [Tsp] = []
@@ -50,6 +51,15 @@ extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
             block(children)
         })
     }
+    
+    static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp) -> Void) {
+        self.ref.child(id).observeSingleEventOfType(eventType, withBlock: { (snapshot) in
+            if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                block(tsp)
+            }
+        })
+    }
+    
 }
 
 class Ingredient: NSObject, IngredientType, Tasting {
@@ -58,7 +68,7 @@ class Ingredient: NSObject, IngredientType, Tasting {
     
     var id: String? { return self.snapshot?.key }
     
-    private(set) var snapshot: FIRDataSnapshot? {
+    var snapshot: FIRDataSnapshot? {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
                 self.hasObserve = true
@@ -81,6 +91,10 @@ class Ingredient: NSObject, IngredientType, Tasting {
         }
     }
     
+    private func _setSnapshot(snapshot: FIRDataSnapshot) {
+        self.snapshot = snapshot
+    }
+    
     var createdAt: NSDate
     
     // MARK: Ingnore
@@ -99,7 +113,8 @@ class Ingredient: NSObject, IngredientType, Tasting {
     
     convenience required init?(snapshot: FIRDataSnapshot) {
         self.init()
-        self.snapshot = snapshot
+        print(snapshot)
+        _setSnapshot(snapshot)
     }
 
     var value: [String: AnyObject] {
