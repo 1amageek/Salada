@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-protocol IngredientType {
+public protocol IngredientType {
     static var database: FIRDatabaseReference { get }
     static var ref: FIRDatabaseReference { get }
     
@@ -22,7 +22,7 @@ protocol IngredientType {
     init?(snapshot: FIRDataSnapshot)
 }
 
-extension IngredientType {
+public extension IngredientType {
     static var database: FIRDatabaseReference { return FIRDatabase.database().reference() }
     static var ref: FIRDatabaseReference {
         let type = Mirror(reflecting: self).subjectType
@@ -32,11 +32,11 @@ extension IngredientType {
     var id: String? { return self.snapshot?.key }
 }
 
-protocol Tasting {
+public protocol Tasting {
     associatedtype Tsp: Ingredient
 }
 
-extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
+public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
     
     static func observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void) {
         self.ref.observeSingleEventOfType(eventType, withBlock: { (snapshot) in
@@ -62,13 +62,13 @@ extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
     
 }
 
-class Ingredient: NSObject, IngredientType, Tasting {
+public class Ingredient: NSObject, IngredientType, Tasting {
     
-    typealias Tsp = Ingredient
+    public typealias Tsp = Ingredient
     
-    var id: String? { return self.snapshot?.key }
+    public var id: String? { return self.snapshot?.key }
     
-    var snapshot: FIRDataSnapshot? {
+    public var snapshot: FIRDataSnapshot? {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
                 self.hasObserve = true
@@ -95,11 +95,11 @@ class Ingredient: NSObject, IngredientType, Tasting {
         self.snapshot = snapshot
     }
     
-    var createdAt: NSDate
+    public var createdAt: NSDate
     
     // MARK: Ingnore
     
-    var ignore: [String] {
+    public var ignore: [String] {
         return []
     }
  
@@ -111,13 +111,13 @@ class Ingredient: NSObject, IngredientType, Tasting {
         self.createdAt = NSDate()
     }
     
-    convenience required init?(snapshot: FIRDataSnapshot) {
+    convenience required public init?(snapshot: FIRDataSnapshot) {
         self.init()
         print(snapshot)
         _setSnapshot(snapshot)
     }
 
-    var value: [String: AnyObject] {
+    public var value: [String: AnyObject] {
         let mirror = Mirror(reflecting: self)
         var object: [String: AnyObject] = [:]
         mirror.children.forEach { (key, value) in
@@ -155,7 +155,7 @@ class Ingredient: NSObject, IngredientType, Tasting {
     
     // MARK: - KVO
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
 
         guard let keyPath: String = keyPath else {
             super.observeValueForKeyPath(nil, ofObject: object, change: change, context: context)
