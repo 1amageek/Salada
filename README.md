@@ -2,7 +2,9 @@
 Salad is a Model for Firebase database. It can handle Snapshot of Firebase easily.
 
 
-# Usage 👀
+## Usage 👀
+
+### Model
 
 Model of the definition is very simple.
 To inherit the `Ingredients`.
@@ -32,6 +34,18 @@ class Group: Ingredient {
 }
 
 ```
+### Property
+
+Property are four that can be specified in Salada.
+
+| Propery | Description |
+| --- | --- |
+| String | Simple string. |
+| Number\(Int, UInt, Double ...\) | Simple number. |
+| Array\<String\> | Array of strings. |
+| Set \<String\>| Array of strings. Set is used in relationships. |
+
+### Save and Update
 
 The new model is stored in the `save()` or `save(completion: ((NSError?, FIRDatabaseReference) -> Void)?)`.
 It is updated automatically when you change the property Model that have already been saved.
@@ -64,3 +78,5 @@ group.save { (error, ref) in
     
 }
 ```
+
+<img src="https://github.com/1amageek/Salada/blob/master/Sample/sample_code_0.png" width="400">
