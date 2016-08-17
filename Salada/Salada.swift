@@ -107,7 +107,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     
     // MARK: Initialize
     
-    override init() {
+    public override init() {
         self.createdAt = NSDate()
     }
     
