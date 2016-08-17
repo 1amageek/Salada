@@ -17,17 +17,29 @@ class ViewController: UIViewController {
         self.view.backgroundColor = UIColor.whiteColor()
         
         let group: Group = Group()
-        group.name = "iOS チーム"
+        group.name = "iOS Development Team"
         
         group.save { (error, ref) in
             
-            let user: User = User()
-            user.name = "wwwwww"
-            user.gender = "オカマ"
-            user.groups.insert(ref.key)
-            user.save({ (error, ref) in
-                group.users.insert(ref.key)
-            })
+            do {
+                let user: User = User()
+                user.name = "john appleseed"
+                user.gender = "man"
+                user.groups.insert(ref.key)
+                user.save({ (error, ref) in
+                    group.users.insert(ref.key)
+                })
+            }
+            
+            do {
+                let user: User = User()
+                user.name = "Marilyn Monroe"
+                user.gender = "woman"
+                user.groups.insert(ref.key)
+                user.save({ (error, ref) in
+                    group.users.insert(ref.key)
+                })
+            }
             
         }
 
