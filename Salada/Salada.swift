@@ -38,7 +38,7 @@ public protocol Tasting {
 
 public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
     
-    static func observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void) {
+    public static func observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void) {
         self.ref.observeSingleEventOfType(eventType, withBlock: { (snapshot) in
             var children: [Tsp] = []
             snapshot.children.forEach({ (snapshot) in
@@ -52,7 +52,7 @@ public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
         })
     }
     
-    static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp) -> Void) {
+    public static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp) -> Void) {
         self.ref.child(id).observeSingleEventOfType(eventType, withBlock: { (snapshot) in
             if let tsp: Tsp = Tsp(snapshot: snapshot) {
                 block(tsp)
@@ -136,11 +136,11 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return object
     }
     
-    func save() {
+    public func save() {
         self.save(nil)
     }
     
-    func save(completion: ((NSError?, FIRDatabaseReference) -> Void)?) {
+    public func save(completion: ((NSError?, FIRDatabaseReference) -> Void)?) {
         if self.id == nil {
             let value: [String: AnyObject] = self.value
             self.dynamicType.ref.childByAutoId().setValue(value, withCompletionBlock: { (error, ref) in
