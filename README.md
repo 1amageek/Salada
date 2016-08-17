@@ -83,3 +83,18 @@ group.save { (error, ref) in
 ```
 
 <img src="https://github.com/1amageek/Salada/blob/master/Sample/sample_code_0.png" width="400">
+
+### Observe
+
+``` Swift
+User.observeSingle(FIRDataEventType.Value) { (users) in
+    users.forEach({ (user) in
+        // do samething
+        if let groupId: String = user.groups.first {
+            Group.observeSingle(groupId, eventType: .Value, block: { (group) in
+                // do samething
+            })
+        }
+    })
+}
+```
