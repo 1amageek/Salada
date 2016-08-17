@@ -106,13 +106,14 @@ class Ingredient: NSObject, IngredientType, Tasting {
         let mirror = Mirror(reflecting: self)
         var object: [String: AnyObject] = [:]
         mirror.children.forEach { (key, value) in
+            print(key, value)
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     switch value.self {
                     case is String: if let value: String = value as? String { object[key] = value }
                     case is Int: if let value: Int = value as? Int { object[key] = value }
                     case is [String]: if let value: [String] = value as? [String] where !value.isEmpty { object[key] = value }
-                    case is Set<String>: if let value: Set<String> = value as? Set<String> where !value.isEmpty { object[key] = value.toKeys() }
+                    case is Set<String>: if let value: Set<String> = value as? Set<String> where !value.isEmpty { object[key] = value }
                     default: if let value: AnyObject = value as? AnyObject { object[key] = value }
                     }
                 }
@@ -138,6 +139,18 @@ class Ingredient: NSObject, IngredientType, Tasting {
         }
     }
     
+    class func putA(object: IngredientType) {
+        self.putA(object, completion: nil)
+    }
+    
+    class func putA(object: IngredientType, completion: ((NSError?, FIRDatabaseReference) -> Void)?) {
+        let object: [String: AnyObject] = object.value
+        self.ref.childByAutoId().setValue(object, withCompletionBlock: { (error, ref) in
+            if let error: NSError = error { print(error) }
+            completion?(error, ref)
+        })
+    }
+    
     // MARK: - KVO
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
@@ -156,11 +169,7 @@ class Ingredient: NSObject, IngredientType, Tasting {
         if keys.contains(keyPath) {
             if var value: AnyObject = object.valueForKey(keyPath) {
                 if let values: Set<String> = value as? Set<String> {
-                    if values.isEmpty { return }
                     value = values.toKeys()
-                }
-                if let values: [String] = value as? [String] {
-                    if values.isEmpty { return }
                 }
                 self.dynamicType.ref.child(self.id!).child(keyPath).setValue(value)
             }
