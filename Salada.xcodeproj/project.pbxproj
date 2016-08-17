@@ -9,19 +9,30 @@
 /* Begin PBXBuildFile section */
 		122314F21D618B22003864BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122314F11D618B22003864BD /* AppDelegate.swift */; };
 		122314F41D618B22003864BD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122314F31D618B22003864BD /* ViewController.swift */; };
-		122314F71D618B22003864BD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 122314F51D618B22003864BD /* Main.storyboard */; };
 		122314F91D618B22003864BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 122314F81D618B22003864BD /* Assets.xcassets */; };
 		122314FC1D618B22003864BD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 122314FA1D618B22003864BD /* LaunchScreen.storyboard */; };
+		122315041D618C52003864BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 122315031D618C52003864BD /* GoogleService-Info.plist */; };
+		122315061D618E11003864BD /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
+		122315081D619317003864BD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315071D619317003864BD /* User.swift */; };
+		1223150F1D643848003864BD /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1223150E1D643848003864BD /* Group.swift */; };
+		AB671B9511E815FF4886544B /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		122314EE1D618B22003864BD /* Salada.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Salada.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		122314F11D618B22003864BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		122314F31D618B22003864BD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		122314F61D618B22003864BD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		122314F81D618B22003864BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		122314FB1D618B22003864BD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		122314FD1D618B22003864BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		122315031D618C52003864BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		122315051D618E11003864BD /* Salada.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Salada.swift; sourceTree = "<group>"; };
+		122315071D619317003864BD /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		1223150D1D631C02003864BD /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
+		1223150E1D643848003864BD /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		B527BBE07E11D96C847178F4 /* Pods-Salada.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Salada.release.xcconfig"; path = "Pods/Target Support Files/Pods-Salada/Pods-Salada.release.xcconfig"; sourceTree = "<group>"; };
+		CACFF8A827AF5750D7560F54 /* Pods-Salada.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Salada.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Salada/Pods-Salada.debug.xcconfig"; sourceTree = "<group>"; };
+		D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB671B9511E815FF4886544B /* Pods_Salada.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +52,8 @@
 			children = (
 				122314F01D618B22003864BD /* Salada */,
 				122314EF1D618B22003864BD /* Products */,
+				F3116AD0B5DBD472DD5E7AA8 /* Pods */,
+				8110B8D679C43AD435231EAB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,12 +70,33 @@
 			children = (
 				122314F11D618B22003864BD /* AppDelegate.swift */,
 				122314F31D618B22003864BD /* ViewController.swift */,
-				122314F51D618B22003864BD /* Main.storyboard */,
+				122315051D618E11003864BD /* Salada.swift */,
+				122315071D619317003864BD /* User.swift */,
+				1223150E1D643848003864BD /* Group.swift */,
+				1223150D1D631C02003864BD /* MyPlayground.playground */,
 				122314F81D618B22003864BD /* Assets.xcassets */,
 				122314FA1D618B22003864BD /* LaunchScreen.storyboard */,
 				122314FD1D618B22003864BD /* Info.plist */,
+				122315031D618C52003864BD /* GoogleService-Info.plist */,
 			);
 			path = Salada;
+			sourceTree = "<group>";
+		};
+		8110B8D679C43AD435231EAB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F3116AD0B5DBD472DD5E7AA8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CACFF8A827AF5750D7560F54 /* Pods-Salada.debug.xcconfig */,
+				B527BBE07E11D96C847178F4 /* Pods-Salada.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +106,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 122315001D618B22003864BD /* Build configuration list for PBXNativeTarget "Salada" */;
 			buildPhases = (
+				C0D6B9D73D147C6DD0C4E918 /* [CP] Check Pods Manifest.lock */,
 				122314EA1D618B22003864BD /* Sources */,
 				122314EB1D618B22003864BD /* Frameworks */,
 				122314EC1D618B22003864BD /* Resources */,
+				CAFFF347460DAA8604028BFB /* [CP] Embed Pods Frameworks */,
+				A7E56E20FDD118254819AD77 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -124,33 +162,76 @@
 			files = (
 				122314FC1D618B22003864BD /* LaunchScreen.storyboard in Resources */,
 				122314F91D618B22003864BD /* Assets.xcassets in Resources */,
-				122314F71D618B22003864BD /* Main.storyboard in Resources */,
+				122315041D618C52003864BD /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A7E56E20FDD118254819AD77 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Salada/Pods-Salada-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C0D6B9D73D147C6DD0C4E918 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		CAFFF347460DAA8604028BFB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Salada/Pods-Salada-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		122314EA1D618B22003864BD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				122315081D619317003864BD /* User.swift in Sources */,
 				122314F41D618B22003864BD /* ViewController.swift in Sources */,
 				122314F21D618B22003864BD /* AppDelegate.swift in Sources */,
+				1223150F1D643848003864BD /* Group.swift in Sources */,
+				122315061D618E11003864BD /* Salada.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		122314F51D618B22003864BD /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				122314F61D618B22003864BD /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		122314FA1D618B22003864BD /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -247,6 +328,7 @@
 		};
 		122315011D618B22003864BD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CACFF8A827AF5750D7560F54 /* Pods-Salada.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Salada/Info.plist;
@@ -258,6 +340,7 @@
 		};
 		122315021D618B22003864BD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B527BBE07E11D96C847178F4 /* Pods-Salada.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Salada/Info.plist;
@@ -286,6 +369,7 @@
 				122315021D618B22003864BD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

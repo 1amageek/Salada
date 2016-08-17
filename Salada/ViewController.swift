@@ -7,12 +7,46 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseDatabase
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        self.view.backgroundColor = UIColor.whiteColor()
+        
+        let group: Group = Group()
+        group.name = "iOS チーム"
+        
+        group.save { (error, ref) in
+            
+            let user: User = User()
+            user.name = "wwwwww"
+            user.gender = "オカマ"
+            user.groups.insert(ref.key)
+            user.save({ (error, ref) in
+                group.users.insert(ref.key)
+            })
+            
+        }
+
+        
+        
+//
+//        let group: Group = Group()
+//        group.name
+
+//        User.observeSingle(FIRDataEventType.Value) { (results) in
+//            results.forEach({ (user) in
+//                print(user.age)
+//                print(user.name)
+//                print(user.gender)
+//                print(user.groups)
+//                print(user.items)
+//            })
+//        }
+        
     }
 
     override func didReceiveMemoryWarning() {
