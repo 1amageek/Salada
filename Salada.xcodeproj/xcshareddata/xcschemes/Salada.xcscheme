@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "122314ED1D618B22003864BD"
-               BuildableName = "Salada.app"
+               BlueprintIdentifier = "122315371D645A7A003864BD"
+               BuildableName = "Salada.framework"
                BlueprintName = "Salada"
                ReferencedContainer = "container:Salada.xcodeproj">
             </BuildableReference>
@@ -29,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "122314ED1D618B22003864BD"
-            BuildableName = "Salada.app"
-            BlueprintName = "Salada"
-            ReferencedContainer = "container:Salada.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -51,16 +42,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "122314ED1D618B22003864BD"
-            BuildableName = "Salada.app"
+            BlueprintIdentifier = "122315371D645A7A003864BD"
+            BuildableName = "Salada.framework"
             BlueprintName = "Salada"
             ReferencedContainer = "container:Salada.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "122314ED1D618B22003864BD"
-            BuildableName = "Salada.app"
+            BlueprintIdentifier = "122315371D645A7A003864BD"
+            BuildableName = "Salada.framework"
             BlueprintName = "Salada"
             ReferencedContainer = "container:Salada.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
