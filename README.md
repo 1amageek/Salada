@@ -53,16 +53,17 @@ It is updated automatically when you change the property Model that have already
 ``` Swift
 let group: Group = Group()
 group.name = "iOS Development Team"
-
 group.save { (error, ref) in
     
     do {
         let user: User = User()
         user.name = "john appleseed"
         user.gender = "man"
+        user.age = 22
+        user.items = ["Book", "Pen"]
         user.groups.insert(ref.key)
         user.save({ (error, ref) in
-            group.users.insert(ref.key) //It is updated automatically
+            group.users.insert(ref.key) // It is updated automatically
         })
     }
     
@@ -70,9 +71,11 @@ group.save { (error, ref) in
         let user: User = User()
         user.name = "Marilyn Monroe"
         user.gender = "woman"
+        user.age = 34
+        user.items = ["Rip"]
         user.groups.insert(ref.key)
         user.save({ (error, ref) in
-            group.users.insert(ref.key) //It is updated automatically
+            group.users.insert(ref.key) // It is updated automatically
         })
     }
     
