@@ -7,7 +7,7 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 ### Model
 
 Model of the definition is very simple.
-To inherit the `Ingredients`.
+To inherit the `Ingredient`.
 
 ``` Swift
 
