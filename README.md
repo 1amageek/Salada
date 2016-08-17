@@ -1,6 +1,18 @@
 # Salada 🍐
 Salad is a Model for Firebase database. It can handle Snapshot of Firebase easily.
 
+## Requirements ❗️
+- iOS 8 or later
+- Swift 2.3
+- [Firebase database](https://firebase.google.com/docs/database/ios/start)
+
+## Installation ⚙
+
+#### [Carthage] (https://github.com/Carthage/Carthage)
+
+- Insert github "1amageek/Salada" to your Cartfile.
+- Run `carthage update`
+- Link your app with Salada.framework in Carthage/Checkouts.
 
 ## Usage 👀
 
