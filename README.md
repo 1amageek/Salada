@@ -18,7 +18,7 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 - Link your app with Salada.framework in Carthage/Checkouts.
 -->
 
-Podfile
+Add the following to the pod file, `Pods install`
 
 ``` ruby
 pod 'Firebase'
