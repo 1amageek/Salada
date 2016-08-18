@@ -18,7 +18,7 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 - Link your app with Salada.framework in Carthage/Checkouts.
 -->
 
-1. [Download this project](/1amageek/Salada/archive/master.zip)
+1. [Download this project](https://github.com/1amageek/Salada/archive/master.zip)
 2. Put `Salada.Swift` in your project.
 
 ## Usage 👀
