@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D7EE46696AB12D55577F63B /* Pods_SaladaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */; };
 		1223153B1D645A7A003864BD /* Salada.h in Headers */ = {isa = PBXBuildFile; fileRef = 1223153A1D645A7A003864BD /* Salada.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		122315451D645AA0003864BD /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
 		1223156C1D645B73003864BD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1223156A1D645B73003864BD /* Main.storyboard */; };
@@ -17,10 +18,34 @@
 		122315841D645E22003864BD /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315821D645E22003864BD /* Group.swift */; };
 		122315851D645E22003864BD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315831D645E22003864BD /* User.swift */; };
 		122315871D645E2F003864BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 122315861D645E2F003864BD /* GoogleService-Info.plist */; };
+		1242009E1D658E4F004B87B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 122315861D645E2F003864BD /* GoogleService-Info.plist */; };
+		1242009F1D658ECB004B87B1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 129DF2781D654A1F00AD8148 /* Info.plist */; };
 		129DF26F1D64881200AD8148 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
+		129DF2771D654A1F00AD8148 /* SaladaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129DF2761D654A1F00AD8148 /* SaladaTests.swift */; };
+		129DF27F1D654E8000AD8148 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315821D645E22003864BD /* Group.swift */; };
+		129DF2801D654E8000AD8148 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315831D645E22003864BD /* User.swift */; };
+		129DF2811D654EAE00AD8148 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
+		129DF2831D65511900AD8148 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129DF2821D65511900AD8148 /* TestModel.swift */; };
 		3A727F340C83AD670D531A0A /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; };
 		F13412DBB83C9E6904D8D9B3 /* Pods_Sample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D5576D8CC9B13C671F0A5B3 /* Pods_Sample.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1242009C1D65633F004B87B1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 122314E61D618B22003864BD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 122315631D645B73003864BD;
+			remoteInfo = Sample;
+		};
+		129DF27A1D654A1F00AD8148 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 122314E61D618B22003864BD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 122315371D645A7A003864BD;
+			remoteInfo = Salada;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		122315051D618E11003864BD /* Salada.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Salada.swift; sourceTree = "<group>"; };
@@ -38,8 +63,15 @@
 		122315821D645E22003864BD /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		122315831D645E22003864BD /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		122315861D645E2F003864BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		129DF2741D654A1F00AD8148 /* SaladaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaladaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		129DF2761D654A1F00AD8148 /* SaladaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaladaTests.swift; sourceTree = "<group>"; };
+		129DF2781D654A1F00AD8148 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		129DF2821D65511900AD8148 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
+		12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D5576D8CC9B13C671F0A5B3 /* Pods_Sample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5981409A572993E67CFF83AB /* Pods-Sample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sample/Pods-Sample.release.xcconfig"; sourceTree = "<group>"; };
+		5C21CD4DC65FAE7AFB891C9A /* Pods-SaladaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests.debug.xcconfig"; sourceTree = "<group>"; };
+		75D049275275D7639E7CADB5 /* Pods-SaladaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests.release.xcconfig"; sourceTree = "<group>"; };
 		A6747FD1E1E343A1E7091EB3 /* Pods-Sample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sample/Pods-Sample.debug.xcconfig"; sourceTree = "<group>"; };
 		B527BBE07E11D96C847178F4 /* Pods-Salada.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Salada.release.xcconfig"; path = "Pods/Target Support Files/Pods-Salada/Pods-Salada.release.xcconfig"; sourceTree = "<group>"; };
 		CACFF8A827AF5750D7560F54 /* Pods-Salada.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Salada.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Salada/Pods-Salada.debug.xcconfig"; sourceTree = "<group>"; };
@@ -63,6 +95,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		129DF2711D654A1F00AD8148 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0D7EE46696AB12D55577F63B /* Pods_SaladaTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -73,6 +113,7 @@
 				122315391D645A7A003864BD /* Salada */,
 				122315651D645B73003864BD /* Sample */,
 				122314EF1D618B22003864BD /* Products */,
+				129DF2751D654A1F00AD8148 /* SaladaTests */,
 				F3116AD0B5DBD472DD5E7AA8 /* Pods */,
 				8110B8D679C43AD435231EAB /* Frameworks */,
 			);
@@ -83,6 +124,7 @@
 			children = (
 				122315381D645A7A003864BD /* Salada.framework */,
 				122315641D645B73003864BD /* Sample.app */,
+				129DF2741D654A1F00AD8148 /* SaladaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -122,11 +164,22 @@
 			path = Sample;
 			sourceTree = "<group>";
 		};
+		129DF2751D654A1F00AD8148 /* SaladaTests */ = {
+			isa = PBXGroup;
+			children = (
+				129DF2761D654A1F00AD8148 /* SaladaTests.swift */,
+				129DF2821D65511900AD8148 /* TestModel.swift */,
+				129DF2781D654A1F00AD8148 /* Info.plist */,
+			);
+			path = SaladaTests;
+			sourceTree = "<group>";
+		};
 		8110B8D679C43AD435231EAB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */,
 				1D5576D8CC9B13C671F0A5B3 /* Pods_Sample.framework */,
+				12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -138,6 +191,8 @@
 				B527BBE07E11D96C847178F4 /* Pods-Salada.release.xcconfig */,
 				A6747FD1E1E343A1E7091EB3 /* Pods-Sample.debug.xcconfig */,
 				5981409A572993E67CFF83AB /* Pods-Sample.release.xcconfig */,
+				5C21CD4DC65FAE7AFB891C9A /* Pods-SaladaTests.debug.xcconfig */,
+				75D049275275D7639E7CADB5 /* Pods-SaladaTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -196,6 +251,28 @@
 			productReference = 122315641D645B73003864BD /* Sample.app */;
 			productType = "com.apple.product-type.application";
 		};
+		129DF2731D654A1F00AD8148 /* SaladaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 129DF27E1D654A1F00AD8148 /* Build configuration list for PBXNativeTarget "SaladaTests" */;
+			buildPhases = (
+				76CD76AC948FEF8D60F17593 /* [CP] Check Pods Manifest.lock */,
+				129DF2701D654A1F00AD8148 /* Sources */,
+				129DF2711D654A1F00AD8148 /* Frameworks */,
+				129DF2721D654A1F00AD8148 /* Resources */,
+				A64EDCDEDA3C99BC2E5FC9ED /* [CP] Embed Pods Frameworks */,
+				4B119EF35657924B2976E1CA /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				129DF27B1D654A1F00AD8148 /* PBXTargetDependency */,
+				1242009D1D65633F004B87B1 /* PBXTargetDependency */,
+			);
+			name = SaladaTests;
+			productName = SaladaTests;
+			productReference = 129DF2741D654A1F00AD8148 /* SaladaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -210,6 +287,9 @@
 						CreatedOnToolsVersion = 7.3.1;
 					};
 					122315631D645B73003864BD = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					129DF2731D654A1F00AD8148 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
 				};
@@ -229,6 +309,7 @@
 			targets = (
 				122315371D645A7A003864BD /* Salada */,
 				122315631D645B73003864BD /* Sample */,
+				129DF2731D654A1F00AD8148 /* SaladaTests */,
 			);
 		};
 /* End PBXProject section */
@@ -249,6 +330,15 @@
 				122315871D645E2F003864BD /* GoogleService-Info.plist in Resources */,
 				1223156E1D645B73003864BD /* Assets.xcassets in Resources */,
 				1223156C1D645B73003864BD /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		129DF2721D654A1F00AD8148 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1242009F1D658ECB004B87B1 /* Info.plist in Resources */,
+				1242009E1D658E4F004B87B1 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +375,21 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		4B119EF35657924B2976E1CA /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		71A2FB42C9CCDAE2FF1BA326 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -298,6 +403,36 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		76CD76AC948FEF8D60F17593 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		A64EDCDEDA3C99BC2E5FC9ED /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AB261C400C592FC7B3D17C7C /* [CP] Embed Pods Frameworks */ = {
@@ -353,7 +488,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		129DF2701D654A1F00AD8148 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				129DF2771D654A1F00AD8148 /* SaladaTests.swift in Sources */,
+				129DF2811D654EAE00AD8148 /* Salada.swift in Sources */,
+				129DF2831D65511900AD8148 /* TestModel.swift in Sources */,
+				129DF27F1D654E8000AD8148 /* Group.swift in Sources */,
+				129DF2801D654E8000AD8148 /* User.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1242009D1D65633F004B87B1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 122315631D645B73003864BD /* Sample */;
+			targetProxy = 1242009C1D65633F004B87B1 /* PBXContainerItemProxy */;
+		};
+		129DF27B1D654A1F00AD8148 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 122315371D645A7A003864BD /* Salada */;
+			targetProxy = 129DF27A1D654A1F00AD8148 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		1223156A1D645B73003864BD /* Main.storyboard */ = {
@@ -532,6 +692,28 @@
 			};
 			name = Release;
 		};
+		129DF27C1D654A1F00AD8148 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5C21CD4DC65FAE7AFB891C9A /* Pods-SaladaTests.debug.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = SaladaTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.SaladaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		129DF27D1D654A1F00AD8148 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 75D049275275D7639E7CADB5 /* Pods-SaladaTests.release.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = SaladaTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.SaladaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -558,6 +740,15 @@
 			buildConfigurations = (
 				122315741D645B73003864BD /* Debug */,
 				122315751D645B73003864BD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		129DF27E1D654A1F00AD8148 /* Build configuration list for PBXNativeTarget "SaladaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				129DF27C1D654A1F00AD8148 /* Debug */,
+				129DF27D1D654A1F00AD8148 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

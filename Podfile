@@ -6,11 +6,17 @@ use_frameworks!
 # Pods for Salada
 pod 'Firebase'
 pod 'Firebase/Database'
+pod 'Quick'
+pod 'Nimble'
 
 target 'Salada' do
 
 end
 
 target 'Sample' do
+
+end
+
+target 'SaladaTests' do
 
 end
