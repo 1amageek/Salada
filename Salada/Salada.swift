@@ -136,6 +136,8 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return object
     }
     
+    // MARK: - Save
+    
     public func save() {
         self.save(nil)
     }
@@ -151,6 +153,13 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                 })                
             })
         }
+    }
+    
+    // MARK: - Delete
+    
+    public func remove() {
+        guard let id: String = self.id else { return }
+        self.dynamicType.ref.child(id).removeValue()
     }
     
     // MARK: - KVO
