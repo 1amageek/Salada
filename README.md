@@ -99,7 +99,11 @@ group.save { (error, ref) in
 
 <img src="https://github.com/1amageek/Salada/blob/master/Sample/sample_code_0.png" width="400">
 
-### Observe
+### Retrieving Data
+
+- `observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void)`
+- `observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp) -> Void)`
+
 
 ``` Swift
 User.observeSingle(FIRDataEventType.Value) { (users) in
@@ -112,4 +116,15 @@ User.observeSingle(FIRDataEventType.Value) { (users) in
         }
     })
 }
+```
+
+### Remove Data
+``` Swift
+
+if let groupId: String = user.groups.first {
+    Group.observeSingle(groupId, eventType: .Value, block: { (group) in
+        group.remove()
+    })
+}
+
 ```
