@@ -46,22 +46,24 @@ class ViewController: UIViewController {
 //            
 //        }
 
-//        User.observeSingle(FIRDataEventType.Value) { (results) in
-//            results.forEach({ (user) in
-//                print(user.description)
-//                print(user.age)
-//                print(user.name)
-//                print(user.gender)
-//                print(user.groups)
-//                print(user.items)
-//                
-//                if let groupId: String = user.groups.first {
-//                    Group.observeSingle(groupId, eventType: .Value, block: { (group) in
-//                        print(group)
-//                    })
-//                }
-//            })
-//        }
+        User.observeSingle(FIRDataEventType.Value) { (results) in
+            results.forEach({ (user) in
+                print(user.description)
+                print(user.age)
+                print(user.name)
+                print(user.gender)
+                print(user.groups)
+                print(user.items)
+                
+                if let groupId: String = user.groups.first {
+                    Group.observeSingle(groupId, eventType: .Value, block: { (group) in
+                        print(group)
+                        group.remove()
+                    })
+                }
+                user.remove()
+            })
+        }
         
     }
 
