@@ -1,6 +1,6 @@
 <img src="https://github.com/1amageek/Salada/blob/master/Salada.png", width="480">
 
-[Logo was designed by Take.](https://dribbble.com/take_designer)
+Logo was designed by [Take](https://dribbble.com/take_designer).
 
 # Salada 🍐
 
