@@ -1,3 +1,7 @@
+<img src="https://github.com/1amageek/Salada/blob/master/Salada.png", width="480">
+
+Logo was designed by [Take](https://dribbble.com/take_designer).
+
 # Salada 🍐
 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
@@ -10,12 +14,23 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 - [Firebase database](https://firebase.google.com/docs/database/ios/start)
 
 ## Installation ⚙
-
+<!--
 #### [Carthage] (https://github.com/Carthage/Carthage)
 
 - Insert `github "1amageek/Salada"` to your Cartfile.
 - Run `carthage update`
 - Link your app with Salada.framework in Carthage/Checkouts.
+-->
+
+Add the following to the pod file, `Pods install`
+
+``` ruby
+pod 'Firebase'
+pod 'Firebase/Database'
+```
+
+1. [Download this project](https://github.com/1amageek/Salada/archive/master.zip)
+1. Put `Salada.Swift` in your project.
 
 ## Usage 👀
 
@@ -99,7 +114,11 @@ group.save { (error, ref) in
 
 <img src="https://github.com/1amageek/Salada/blob/master/Sample/sample_code_0.png" width="400">
 
-### Observe
+### Retrieving Data
+
+- `observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void)`
+- `observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp) -> Void)`
+
 
 ``` Swift
 User.observeSingle(FIRDataEventType.Value) { (users) in
@@ -112,4 +131,15 @@ User.observeSingle(FIRDataEventType.Value) { (users) in
         }
     })
 }
+```
+
+### Remove Data
+``` Swift
+
+if let groupId: String = user.groups.first {
+    Group.observeSingle(groupId, eventType: .Value, block: { (group) in
+        group.remove()
+    })
+}
+
 ```
