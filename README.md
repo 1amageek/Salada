@@ -77,6 +77,17 @@ Property are four that can be specified in Salada.
 
 ### Save and Update
 
+<b>Do not forget to change the database rule</b>
+```
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+
+```
+
 The new model is stored in the `save()` or `save(completion: ((NSError?, FIRDatabaseReference) -> Void)?)`.
 It is updated automatically when you change the property Model that have already been saved.
 
