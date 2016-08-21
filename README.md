@@ -85,7 +85,6 @@ Property are four that can be specified in Salada.
     ".write": true
   }
 }
-
 ```
 
 The new model is stored in the `save()` or `save(completion: ((NSError?, FIRDatabaseReference) -> Void)?)`.
