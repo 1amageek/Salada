@@ -66,25 +66,43 @@ public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
     
 }
 
-public class Salada<Tsp: IngredientType>: NSObject {
+public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject {
     
+    var ref: FIRDatabaseReference?
     var snapshot: FIRDataSnapshot?
+    var count: Int {
+        guard let snapshot: FIRDataSnapshot = self.snapshot else { return 0 }
+        return Int(snapshot.childrenCount)
+    }
+    
+    func objectAtIndex(index: Int) -> T? {
+        guard let snapshot: FIRDataSnapshot = self.snapshot else { return nil }
+        guard let snap: FIRDataSnapshot = snapshot.children.allObjects[index] as? FIRDataSnapshot else { return nil }
+        return T(snapshot: snap)
+    }
+    
+    func indexOfObject(tsp: T) -> Int? {
+        guard let snapshot: FIRDataSnapshot = self.snapshot else { return NSNotFound }
+        guard let snap: FIRDataSnapshot = tsp.snapshot else { return NSNotFound }
+        return snapshot.children.allObjects.indexOf({ snap.key == $0.key })
+    }
     
     deinit {
+        print(#function)
         if let handle: UInt = self.valueHandle {
-            Tsp.ref.removeObserverWithHandle(handle)
+            self.ref?.removeObserverWithHandle(handle)
         }
         if let handle: UInt = self.addedHandle {
-            Tsp.ref.removeObserverWithHandle(handle)
+            self.ref?.removeObserverWithHandle(handle)
         }
         if let handle: UInt = self.changedHandle {
-            Tsp.ref.removeObserverWithHandle(handle)
+            self.ref?.removeObserverWithHandle(handle)
         }
         if let handle: UInt = self.movedHandle {
-            Tsp.ref.removeObserverWithHandle(handle)
+            self.ref?.removeObserverWithHandle(handle)
         }
         if let handle: UInt = self.removedHandle {
-            Tsp.ref.removeObserverWithHandle(handle)
+            self.ref?.removeObserverWithHandle(handle)
         }
     }
 
@@ -94,38 +112,70 @@ public class Salada<Tsp: IngredientType>: NSObject {
     private var movedHandle: UInt?
     private var removedHandle: UInt?
     
-    class func observe(tsp: Tsp.Type, block: (Tsp) -> Void) -> Salada<Tsp> {
+    class func observe(block: (SaladaChange<T>) -> Void) -> Salada<T> {
         
-        let salada: Salada<Tsp> = Salada()
-//        weak let weakSelf: Salada<Tsp> = salada
+        let salada: Salada<T> = Salada()
+////        weak let weakSelf: Salada<Tsp> = salada
+//        salada.valueHandle = T.ref.observeEventType(.Value, withBlock: { (snapshot) in
+////            guard let strongSelf: Salada = weakSelf else { return }
+//            print("value")
+//            salada.snapshot = snapshot
+//            block(.Initial)
+//        })
         
-        salada.valueHandle = Tsp.ref.observeEventType(.Value, withBlock: { (snapshot) in
-//            guard let strongSelf: Salada = weakSelf else { return }
+        salada.ref = T.ref
+        salada.ref!.observeSingleEventOfType(.Value, withBlock: {(snapshot) in
+            
+            print("value")
             salada.snapshot = snapshot
-            print(#function)
+            block(.Initial)
+            
         })
         
-        salada.addedHandle = Tsp.ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            print(#function)
+        salada.addedHandle = salada.ref?.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            
+            if let t: T = T(snapshot: snapshot) {
+                if salada.indexOfObject(t) == nil {
+                    print("Added")
+                    salada.ref?.observeSingleEventOfType(.Value, withBlock: { (snap) in
+                        salada.snapshot = snap
+                        if let index: Int = salada.indexOfObject(t) where index != NSNotFound {
+                            block(.Update(deletions: [], insertions: [index], modifications: []))
+                        }
+                    })
+                }
+            }
         })
         
-        salada.changedHandle = Tsp.ref.observeEventType(.ChildChanged, withBlock: { (snapshot) in
-            print(#function)
+        salada.changedHandle = salada.ref?.observeEventType(.ChildChanged, withBlock: { (snapshot) in
+            print("Changed")
+            if let _: T = T(snapshot: snapshot) {
+//                block(.Update)
+            }
         })
 
-        salada.movedHandle = Tsp.ref.observeEventType(.ChildMoved, withBlock: { (snapshot) in
-            print(#function)
+        salada.movedHandle = salada.ref?.observeEventType(.ChildMoved, withBlock: { (snapshot) in
+            print("Moved")
+            if let _: T = T(snapshot: snapshot) {
+//                block(.Update)
+            }
         })
         
-        salada.removedHandle = Tsp.ref.observeEventType(.ChildRemoved, withBlock: { (snapshot) in
-            print(#function)
+        salada.removedHandle = salada.ref?.observeEventType(.ChildRemoved, withBlock: { (snapshot) in
+            print("Removed")
+            if let _: T = T(snapshot: snapshot) {
+//                block(.Update)
+            }
         })
         
-        return Salada()
+        return salada
     }
     
-    
-    
+}
+
+public enum SaladaChange<T> {
+    case Initial
+    case Update(deletions: [Int], insertions: [Int], modifications: [Int])
 }
 
 public class Ingredient: NSObject, IngredientType, Tasting {
@@ -184,7 +234,6 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     
     convenience required public init?(snapshot: FIRDataSnapshot) {
         self.init()
-        print(snapshot)
         _setSnapshot(snapshot)
     }
 
