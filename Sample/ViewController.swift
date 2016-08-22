@@ -16,35 +16,35 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.whiteColor()
         
-//        let group: Group = Group()
-//        group.name = "iOS Development Team"
-//        group.save { (error, ref) in
-//            
-//            do {
-//                let user: User = User()
-//                user.name = "john appleseed"
-//                user.gender = "man"
-//                user.age = 22
-//                user.items = ["Book", "Pen"]
-//                user.groups.insert(ref.key)
-//                user.save({ (error, ref) in
-//                    group.users.insert(ref.key)
-//                })
-//            }
-//            
-//            do {
-//                let user: User = User()
-//                user.name = "Marilyn Monroe"
-//                user.gender = "woman"
-//                user.age = 34
-//                user.items = ["Rip"]
-//                user.groups.insert(ref.key)
-//                user.save({ (error, ref) in
-//                    group.users.insert(ref.key)
-//                })
-//            }
-//            
-//        }
+        let group: Group = Group()
+        group.name = "iOS Development Team"
+        group.save { (error, ref) in
+            
+            do {
+                let user: User = User()
+                user.name = "john appleseed"
+                user.gender = "man"
+                user.age = 22
+                user.items = ["Book", "Pen"]
+                user.groups.insert(ref.key)
+                user.save({ (error, ref) in
+                    group.users.insert(ref.key)
+                })
+            }
+            
+            do {
+                let user: User = User()
+                user.name = "Marilyn Monroe"
+                user.gender = "woman"
+                user.age = 34
+                user.items = ["Rip"]
+                user.groups.insert(ref.key)
+                user.save({ (error, ref) in
+                    group.users.insert(ref.key)
+                })
+            }
+            
+        }
 
         User.observeSingle(FIRDataEventType.Value) { (results) in
             results.forEach({ (user) in
@@ -58,10 +58,10 @@ class ViewController: UIViewController {
                 if let groupId: String = user.groups.first {
                     Group.observeSingle(groupId, eventType: .Value, block: { (group) in
                         print(group)
-                        group.remove()
+                        //group.remove()
                     })
                 }
-                user.remove()
+                //user.remove()
             })
         }
         
