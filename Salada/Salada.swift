@@ -12,6 +12,7 @@ import Firebase
 public protocol IngredientType {
     static var database: FIRDatabaseReference { get }
     static var ref: FIRDatabaseReference { get }
+    static var path: String { get }
     
     var id: String? { get }
     var snapshot: FIRDataSnapshot? { get }
@@ -19,16 +20,13 @@ public protocol IngredientType {
     var value: [String: AnyObject] { get }
     var ignore: [String] { get }
     
+    
     init?(snapshot: FIRDataSnapshot)
 }
 
 public extension IngredientType {
     static var database: FIRDatabaseReference { return FIRDatabase.database().reference() }
-    static var ref: FIRDatabaseReference {
-        let type = Mirror(reflecting: self).subjectType
-        let className = String(type).componentsSeparatedByString(".").first!.lowercaseString
-        return FIRDatabase.database().reference().child(className)
-    }
+    static var ref: FIRDatabaseReference { return self.database.child(self.path) }
     var id: String? { return self.snapshot?.key }
 }
 
@@ -60,11 +58,84 @@ public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
         })
     }
     
+    public static func observe(eventType: FIRDataEventType, block: ([Tsp]) -> Void) {
+        self.ref.observeEventType(eventType, withBlock: { (snapshot) in
+
+        })
+    }
+    
+}
+
+public class Salada<Tsp: IngredientType>: NSObject {
+    
+    var snapshot: FIRDataSnapshot?
+    
+    deinit {
+        if let handle: UInt = self.valueHandle {
+            Tsp.ref.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.addedHandle {
+            Tsp.ref.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.changedHandle {
+            Tsp.ref.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.movedHandle {
+            Tsp.ref.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.removedHandle {
+            Tsp.ref.removeObserverWithHandle(handle)
+        }
+    }
+
+    private var valueHandle: UInt?
+    private var addedHandle: UInt?
+    private var changedHandle: UInt?
+    private var movedHandle: UInt?
+    private var removedHandle: UInt?
+    
+    class func observe(tsp: Tsp.Type, block: (Tsp) -> Void) -> Salada<Tsp> {
+        
+        let salada: Salada<Tsp> = Salada()
+//        weak let weakSelf: Salada<Tsp> = salada
+        
+        salada.valueHandle = Tsp.ref.observeEventType(.Value, withBlock: { (snapshot) in
+//            guard let strongSelf: Salada = weakSelf else { return }
+            salada.snapshot = snapshot
+            print(#function)
+        })
+        
+        salada.addedHandle = Tsp.ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            print(#function)
+        })
+        
+        salada.changedHandle = Tsp.ref.observeEventType(.ChildChanged, withBlock: { (snapshot) in
+            print(#function)
+        })
+
+        salada.movedHandle = Tsp.ref.observeEventType(.ChildMoved, withBlock: { (snapshot) in
+            print(#function)
+        })
+        
+        salada.removedHandle = Tsp.ref.observeEventType(.ChildRemoved, withBlock: { (snapshot) in
+            print(#function)
+        })
+        
+        return Salada()
+    }
+    
+    
+    
 }
 
 public class Ingredient: NSObject, IngredientType, Tasting {
     
     public typealias Tsp = Ingredient
+    
+    public static var path: String {
+        let type = Mirror(reflecting: self).subjectType
+        return String(type).componentsSeparatedByString(".").first!.lowercaseString
+    }
     
     public var id: String? { return self.snapshot?.key }
     
