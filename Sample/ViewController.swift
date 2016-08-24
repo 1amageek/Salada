@@ -36,6 +36,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             do {
                 let user: User = User()
+                user.tempName = "Test1_name"
                 user.name = "john appleseed"
                 user.gender = "man"
                 user.age = 22
@@ -96,7 +97,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         })
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

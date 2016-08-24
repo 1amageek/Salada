@@ -15,4 +15,10 @@ class User: Ingredient {
     dynamic var gender: String?
     dynamic var groups: Set<String> = []
     dynamic var items: [String] = []
+    
+    var tempName: String? 
+    
+    override var ignore: [String] {
+        return ["tempName"]
+    }
 }
