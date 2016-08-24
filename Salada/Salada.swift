@@ -14,12 +14,11 @@ public protocol IngredientType {
     static var ref: FIRDatabaseReference { get }
     static var path: String { get }
     
-    var id: String? { get }
+    var id: String { get }
     var snapshot: FIRDataSnapshot? { get }
     var createdAt: NSDate { get }
     var value: [String: AnyObject] { get }
     var ignore: [String] { get }
-    
     
     init?(snapshot: FIRDataSnapshot)
 }
@@ -27,7 +26,6 @@ public protocol IngredientType {
 public extension IngredientType {
     static var database: FIRDatabaseReference { return FIRDatabase.database().reference() }
     static var ref: FIRDatabaseReference { return self.database.child(self.path) }
-    var id: String? { return self.snapshot?.key }
 }
 
 public protocol Tasting {
@@ -60,90 +58,6 @@ public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
     
 }
 
-public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject {
-    
-    var ref: FIRDatabaseReference?
-    var bowl: [T] = []
-    var count: Int {
-        return bowl.count
-    }
-    
-    func objectAtIndex(index: Int) -> T? {
-        return bowl[index]
-    }
-    
-    func indexOfObject(tsp: T) -> Int? {
-        return bowl.indexOf({ $0.id == tsp.id })
-    }
-    
-    deinit {
-        print(#function)
-        if let handle: UInt = self.addedHandle {
-            self.ref?.removeObserverWithHandle(handle)
-        }
-        if let handle: UInt = self.changedHandle {
-            self.ref?.removeObserverWithHandle(handle)
-        }
-        if let handle: UInt = self.movedHandle {
-            self.ref?.removeObserverWithHandle(handle)
-        }
-        if let handle: UInt = self.removedHandle {
-            self.ref?.removeObserverWithHandle(handle)
-        }
-    }
-
-    private var addedHandle: UInt?
-    private var changedHandle: UInt?
-    private var movedHandle: UInt?
-    private var removedHandle: UInt?
-    
-    class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
-
-        let salada: Salada<T> = Salada()
-        salada.ref = T.ref
-        salada.addedHandle = salada.ref?.observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
-            print("added")
-            guard let salada = salada else { return }
-            if let t: T = T(snapshot: snapshot) {
-                salada.bowl.append(t)
-                block(SaladaChange(deletions: [], insertions: [salada.count - 1], modifications: []))
-            }
-        })
-        
-        salada.changedHandle = salada.ref?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
-            guard let salada = salada else { return }
-            if let t: T = T(snapshot: snapshot) {
-                if let index: Int = salada.indexOfObject(t) {
-                    block(SaladaChange(deletions: [], insertions: [], modifications: [index]))
-                }
-            }
-        })
-
-//        salada.movedHandle = salada.ref?.observeEventType(.ChildMoved, withBlock: { [weak salada](snapshot) in
-//            print("Moved")
-//            if let _: T = T(snapshot: snapshot) {
-//                block(.Update)
-//            }
-//        })
-        
-        salada.removedHandle = salada.ref?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
-            print("remove")
-            guard let salada = salada else { return }
-            if let t: T = T(snapshot: snapshot) {
-                if let index: Int = salada.indexOfObject(t) {
-                    salada.bowl.removeAtIndex(index)
-                    block(SaladaChange(deletions: [index], insertions: [], modifications: []))
-                }
-            }
-        })
-        
-        return salada
-    }
-    
-}
-
-typealias SaladaChange = (deletions: [Int], insertions: [Int], modifications: [Int])
-
 public class Ingredient: NSObject, IngredientType, Tasting {
     
     public typealias Tsp = Ingredient
@@ -153,7 +67,12 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return String(type).componentsSeparatedByString(".").first!.lowercaseString
     }
     
-    public var id: String? { return self.snapshot?.key }
+    private var tmpID: String = NSUUID().UUIDString
+    
+    public var id: String {
+        if let id: String = self.snapshot?.key { return id }
+        return self.tmpID
+    }
     
     public var snapshot: FIRDataSnapshot? {
         didSet {
@@ -170,7 +89,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                             } else if let value: AnyObject = value[key] {
                                 self.setValue(value, forKey: key)
                             }
-                            self.addObserver(self, forKeyPath: key, options: [.New], context: nil)
+                            self.addObserver(self, forKeyPath: key, options: [.New, .Old], context: nil)
                         }
                     }
                 }
@@ -230,7 +149,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     }
     
     public func save(completion: ((NSError?, FIRDatabaseReference) -> Void)?) {
-        if self.id == nil {
+        if self.id == self.tmpID {
             let value: [String: AnyObject] = self.value
             self.dynamicType.ref.childByAutoId().setValue(value, withCompletionBlock: { (error, ref) in
                 if let error: NSError = error { print(error) }
@@ -268,12 +187,27 @@ public class Ingredient: NSObject, IngredientType, Tasting {
             if var value: AnyObject = object.valueForKey(keyPath) {
                 if let values: Set<String> = value as? Set<String> {
                     if values.isEmpty { return }
-                    value = values.toKeys()
+                    if let change: [String: AnyObject] = change {
+
+                        let new: Set<String> = change["new"] as! Set<String>
+                        let old: Set<String> = change["old"] as! Set<String>
+                        
+                        // Added
+                        new.subtract(old).forEach({ (id) in
+                            self.dynamicType.ref.child(self.id).child(keyPath).child(id).setValue(true)
+                        })
+                        
+                        // Remove
+                        old.subtract(new).forEach({ (id) in
+                            self.dynamicType.ref.child(self.id).child(keyPath).child(id).removeValue()
+                        })
+                        value = values.toKeys()
+                    }
                 }
-                if let values: [String] = value as? [String] {
+                else if let values: [String] = value as? [String] {
                     if values.isEmpty { return }
+                    self.dynamicType.ref.child(self.id).child(keyPath).setValue(value)
                 }
-                self.dynamicType.ref.child(self.id!).child(keyPath).setValue(value)
             }
         } else {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
@@ -295,6 +229,94 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     }
 }
 
+extension Ingredient {
+    public override var hashValue: Int {
+        return self.id.hash
+    }
+}
+
+func ==(lhs: Ingredient, rhs: Ingredient) -> Bool {
+    return lhs.id == rhs.id
+}
+
+public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject {
+    
+    var ref: FIRDatabaseReference?
+    var bowl: [T] = []
+    var count: Int {
+        return bowl.count
+    }
+    
+    func objectAtIndex(index: Int) -> T? {
+        return bowl[index]
+    }
+    
+    func indexOfObject(tsp: T) -> Int? {
+        return bowl.indexOf({ $0.id == tsp.id })
+    }
+    
+    deinit {
+        print(#function)
+        if let handle: UInt = self.addedHandle {
+            self.ref?.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.changedHandle {
+            self.ref?.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.movedHandle {
+            self.ref?.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.removedHandle {
+            self.ref?.removeObserverWithHandle(handle)
+        }
+    }
+    
+    private var addedHandle: UInt?
+    private var changedHandle: UInt?
+    private var movedHandle: UInt?
+    private var removedHandle: UInt?
+    
+    class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
+        
+        let salada: Salada<T> = Salada()
+        salada.ref = T.ref
+        salada.addedHandle = salada.ref?.observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
+            print("added")
+            guard let salada = salada else { return }
+            if let t: T = T(snapshot: snapshot) {
+                salada.bowl.append(t)
+                block(SaladaChange(deletions: [], insertions: [salada.count - 1], modifications: []))
+            }
+            })
+        
+        salada.changedHandle = salada.ref?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
+            print("change")
+            guard let salada = salada else { return }
+            if let t: T = T(snapshot: snapshot) {
+                if let index: Int = salada.indexOfObject(t) {
+                    block(SaladaChange(deletions: [], insertions: [], modifications: [index]))
+                }
+            }
+            })
+        
+        salada.removedHandle = salada.ref?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
+            print("remove")
+            guard let salada = salada else { return }
+            if let t: T = T(snapshot: snapshot) {
+                if let index: Int = salada.indexOfObject(t) {
+                    salada.bowl.removeAtIndex(index)
+                    block(SaladaChange(deletions: [index], insertions: [], modifications: []))
+                }
+            }
+            })
+        
+        return salada
+    }
+    
+}
+
+typealias SaladaChange = (deletions: [Int], insertions: [Int], modifications: [Int])
+
 // MARK: -
 
 extension CollectionType where Generator.Element == String {
@@ -308,7 +330,50 @@ extension CollectionType where Generator.Element == String {
     }
 }
 
-//struct RelationArray: CollectionType, Hashable {
+//struct Relation<T, Parent where T: Hashable, T: IngredientType, Parent: IngredientType>: CollectionType, SequenceType {
+//    
+//    private var objects: Set<T>
+//    
+//    var count: Int {
+//        return self.objects.count
+//    }
+//    
+//    var isEmpty: Bool {
+//        return self.objects.count == 0
+//    }
+//    
+//    var startIndex: Int {
+//        return 0
+//    }
+//    
+//    var endIndex: Int {
+//        return count
+//    }
+//    
+//    private var sorted: [T] {
+//        if self.objects.count == 0 { return [] }
+//        return self.objects.sort({ $0.id < $1.id })
+//    }
+//    
+//    subscript(index: Int) -> T {
+//        get { return self.sorted[index] }
+//    }
+//    
+//    func generate() -> AnyGenerator<T> {
+//        var index: Int = 0
+//        return AnyGenerator<T> {
+//            if index < self.objects.count {
+//                let result = self.sorted[index]
+//                index += 1
+//                return result
+//            }
+//            return nil
+//        }
+//    }
+//    
+//    mutating func insert(tsp: T) {
+//        self.objects.insert(tsp)
+//        
+//    }
 //    
 //}
-
