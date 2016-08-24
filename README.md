@@ -51,7 +51,6 @@ class User: Ingredient {
     dynamic var items: [String] = []
 }
 
-
 ```
 
 ``` Swift
@@ -64,6 +63,23 @@ class Group: Ingredient {
 }
 
 ```
+
+When you want to create a property that you want to ignore.
+
+``` Swift
+
+// User
+class User: Ingredient {
+    typealias Tsp = User
+    var tempName: String? 
+    override var ignore: [String] {
+        return ["tempName"]
+    }
+}
+
+```
+
+
 ### Property
 
 Property are four that can be specified in Salada.
@@ -152,4 +168,50 @@ if let groupId: String = user.groups.first {
     })
 }
 
+```
+
+# Salada datasource
+
+For example 
+
+``` Swift
+// in ViewController property
+var salada: Salada<User>?
+```
+
+``` Swift
+// in viewDidLoad
+self.salada = Salada.observe({ [weak self](change) in
+    
+    guard let tableView: UITableView = self?.tableView else { return }
+    
+    let deletions: [Int] = change.deletions
+    let insertions: [Int] = change.insertions
+    let modifications: [Int] = change.modifications
+    
+    tableView.beginUpdates()
+    tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
+    tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
+    tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
+    tableView.endUpdates()
+    
+})
+```
+
+``` Swift
+// TableViewDatasource
+func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return self.salada?.count ?? 0
+}
+    
+func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    let cell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath)
+    configure(cell, atIndexPath: indexPath)
+    return cell
+}
+    
+func configure(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
+    guard let user: User = self.salada?.objectAtIndex(indexPath.item) else { return }
+    cell.textLabel?.text = user.name
+}
 ```
