@@ -12,6 +12,7 @@ import Firebase
 public protocol IngredientType {
     static var database: FIRDatabaseReference { get }
     static var ref: FIRDatabaseReference { get }
+    static var path: String { get }
     
     var id: String? { get }
     var snapshot: FIRDataSnapshot? { get }
@@ -19,16 +20,13 @@ public protocol IngredientType {
     var value: [String: AnyObject] { get }
     var ignore: [String] { get }
     
+    
     init?(snapshot: FIRDataSnapshot)
 }
 
 public extension IngredientType {
     static var database: FIRDatabaseReference { return FIRDatabase.database().reference() }
-    static var ref: FIRDatabaseReference {
-        let type = Mirror(reflecting: self).subjectType
-        let className = String(type).componentsSeparatedByString(".").first!.lowercaseString
-        return FIRDatabase.database().reference().child(className)
-    }
+    static var ref: FIRDatabaseReference { return self.database.child(self.path) }
     var id: String? { return self.snapshot?.key }
 }
 
@@ -62,9 +60,98 @@ public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
     
 }
 
+public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject {
+    
+    var ref: FIRDatabaseReference?
+    var bowl: [T] = []
+    var count: Int {
+        return bowl.count
+    }
+    
+    func objectAtIndex(index: Int) -> T? {
+        return bowl[index]
+    }
+    
+    func indexOfObject(tsp: T) -> Int? {
+        return bowl.indexOf({ $0.id == tsp.id })
+    }
+    
+    deinit {
+        print(#function)
+        if let handle: UInt = self.addedHandle {
+            self.ref?.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.changedHandle {
+            self.ref?.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.movedHandle {
+            self.ref?.removeObserverWithHandle(handle)
+        }
+        if let handle: UInt = self.removedHandle {
+            self.ref?.removeObserverWithHandle(handle)
+        }
+    }
+
+    private var addedHandle: UInt?
+    private var changedHandle: UInt?
+    private var movedHandle: UInt?
+    private var removedHandle: UInt?
+    
+    class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
+
+        let salada: Salada<T> = Salada()
+        salada.ref = T.ref
+        salada.addedHandle = salada.ref?.observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
+            print("added")
+            guard let salada = salada else { return }
+            if let t: T = T(snapshot: snapshot) {
+                salada.bowl.append(t)
+                block(SaladaChange(deletions: [], insertions: [salada.count - 1], modifications: []))
+            }
+        })
+        
+        salada.changedHandle = salada.ref?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
+            guard let salada = salada else { return }
+            if let t: T = T(snapshot: snapshot) {
+                if let index: Int = salada.indexOfObject(t) {
+                    block(SaladaChange(deletions: [], insertions: [], modifications: [index]))
+                }
+            }
+        })
+
+//        salada.movedHandle = salada.ref?.observeEventType(.ChildMoved, withBlock: { [weak salada](snapshot) in
+//            print("Moved")
+//            if let _: T = T(snapshot: snapshot) {
+//                block(.Update)
+//            }
+//        })
+        
+        salada.removedHandle = salada.ref?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
+            print("remove")
+            guard let salada = salada else { return }
+            if let t: T = T(snapshot: snapshot) {
+                if let index: Int = salada.indexOfObject(t) {
+                    salada.bowl.removeAtIndex(index)
+                    block(SaladaChange(deletions: [index], insertions: [], modifications: []))
+                }
+            }
+        })
+        
+        return salada
+    }
+    
+}
+
+typealias SaladaChange = (deletions: [Int], insertions: [Int], modifications: [Int])
+
 public class Ingredient: NSObject, IngredientType, Tasting {
     
     public typealias Tsp = Ingredient
+    
+    public static var path: String {
+        let type = Mirror(reflecting: self).subjectType
+        return String(type).componentsSeparatedByString(".").first!.lowercaseString
+    }
     
     public var id: String? { return self.snapshot?.key }
     
@@ -113,13 +200,13 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     
     convenience required public init?(snapshot: FIRDataSnapshot) {
         self.init()
-        print(snapshot)
         _setSnapshot(snapshot)
     }
 
     public var value: [String: AnyObject] {
         let mirror = Mirror(reflecting: self)
         var object: [String: AnyObject] = [:]
+        object["createdAt"] = self.createdAt.timeIntervalSince1970
         mirror.children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
