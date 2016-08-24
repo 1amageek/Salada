@@ -22,8 +22,6 @@
 		1242009F1D658ECB004B87B1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 129DF2781D654A1F00AD8148 /* Info.plist */; };
 		129DF26F1D64881200AD8148 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
 		129DF2771D654A1F00AD8148 /* SaladaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129DF2761D654A1F00AD8148 /* SaladaTests.swift */; };
-		129DF27F1D654E8000AD8148 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315821D645E22003864BD /* Group.swift */; };
-		129DF2801D654E8000AD8148 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315831D645E22003864BD /* User.swift */; };
 		129DF2811D654EAE00AD8148 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
 		129DF2831D65511900AD8148 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129DF2821D65511900AD8148 /* TestModel.swift */; };
 		3A727F340C83AD670D531A0A /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; };
@@ -495,8 +493,6 @@
 				129DF2771D654A1F00AD8148 /* SaladaTests.swift in Sources */,
 				129DF2811D654EAE00AD8148 /* Salada.swift in Sources */,
 				129DF2831D65511900AD8148 /* TestModel.swift in Sources */,
-				129DF27F1D654E8000AD8148 /* Group.swift in Sources */,
-				129DF2801D654E8000AD8148 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
