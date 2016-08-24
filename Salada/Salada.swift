@@ -239,19 +239,22 @@ func ==(lhs: Ingredient, rhs: Ingredient) -> Bool {
     return lhs.id == rhs.id
 }
 
+public typealias SaladaChange = (deletions: [Int], insertions: [Int], modifications: [Int])
+
+/// Datasource class.
+/// Observe at a Firebase Database location.
 public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject {
     
-    var ref: FIRDatabaseReference?
-    var bowl: [T] = []
-    var count: Int {
-        return bowl.count
-    }
+    public var ref: FIRDatabaseReference?
+    public var bowl: [T] = []
+    public var count: Int { return bowl.count }
+    public var sortDescriptors: [NSSortDescriptor] = []
     
-    func objectAtIndex(index: Int) -> T? {
+    public func objectAtIndex(index: Int) -> T? {
         return bowl[index]
     }
     
-    func indexOfObject(tsp: T) -> Int? {
+    public func indexOfObject(tsp: T) -> Int? {
         return bowl.indexOf({ $0.id == tsp.id })
     }
     
@@ -263,9 +266,6 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
         if let handle: UInt = self.changedHandle {
             self.ref?.removeObserverWithHandle(handle)
         }
-        if let handle: UInt = self.movedHandle {
-            self.ref?.removeObserverWithHandle(handle)
-        }
         if let handle: UInt = self.removedHandle {
             self.ref?.removeObserverWithHandle(handle)
         }
@@ -273,10 +273,9 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     
     private var addedHandle: UInt?
     private var changedHandle: UInt?
-    private var movedHandle: UInt?
     private var removedHandle: UInt?
     
-    class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
+    public class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
         
         let salada: Salada<T> = Salada()
         salada.ref = T.ref
@@ -284,10 +283,15 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
             print("added")
             guard let salada = salada else { return }
             if let t: T = T(snapshot: snapshot) {
+                objc_sync_enter(salada)
                 salada.bowl.append(t)
-                block(SaladaChange(deletions: [], insertions: [salada.count - 1], modifications: []))
+                let bowl: [T] = salada.bowl.sort(sortDescriptors: salada.sortDescriptors)
+                salada.bowl = bowl
+                let index: Int = salada.indexOfObject(t)!
+                block(SaladaChange(deletions: [], insertions: [index], modifications: []))
+                objc_sync_exit(salada)
             }
-            })
+        })
         
         salada.changedHandle = salada.ref?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
             print("change")
@@ -297,7 +301,7 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
                     block(SaladaChange(deletions: [], insertions: [], modifications: [index]))
                 }
             }
-            })
+        })
         
         salada.removedHandle = salada.ref?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
             print("remove")
@@ -308,14 +312,12 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
                     block(SaladaChange(deletions: [index], insertions: [], modifications: []))
                 }
             }
-            })
+        })
         
         return salada
     }
     
 }
-
-typealias SaladaChange = (deletions: [Int], insertions: [Int], modifications: [Int])
 
 // MARK: -
 
@@ -327,6 +329,24 @@ extension CollectionType where Generator.Element == String {
             keys[object] = true
         }
         return keys
+    }
+}
+
+extension SequenceType where Generator.Element : AnyObject {
+    /// Return an `Array` containing the sorted elements of `source`
+    /// using criteria stored in a NSSortDescriptors array.
+    @warn_unused_result
+    public func sort(sortDescriptors theSortDescs: [NSSortDescriptor]) -> [Self.Generator.Element] {
+        return sort {
+            for sortDesc in theSortDescs {
+                switch sortDesc.compareObject($0, toObject: $1) {
+                case .OrderedAscending: return true
+                case .OrderedDescending: return false
+                case .OrderedSame: continue
+                }
+            }
+            return false
+        }
     }
 }
 
