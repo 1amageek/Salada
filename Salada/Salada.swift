@@ -58,40 +58,26 @@ public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
         })
     }
     
-    public static func observe(eventType: FIRDataEventType, block: ([Tsp]) -> Void) {
-        self.ref.observeEventType(eventType, withBlock: { (snapshot) in
-
-        })
-    }
-    
 }
 
 public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject {
     
     var ref: FIRDatabaseReference?
-    var snapshot: FIRDataSnapshot?
+    var bowl: [T] = []
     var count: Int {
-        guard let snapshot: FIRDataSnapshot = self.snapshot else { return 0 }
-        return Int(snapshot.childrenCount)
+        return bowl.count
     }
     
     func objectAtIndex(index: Int) -> T? {
-        guard let snapshot: FIRDataSnapshot = self.snapshot else { return nil }
-        guard let snap: FIRDataSnapshot = snapshot.children.allObjects[index] as? FIRDataSnapshot else { return nil }
-        return T(snapshot: snap)
+        return bowl[index]
     }
     
     func indexOfObject(tsp: T) -> Int? {
-        guard let snapshot: FIRDataSnapshot = self.snapshot else { return NSNotFound }
-        guard let snap: FIRDataSnapshot = tsp.snapshot else { return NSNotFound }
-        return snapshot.children.allObjects.indexOf({ snap.key == $0.key })
+        return bowl.indexOf({ $0.id == tsp.id })
     }
     
     deinit {
         print(#function)
-        if let handle: UInt = self.valueHandle {
-            self.ref?.removeObserverWithHandle(handle)
-        }
         if let handle: UInt = self.addedHandle {
             self.ref?.removeObserverWithHandle(handle)
         }
@@ -106,65 +92,48 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
         }
     }
 
-    private var valueHandle: UInt?
     private var addedHandle: UInt?
     private var changedHandle: UInt?
     private var movedHandle: UInt?
     private var removedHandle: UInt?
     
-    class func observe(block: (SaladaChange<T>) -> Void) -> Salada<T> {
-        
+    class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
+
         let salada: Salada<T> = Salada()
-////        weak let weakSelf: Salada<Tsp> = salada
-//        salada.valueHandle = T.ref.observeEventType(.Value, withBlock: { (snapshot) in
-////            guard let strongSelf: Salada = weakSelf else { return }
-//            print("value")
-//            salada.snapshot = snapshot
-//            block(.Initial)
-//        })
-        
         salada.ref = T.ref
-        salada.ref!.observeSingleEventOfType(.Value, withBlock: {(snapshot) in
-            
-            print("value")
-            salada.snapshot = snapshot
-            block(.Initial)
-            
+        salada.addedHandle = salada.ref?.observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
+            print("added")
+            guard let salada = salada else { return }
+            if let t: T = T(snapshot: snapshot) {
+                salada.bowl.append(t)
+                block(SaladaChange(deletions: [], insertions: [salada.count - 1], modifications: []))
+            }
         })
         
-        salada.addedHandle = salada.ref?.observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            
+        salada.changedHandle = salada.ref?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
+            guard let salada = salada else { return }
             if let t: T = T(snapshot: snapshot) {
-                if salada.indexOfObject(t) == nil {
-                    print("Added")
-                    salada.ref?.observeSingleEventOfType(.Value, withBlock: { (snap) in
-                        salada.snapshot = snap
-                        if let index: Int = salada.indexOfObject(t) where index != NSNotFound {
-                            block(.Update(deletions: [], insertions: [index], modifications: []))
-                        }
-                    })
+                if let index: Int = salada.indexOfObject(t) {
+                    block(SaladaChange(deletions: [], insertions: [], modifications: [index]))
                 }
             }
         })
-        
-        salada.changedHandle = salada.ref?.observeEventType(.ChildChanged, withBlock: { (snapshot) in
-            print("Changed")
-            if let _: T = T(snapshot: snapshot) {
-//                block(.Update)
-            }
-        })
 
-        salada.movedHandle = salada.ref?.observeEventType(.ChildMoved, withBlock: { (snapshot) in
-            print("Moved")
-            if let _: T = T(snapshot: snapshot) {
+//        salada.movedHandle = salada.ref?.observeEventType(.ChildMoved, withBlock: { [weak salada](snapshot) in
+//            print("Moved")
+//            if let _: T = T(snapshot: snapshot) {
 //                block(.Update)
-            }
-        })
+//            }
+//        })
         
-        salada.removedHandle = salada.ref?.observeEventType(.ChildRemoved, withBlock: { (snapshot) in
-            print("Removed")
-            if let _: T = T(snapshot: snapshot) {
-//                block(.Update)
+        salada.removedHandle = salada.ref?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
+            print("remove")
+            guard let salada = salada else { return }
+            if let t: T = T(snapshot: snapshot) {
+                if let index: Int = salada.indexOfObject(t) {
+                    salada.bowl.removeAtIndex(index)
+                    block(SaladaChange(deletions: [index], insertions: [], modifications: []))
+                }
             }
         })
         
@@ -173,10 +142,7 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     
 }
 
-public enum SaladaChange<T> {
-    case Initial
-    case Update(deletions: [Int], insertions: [Int], modifications: [Int])
-}
+typealias SaladaChange = (deletions: [Int], insertions: [Int], modifications: [Int])
 
 public class Ingredient: NSObject, IngredientType, Tasting {
     
@@ -240,6 +206,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     public var value: [String: AnyObject] {
         let mirror = Mirror(reflecting: self)
         var object: [String: AnyObject] = [:]
+        object["createdAt"] = self.createdAt.timeIntervalSince1970
         mirror.children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {

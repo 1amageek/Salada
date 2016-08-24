@@ -84,16 +84,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             guard let tableView: UITableView = self?.tableView else { return }
             
-            switch change {
-            case .Initial: tableView.reloadData()
-            case .Update(let deletions, let insertions, let modifications):
-//                tableView.beginUpdates()
-//                tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-//                tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-//                tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-//                tableView.endUpdates()
-                break
-            }
+            let deletions: [Int] = change.deletions
+            let insertions: [Int] = change.insertions
+            let modifications: [Int] = change.modifications
+            
+            tableView.beginUpdates()
+            tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
+            tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
+            tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
+            tableView.endUpdates()
             
         })
     }
@@ -117,6 +116,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func configure(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
         guard let user: User = self.salada?.objectAtIndex(indexPath.item) else { return }
         cell.textLabel?.text = user.name
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        guard let user: User = self.salada?.objectAtIndex(indexPath.item) else { return }
+        print(user)
     }
     
 }
