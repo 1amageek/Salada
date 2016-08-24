@@ -20,7 +20,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return view
     }()
     
-    var salada: Salada<User>?
+    var datasource: Salada<User>?
     
     override func loadView() {
         super.loadView()
@@ -30,36 +30,36 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.whiteColor()
-        let group: Group = Group()
-        group.name = "iOS Development Team"
-        group.save { (error, ref) in
-            
-            do {
-                let user: User = User()
-                user.tempName = "Test1_name"
-                user.name = "john appleseed"
-                user.gender = "man"
-                user.age = 22
-                user.items = ["Book", "Pen"]
-                user.groups.insert(ref.key)
-                user.save({ (error, ref) in
-                    group.users.insert(ref.key)
-                })
-            }
-            
-            do {
-                let user: User = User()
-                user.name = "Marilyn Monroe"
-                user.gender = "woman"
-                user.age = 34
-                user.items = ["Rip"]
-                user.groups.insert(ref.key)
-                user.save({ (error, ref) in
-                    group.users.insert(ref.key)
-                })
-            }
-            
-        }
+//        let group: Group = Group()
+//        group.name = "iOS Development Team"
+//        group.save { (error, ref) in
+//            
+//            do {
+//                let user: User = User()
+//                user.tempName = "Test1_name"
+//                user.name = "john appleseed"
+//                user.gender = "man"
+//                user.age = 22
+//                user.items = ["Book", "Pen"]
+//                user.groups.insert(ref.key)
+//                user.save({ (error, ref) in
+//                    group.users.insert(ref.key)
+//                })
+//            }
+//            
+//            do {
+//                let user: User = User()
+//                user.name = "Marilyn Monroe"
+//                user.gender = "woman"
+//                user.age = 34
+//                user.items = ["Rip"]
+//                user.groups.insert(ref.key)
+//                user.save({ (error, ref) in
+//                    group.users.insert(ref.key)
+//                })
+//            }
+//            
+//        }
 
 //        User.observeSingle(FIRDataEventType.Value) { (results) in
 //            results.forEach({ (user) in
@@ -80,8 +80,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //            })
 //        }
         
+        (0..<30).forEach { (index) in
+            let user: User = User()
+            user.name = "\(index)"
+            user.gender = "woman"
+            user.age = index
+            user.items = ["Rip"]
+            user.save()
+        }
         
-        self.salada = Salada.observe({ [weak self](change) in
+        self.datasource = Salada.observe({ [weak self](change) in
             
             guard let tableView: UITableView = self?.tableView else { return }
             
@@ -96,6 +104,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             tableView.endUpdates()
             
         })
+        let sortDescriptor: NSSortDescriptor = NSSortDescriptor(key: "age", ascending: false)
+        self.datasource?.sortDescriptors = [sortDescriptor]
     }
     
     override func didReceiveMemoryWarning() {
@@ -105,7 +115,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.salada?.count ?? 0
+        return self.datasource?.count ?? 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -115,12 +125,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func configure(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
-        guard let user: User = self.salada?.objectAtIndex(indexPath.item) else { return }
+        guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
         cell.textLabel?.text = user.name
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let user: User = self.salada?.objectAtIndex(indexPath.item) else { return }
+        guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
         print(user)
     }
     
