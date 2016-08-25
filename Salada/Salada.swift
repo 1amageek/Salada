@@ -74,21 +74,12 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return self.tmpID
     }
     
-    /// Model -> Firebase
-    public func encode(key: String, value: Any) -> AnyObject? {
-        return nil
-    }
-    
-    /// Snapshot -> Model
-    public func decode(key: String, value: Any) -> AnyObject? {
-        return nil
-    }
-    
     public var snapshot: FIRDataSnapshot? {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
                 self.hasObserve = true
                 guard let value: [String: AnyObject] = snapshot.value as? [String: AnyObject] else { return }
+                self.serverTimestamp = value["_timestamp"] as? Double
                 Mirror(reflecting: self).children.forEach { (key, _) in
                     if let key: String = key {
                         if !self.ignore.contains(key) {
@@ -115,7 +106,17 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         self.snapshot = snapshot
     }
     
-    public var createdAt: NSDate
+    public var createdAt: NSDate {
+        if let serverTimestamp: Double = self.serverTimestamp {
+            let timestamp: NSTimeInterval = NSTimeInterval(serverTimestamp / 1000)
+            return NSDate(timeIntervalSince1970: timestamp)
+        }
+        return self.localTimestamp
+    }
+    
+    private var localTimestamp: NSDate
+    
+    private var serverTimestamp: Double?
     
     // MARK: Ingnore
     
@@ -128,7 +129,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     // MARK: Initialize
     
     public override init() {
-        self.createdAt = NSDate()
+        self.localTimestamp = NSDate()
     }
     
     convenience required public init?(snapshot: FIRDataSnapshot) {
@@ -139,7 +140,6 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     public var value: [String: AnyObject] {
         let mirror = Mirror(reflecting: self)
         var object: [String: AnyObject] = [:]
-        object["createdAt"] = self.createdAt.timeIntervalSince1970
         mirror.children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
@@ -160,6 +160,18 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return object
     }
     
+    // MARK: - Encode, Decode
+    
+    /// Model -> Firebase
+    public func encode(key: String, value: Any) -> AnyObject? {
+        return nil
+    }
+    
+    /// Snapshot -> Model
+    public func decode(key: String, value: Any) -> AnyObject? {
+        return nil
+    }
+    
     // MARK: - Save
     
     public func save() {
@@ -168,7 +180,8 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     
     public func save(completion: ((NSError?, FIRDatabaseReference) -> Void)?) {
         if self.id == self.tmpID {
-            let value: [String: AnyObject] = self.value
+            var value: [String: AnyObject] = self.value
+            value["_timestamp"] = FIRServerValue.timestamp()
             self.dynamicType.ref.childByAutoId().setValue(value, withCompletionBlock: { (error, ref) in
                 if let error: NSError = error { print(error) }
                 self.dynamicType.ref.child(ref.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
