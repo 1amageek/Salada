@@ -17,6 +17,7 @@ class User: Ingredient {
     dynamic var groups: Set<String> = []
     dynamic var items: [String] = []
     dynamic var location: CLLocation?
+    dynamic var url: NSURL?
     
     var tempName: String? 
     
