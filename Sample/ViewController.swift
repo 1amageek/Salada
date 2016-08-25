@@ -41,6 +41,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.name = "john appleseed"
                 user.gender = "man"
                 user.age = 22
+                user.url = NSURL(string: "https://www.google.co.jp/")
                 user.items = ["Book", "Pen"]
                 user.groups.insert(ref.key)
                 user.location = CLLocation(latitude: 0, longitude: 0)
@@ -54,6 +55,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.name = "Marilyn Monroe"
                 user.gender = "woman"
                 user.age = 34
+                user.url = NSURL(string: "https://www.google.co.jp/")
                 user.items = ["Rip"]
                 user.groups.insert(ref.key)
                 user.save({ (error, ref) in
