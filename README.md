@@ -39,9 +39,7 @@ pod 'Firebase/Database'
 Model of the definition is very simple.
 To inherit the `Ingredient`.
 
-``` Swift
-
-// User
+``` Swift 
 class User: Ingredient {
     typealias Tsp = User
     dynamic var name: String?
@@ -49,36 +47,44 @@ class User: Ingredient {
     dynamic var gender: String?
     dynamic var groups: Set<String> = []
     dynamic var items: [String] = []
+    dynamic var location: CLLocation?
+    
+    var tempName: String? 
+    
+    override var ignore: [String] {
+        return ["tempName"]
+    }
+    
+    override func encode(key: String, value: Any) -> AnyObject? {
+        if "location" == key {
+            if let location = self.location {
+                return ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
+            }
+        }
+        return nil
+    }
+    
+    override func decode(key: String, value: Any) -> AnyObject? {
+        if "location" == key {
+            if let location: [String: Double] = value as? [String: Double] {
+                return CLLocation(latitude: location["latitude"]!, longitude: location["longitude"]!)
+            }
+        }
+        return nil
+    }
 }
-
 ```
 
-``` Swift
+When you want to create a property that you want to ignore.
 
+``` Swift
 // Group
 class Group: Ingredient {
     typealias Tsp = Group
     dynamic var name: String?
     dynamic var users: Set<String> = []
 }
-
 ```
-
-When you want to create a property that you want to ignore.
-
-``` Swift
-
-// User
-class User: Ingredient {
-    typealias Tsp = User
-    var tempName: String? 
-    override var ignore: [String] {
-        return ["tempName"]
-    }
-}
-
-```
-
 
 ### Property
 
@@ -90,6 +96,7 @@ Property are four that can be specified in Salada.
 | Number\(Int, UInt, Double ...\) | Simple number. |
 | Array\<String\> | Array of strings. |
 | Set \<String\>| Array of strings. Set is used in relationships. |
+| AnyObject | Use encode, decode function. |
 
 ### Save and Update
 
