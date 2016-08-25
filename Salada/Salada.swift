@@ -78,20 +78,26 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
                 self.hasObserve = true
-                guard let value: [String: AnyObject] = snapshot.value as? [String: AnyObject] else { return }
+                guard let snapshot: [String: AnyObject] = snapshot.value as? [String: AnyObject] else { return }
                 self.serverTimestamp = value["_timestamp"] as? Double
-                Mirror(reflecting: self).children.forEach { (key, _) in
+                Mirror(reflecting: self).children.forEach { (key, value) in
                     if let key: String = key {
                         if !self.ignore.contains(key) {
-                            if let newValue: AnyObject = self.decode(key, value: value) {
+                            if let newValue: AnyObject = self.decode(key, value: snapshot) {
                                 self.setValue(newValue, forKey: key)
                                 return
                             }
-                            if let value: [Int: AnyObject] = value[key] as? [Int: AnyObject] {
+                            let mirror: Mirror = Mirror(reflecting: value)
+                            guard let subjectType: Any.Type = mirror.subjectType else { return }
+                            if subjectType == NSURL?.self || subjectType == NSURL.self {
+                                if let value: String = snapshot[key] as? String {
+                                    self.setValue(value, forKey: key)
+                                }
+                            } else if let value: [Int: AnyObject] = snapshot[key] as? [Int: AnyObject] {
                                 print(value, key)
-                            } else if let value: [String: AnyObject] = value[key] as? [String: AnyObject] {
+                            } else if let value: [String: AnyObject] = snapshot[key] as? [String: AnyObject] {
                                 self.setValue(Set(value.keys), forKey: key)
-                            } else if let value: AnyObject = value[key] {
+                            } else if let value: AnyObject = snapshot[key] {
                                 self.setValue(value, forKey: key)
                             }
                             self.addObserver(self, forKeyPath: key, options: [.New, .Old], context: nil)
@@ -149,6 +155,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                     }
                     switch value.self {
                     case is String: if let value: String = value as? String { object[key] = value }
+                    case is NSURL: if let value: NSURL = value as? NSURL { object[key] = value.absoluteString }
                     case is Int: if let value: Int = value as? Int { object[key] = value }
                     case is [String]: if let value: [String] = value as? [String] where !value.isEmpty { object[key] = value }
                     case is Set<String>: if let value: Set<String> = value as? Set<String> where !value.isEmpty { object[key] = value.toKeys() }
