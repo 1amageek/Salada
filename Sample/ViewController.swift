@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseDatabase
+import CoreLocation
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -30,36 +31,37 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.whiteColor()
-//        let group: Group = Group()
-//        group.name = "iOS Development Team"
-//        group.save { (error, ref) in
-//            
-//            do {
-//                let user: User = User()
-//                user.tempName = "Test1_name"
-//                user.name = "john appleseed"
-//                user.gender = "man"
-//                user.age = 22
-//                user.items = ["Book", "Pen"]
-//                user.groups.insert(ref.key)
-//                user.save({ (error, ref) in
-//                    group.users.insert(ref.key)
-//                })
-//            }
-//            
-//            do {
-//                let user: User = User()
-//                user.name = "Marilyn Monroe"
-//                user.gender = "woman"
-//                user.age = 34
-//                user.items = ["Rip"]
-//                user.groups.insert(ref.key)
-//                user.save({ (error, ref) in
-//                    group.users.insert(ref.key)
-//                })
-//            }
-//            
-//        }
+        let group: Group = Group()
+        group.name = "iOS Development Team"
+        group.save { (error, ref) in
+            
+            do {
+                let user: User = User()
+                user.tempName = "Test1_name"
+                user.name = "john appleseed"
+                user.gender = "man"
+                user.age = 22
+                user.items = ["Book", "Pen"]
+                user.groups.insert(ref.key)
+                user.location = CLLocation(latitude: 0, longitude: 0)
+                user.save({ (error, ref) in
+                    group.users.insert(ref.key)
+                })
+            }
+            
+            do {
+                let user: User = User()
+                user.name = "Marilyn Monroe"
+                user.gender = "woman"
+                user.age = 34
+                user.items = ["Rip"]
+                user.groups.insert(ref.key)
+                user.save({ (error, ref) in
+                    group.users.insert(ref.key)
+                })
+            }
+            
+        }
 
 //        User.observeSingle(FIRDataEventType.Value) { (results) in
 //            results.forEach({ (user) in
@@ -80,14 +82,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //            })
 //        }
         
-        (0..<30).forEach { (index) in
-            let user: User = User()
-            user.name = "\(index)"
-            user.gender = "woman"
-            user.age = index
-            user.items = ["Rip"]
-            user.save()
-        }
+//        (0..<30).forEach { (index) in
+//            let user: User = User()
+//            user.name = "\(index)"
+//            user.gender = "woman"
+//            user.age = index
+//            user.items = ["Rip"]
+//            user.save()
+//        }
         
         self.datasource = Salada.observe({ [weak self](change) in
             
