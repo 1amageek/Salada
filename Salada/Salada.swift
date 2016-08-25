@@ -74,6 +74,16 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return self.tmpID
     }
     
+    /// Model -> Firebase
+    public func encode(key: String, value: Any) -> AnyObject? {
+        return nil
+    }
+    
+    /// Snapshot -> Model
+    public func decode(key: String, value: Any) -> AnyObject? {
+        return nil
+    }
+    
     public var snapshot: FIRDataSnapshot? {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
@@ -82,6 +92,10 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                 Mirror(reflecting: self).children.forEach { (key, _) in
                     if let key: String = key {
                         if !self.ignore.contains(key) {
+                            if let newValue: AnyObject = self.decode(key, value: value) {
+                                self.setValue(newValue, forKey: key)
+                                return
+                            }
                             if let value: [Int: AnyObject] = value[key] as? [Int: AnyObject] {
                                 print(value, key)
                             } else if let value: [String: AnyObject] = value[key] as? [String: AnyObject] {
@@ -129,6 +143,10 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         mirror.children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
+                    if let newValue: AnyObject = self.encode(key, value: value) {
+                        object[key] = newValue
+                        return
+                    }
                     switch value.self {
                     case is String: if let value: String = value as? String { object[key] = value }
                     case is Int: if let value: Int = value as? Int { object[key] = value }
@@ -275,11 +293,13 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     private var changedHandle: UInt?
     private var removedHandle: UInt?
     
+    // http://jsfiddle.net/katowulf/yumaB/
+    
     public class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
         
         let salada: Salada<T> = Salada()
         salada.ref = T.ref
-        salada.addedHandle = salada.ref?.observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
+        salada.addedHandle = salada.ref?.queryLimitedToLast(10).observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
             print("added")
             guard let salada = salada else { return }
             if let t: T = T(snapshot: snapshot) {
@@ -349,51 +369,3 @@ extension SequenceType where Generator.Element : AnyObject {
         }
     }
 }
-
-//struct Relation<T, Parent where T: Hashable, T: IngredientType, Parent: IngredientType>: CollectionType, SequenceType {
-//    
-//    private var objects: Set<T>
-//    
-//    var count: Int {
-//        return self.objects.count
-//    }
-//    
-//    var isEmpty: Bool {
-//        return self.objects.count == 0
-//    }
-//    
-//    var startIndex: Int {
-//        return 0
-//    }
-//    
-//    var endIndex: Int {
-//        return count
-//    }
-//    
-//    private var sorted: [T] {
-//        if self.objects.count == 0 { return [] }
-//        return self.objects.sort({ $0.id < $1.id })
-//    }
-//    
-//    subscript(index: Int) -> T {
-//        get { return self.sorted[index] }
-//    }
-//    
-//    func generate() -> AnyGenerator<T> {
-//        var index: Int = 0
-//        return AnyGenerator<T> {
-//            if index < self.objects.count {
-//                let result = self.sorted[index]
-//                index += 1
-//                return result
-//            }
-//            return nil
-//        }
-//    }
-//    
-//    mutating func insert(tsp: T) {
-//        self.objects.insert(tsp)
-//        
-//    }
-//    
-//}
