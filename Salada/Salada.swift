@@ -8,10 +8,13 @@
 
 import Foundation
 import Firebase
+import FirebaseStorage
 
 public protocol IngredientType {
     static var database: FIRDatabaseReference { get }
-    static var ref: FIRDatabaseReference { get }
+    static var databaseRef: FIRDatabaseReference { get }
+    static var storage: FIRStorageReference { get }
+    static var storageRef: FIRStorageReference { get }
     static var path: String { get }
     
     var id: String { get }
@@ -25,7 +28,9 @@ public protocol IngredientType {
 
 public extension IngredientType {
     static var database: FIRDatabaseReference { return FIRDatabase.database().reference() }
-    static var ref: FIRDatabaseReference { return self.database.child(self.path) }
+    static var databaseRef: FIRDatabaseReference { return self.database.child(self.path) }
+    static var storage: FIRStorageReference { return FIRStorage.storage().reference() }
+    static var storageRef: FIRStorageReference { return self.storage.child(self.path) }
 }
 
 public protocol Tasting {
@@ -35,7 +40,7 @@ public protocol Tasting {
 public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
     
     public static func observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void) {
-        self.ref.observeSingleEventOfType(eventType, withBlock: { (snapshot) in
+        self.databaseRef.observeSingleEventOfType(eventType, withBlock: { (snapshot) in
             var children: [Tsp] = []
             snapshot.children.forEach({ (snapshot) in
                 if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
@@ -49,7 +54,7 @@ public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
     }
     
     public static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp) -> Void) {
-        self.ref.child(id).observeSingleEventOfType(eventType, withBlock: { (snapshot) in
+        self.databaseRef.child(id).observeSingleEventOfType(eventType, withBlock: { (snapshot) in
             if let tsp: Tsp = Tsp(snapshot: snapshot) {
                 block(tsp)
             }
@@ -92,6 +97,12 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                             if subjectType == NSURL?.self || subjectType == NSURL.self {
                                 if let value: String = snapshot[key] as? String {
                                     self.setValue(value, forKey: key)
+                                }
+                            } else if subjectType == SaladaFile?.self || subjectType == SaladaFile.self {
+                                if let value: String = snapshot[key] as? String {
+                                    let file: SaladaFile = SaladaFile(name: value)
+                                    file.parent = self
+                                    self.setValue(file, forKey: key)
                                 }
                             } else if let value: [Int: AnyObject] = snapshot[key] as? [Int: AnyObject] {
                                 print(value, key)
@@ -159,6 +170,12 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                     case is Int: if let value: Int = value as? Int { object[key] = value }
                     case is [String]: if let value: [String] = value as? [String] where !value.isEmpty { object[key] = value }
                     case is Set<String>: if let value: Set<String> = value as? Set<String> where !value.isEmpty { object[key] = value.toKeys() }
+                    case is SaladaFile:
+                        if let value: SaladaFile = value as? SaladaFile {
+                            if let name: String = value.name where !name.isEmpty {
+                                object[key] = name
+                            }
+                        }
                     default: if let value: AnyObject = value as? AnyObject { object[key] = value }
                     }
                 }
@@ -189,10 +206,34 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         if self.id == self.tmpID {
             var value: [String: AnyObject] = self.value
             value["_timestamp"] = FIRServerValue.timestamp()
-            self.dynamicType.ref.childByAutoId().setValue(value, withCompletionBlock: { (error, ref) in
+            self.dynamicType.databaseRef.childByAutoId().setValue(value, withCompletionBlock: { (error, ref) in
                 if let error: NSError = error { print(error) }
-                self.dynamicType.ref.child(ref.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                
+                // File pre save
+                var files: [SaladaFile] = []
+                Mirror(reflecting: self).children.forEach({ (key, value) in
+                    if let key: String = key {
+                        if !self.ignore.contains(key) {
+                            let mirror: Mirror = Mirror(reflecting: value)
+                            guard let subjectType: Any.Type = mirror.subjectType else { return }
+                            if subjectType == SaladaFile?.self || subjectType == SaladaFile.self {
+                                if let file: SaladaFile = value as? SaladaFile {
+                                    files.append(file)
+                                }
+                            }
+                        }
+                    }
+                })
+                
+                // Property save
+                self.dynamicType.databaseRef.child(ref.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                     self.snapshot = snapshot
+                    
+                    // File save
+                    files.forEach({ (file) in
+                        file.parent = self
+                        file.save()
+                    })
                     completion?(error, ref)
                 })                
             })
@@ -203,7 +244,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     
     public func remove() {
         guard let id: String = self.id else { return }
-        self.dynamicType.ref.child(id).removeValue()
+        self.dynamicType.databaseRef.child(id).removeValue()
     }
     
     // MARK: - KVO
@@ -222,7 +263,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         
         let keys: [String] = Mirror(reflecting: self).children.flatMap({ return $0.label })
         if keys.contains(keyPath) {
-            if var value: AnyObject = object.valueForKey(keyPath) {
+            if let value: AnyObject = object.valueForKey(keyPath) {
                 if let values: Set<String> = value as? Set<String> {
                     if values.isEmpty { return }
                     if let change: [String: AnyObject] = change {
@@ -232,19 +273,19 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                         
                         // Added
                         new.subtract(old).forEach({ (id) in
-                            self.dynamicType.ref.child(self.id).child(keyPath).child(id).setValue(true)
+                            self.dynamicType.databaseRef.child(self.id).child(keyPath).child(id).setValue(true)
                         })
                         
                         // Remove
                         old.subtract(new).forEach({ (id) in
-                            self.dynamicType.ref.child(self.id).child(keyPath).child(id).removeValue()
+                            self.dynamicType.databaseRef.child(self.id).child(keyPath).child(id).removeValue()
                         })
-                        value = values.toKeys()
+
                     }
                 }
                 else if let values: [String] = value as? [String] {
                     if values.isEmpty { return }
-                    self.dynamicType.ref.child(self.id).child(keyPath).setValue(value)
+                    self.dynamicType.databaseRef.child(self.id).child(keyPath).setValue(value)
                 }
             }
         } else {
@@ -265,6 +306,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
             }
         }
     }
+    
 }
 
 extension Ingredient {
@@ -283,7 +325,7 @@ public typealias SaladaChange = (deletions: [Int], insertions: [Int], modificati
 /// Observe at a Firebase Database location.
 public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject {
     
-    public var ref: FIRDatabaseReference?
+    public var databaseRef: FIRDatabaseReference?
     public var bowl: [T] = []
     public var count: Int { return bowl.count }
     public var sortDescriptors: [NSSortDescriptor] = []
@@ -299,13 +341,13 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     deinit {
         print(#function)
         if let handle: UInt = self.addedHandle {
-            self.ref?.removeObserverWithHandle(handle)
+            self.databaseRef?.removeObserverWithHandle(handle)
         }
         if let handle: UInt = self.changedHandle {
-            self.ref?.removeObserverWithHandle(handle)
+            self.databaseRef?.removeObserverWithHandle(handle)
         }
         if let handle: UInt = self.removedHandle {
-            self.ref?.removeObserverWithHandle(handle)
+            self.databaseRef?.removeObserverWithHandle(handle)
         }
     }
     
@@ -318,8 +360,8 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     public class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
         
         let salada: Salada<T> = Salada()
-        salada.ref = T.ref
-        salada.addedHandle = salada.ref?.queryLimitedToLast(10).observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
+        salada.databaseRef = T.databaseRef
+        salada.addedHandle = salada.databaseRef?.queryLimitedToLast(10).observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
             print("added")
             guard let salada = salada else { return }
             if let t: T = T(snapshot: snapshot) {
@@ -333,7 +375,7 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
             }
         })
         
-        salada.changedHandle = salada.ref?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
+        salada.changedHandle = salada.databaseRef?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
             print("change")
             guard let salada = salada else { return }
             if let t: T = T(snapshot: snapshot) {
@@ -343,7 +385,7 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
             }
         })
         
-        salada.removedHandle = salada.ref?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
+        salada.removedHandle = salada.databaseRef?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
             print("remove")
             guard let salada = salada else { return }
             if let t: T = T(snapshot: snapshot) {
@@ -355,6 +397,42 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
         })
         
         return salada
+    }
+    
+}
+
+// MARK: -
+
+public class SaladaFile: NSObject {
+    public var data: NSData?
+    public var name: String?
+    weak public var parent: Ingredient?
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    convenience init(name: String, data: NSData) {
+        self.init(name: name)
+        self.data = data        
+    }
+    
+    public func save() {
+        self.save(nil)
+    }
+    
+    public func save(completion: ((FIRStorageMetadata?, NSError?) -> Void)?) {
+        if let name: String = self.name, data: NSData = self.data, parent: Ingredient = self.parent {
+            parent.dynamicType.storageRef.child(parent.id).child(name).putData(data, metadata: nil) { metadata, error in
+                completion?(metadata, error)
+            }
+        }
+    }
+    
+    public func dataWithMaxSize(size: Int64, completion: (NSData?, NSError?) -> Void) {
+        if let parent: Ingredient = self.parent, name: String = self.name {
+            parent.dynamicType.storageRef.child(parent.id).child(name).dataWithMaxSize(size, completion: completion)
+        }
     }
     
 }
