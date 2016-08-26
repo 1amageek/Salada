@@ -193,6 +193,9 @@ class User: Ingredient {
 
 #### Upload file
 
+You can easily save the file if you use the SaladaFile.
+SaladaFile saves the File in FirebaseStorage.
+
 ``` Swift
 let user: User = User()
 let image: UIImage = UIImage(named: "Salada")!
@@ -206,6 +209,8 @@ user.save({ (error, ref) in
 ```
 
 #### Download file
+
+Download of File is also available through the SaladaFile.
 
 ``` Swift
 guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
