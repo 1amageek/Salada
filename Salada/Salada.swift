@@ -98,9 +98,9 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                                 if let value: String = snapshot[key] as? String {
                                     self.setValue(value, forKey: key)
                                 }
-                            } else if subjectType == SaladaFile?.self || subjectType == SaladaFile.self {
+                            } else if subjectType == File?.self || subjectType == File.self {
                                 if let name: String = snapshot[key] as? String {
-                                    let file: SaladaFile = SaladaFile(name: name)
+                                    let file: File = File(name: name)
                                     file.parent = self
                                     self.setValue(file, forKey: key)
                                 }
@@ -171,8 +171,8 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                     case is Int: if let value: Int = value as? Int { object[key] = value }
                     case is [String]: if let value: [String] = value as? [String] where !value.isEmpty { object[key] = value }
                     case is Set<String>: if let value: Set<String> = value as? Set<String> where !value.isEmpty { object[key] = value.toKeys() }
-                    case is SaladaFile:
-                        if let file: SaladaFile = value as? SaladaFile {
+                    case is File:
+                        if let file: File = value as? File {
                             file.parent = self
                         }
                     default: if let value: AnyObject = value as? AnyObject { object[key] = value }
@@ -215,8 +215,8 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                             if !self.ignore.contains(key) {
                                 let mirror: Mirror = Mirror(reflecting: value)
                                 guard let subjectType: Any.Type = mirror.subjectType else { return }
-                                if subjectType == SaladaFile?.self || subjectType == SaladaFile.self {
-                                    if let file: SaladaFile = value as? SaladaFile {
+                                if subjectType == File?.self || subjectType == File.self {
+                                    if let file: File = value as? File {
                                         file.save(key)
                                     }
                                 }
@@ -254,11 +254,11 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         let keys: [String] = Mirror(reflecting: self).children.flatMap({ return $0.label })
         if keys.contains(keyPath) {
             if let value: AnyObject = object.valueForKey(keyPath) {
-                if let file: SaladaFile = value as? SaladaFile {
+                if let file: File = value as? File {
                     if let _: [String: AnyObject] = change {
                         self.dynamicType.databaseRef.child(self.id).child(keyPath).setValue(file.name)
-                        //let new: SaladaFile = change["new"] as! SaladaFile
-                        //let old: SaladaFile = change["old"] as! SaladaFile
+                        //let new: File = change["new"] as! File
+                        //let old: File = change["old"] as! File
                     }
                 } else if let values: Set<String> = value as? Set<String> {
                     if values.isEmpty { return }
@@ -403,7 +403,7 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
 
 // MARK: -
 
-public class SaladaFile: NSObject {
+public class File: NSObject {
     
     public var saved: Bool = false
     public var data: NSData?
@@ -424,7 +424,7 @@ public class SaladaFile: NSObject {
     
     public convenience init(name: String, data: NSData) {
         self.init(name: name)
-        self.data = data        
+        self.data = data
     }
     
     public func save(keyPath: String) {
