@@ -40,7 +40,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 let user: User = User()
                 let image: UIImage = UIImage(named: "Salada")!
                 let data: NSData = UIImagePNGRepresentation(image)!
-                let thumbnail: SaladaFile = SaladaFile(name: "salada_test.png", data: data)
+                let thumbnail: File = File(name: "salada_test.png", data: data)
                 thumbnail.data = data
                 user.thumbnail = thumbnail
                 user.tempName = "Test1_name"
@@ -61,7 +61,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 let user: User = User()
                 let image: UIImage = UIImage(named: "Salada")!
                 let data: NSData = UIImagePNGRepresentation(image)!
-                let thumbnail: SaladaFile = SaladaFile(name: "salada_test.png", data: data)
+                let thumbnail: File = File(name: "salada_test.png", data: data)
                 thumbnail.data = data
                 user.thumbnail = thumbnail
                 user.name = "Marilyn Monroe"

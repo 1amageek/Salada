@@ -18,7 +18,7 @@ class User: Ingredient {
     dynamic var items: [String] = []
     dynamic var location: CLLocation?
     dynamic var url: NSURL?
-    dynamic var thumbnail: SaladaFile?
+    dynamic var thumbnail: File?
     
     var tempName: String? 
     
