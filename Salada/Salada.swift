@@ -79,6 +79,8 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return self.tmpID
     }
     
+    public var uploadTasks: [String: FIRStorageUploadTask] = [:]
+    
     public var snapshot: FIRDataSnapshot? {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
@@ -100,9 +102,13 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                                 }
                             } else if subjectType == File?.self || subjectType == File.self {
                                 if let name: String = snapshot[key] as? String {
-                                    let file: File = File(name: name)
-                                    file.parent = self
-                                    self.setValue(file, forKey: key)
+                                    if let _: File = value as? File {
+                                        
+                                    } else {
+                                        let file: File = File(name: name)
+                                        file.parent = self
+                                        self.setValue(file, forKey: key)
+                                    }
                                 }
                             } else if let value: [Int: AnyObject] = snapshot[key] as? [Int: AnyObject] {
                                 print(value, key)
@@ -210,6 +216,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                 self.dynamicType.databaseRef.child(ref.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                     self.snapshot = snapshot
                     
+                    // File save
                     Mirror(reflecting: self).children.forEach({ (key, value) in
                         if let key: String = key {
                             if !self.ignore.contains(key) {
@@ -255,10 +262,16 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         if keys.contains(keyPath) {
             if let value: AnyObject = object.valueForKey(keyPath) {
                 if let file: File = value as? File {
-                    if let _: [String: AnyObject] = change {
-                        self.dynamicType.databaseRef.child(self.id).child(keyPath).setValue(file.name)
-                        //let new: File = change["new"] as! File
-                        //let old: File = change["old"] as! File
+                    if let change: [String: AnyObject] = change {
+                        let new: File = change["new"] as! File
+                        let old: File = change["old"] as! File
+                        if old.name != new.name {
+                            new.parent = self
+                            old.parent = self
+                            file.save(keyPath, completion: { (meta, error) in
+                                old.remove()
+                            })
+                        }
                     }
                 } else if let values: Set<String> = value as? Set<String> {
                     if values.isEmpty { return }
@@ -410,6 +423,7 @@ public class File: NSObject {
     public var name: String
     public var metadata: FIRStorageMetadata?
     public var parent: Ingredient?
+    public private(set) var uploadTask: FIRStorageUploadTask?
     
     public var ref: FIRStorageReference? {
         if let parent: Ingredient = self.parent {
@@ -432,12 +446,22 @@ public class File: NSObject {
     }
     
     public func save(keyPath: String, completion: ((FIRStorageMetadata?, NSError?) -> Void)?) {
-        if let data: NSData = self.data {
-            self.ref?.putData(data, metadata: nil) { (metadata, error) in
+        if let data: NSData = self.data, parent: Ingredient = self.parent {
+            // If parent have uploadTask cancel
+            parent.uploadTasks[keyPath]?.cancel()
+            self.uploadTask = self.ref?.putData(data, metadata: nil) { (metadata, error) in
                 self.metadata = metadata
-                self.parent?.setValue(self, forKey: keyPath)
-                completion?(metadata, error)
+                if let error: NSError = error {
+                    completion?(metadata, error)
+                    return
+                }
+                parent.dynamicType.databaseRef.child(parent.id).child(keyPath).setValue(self.name, withCompletionBlock: { (error, ref) in
+                    parent.uploadTasks.removeValueForKey(keyPath)
+                    self.uploadTask = nil
+                    completion?(metadata, error)
+                })
             }
+            parent.uploadTasks[keyPath] = self.uploadTask
         }
     }
     
