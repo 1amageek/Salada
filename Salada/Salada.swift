@@ -79,6 +79,8 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return self.tmpID
     }
     
+    public var uploadTasks: [String: FIRStorageUploadTask] = [:]
+    
     public var snapshot: FIRDataSnapshot? {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
@@ -98,11 +100,15 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                                 if let value: String = snapshot[key] as? String {
                                     self.setValue(value, forKey: key)
                                 }
-                            } else if subjectType == SaladaFile?.self || subjectType == SaladaFile.self {
+                            } else if subjectType == File?.self || subjectType == File.self {
                                 if let name: String = snapshot[key] as? String {
-                                    let file: SaladaFile = SaladaFile(name: name)
-                                    file.parent = self
-                                    self.setValue(file, forKey: key)
+                                    if let _: File = value as? File {
+                                        
+                                    } else {
+                                        let file: File = File(name: name)
+                                        file.parent = self
+                                        self.setValue(file, forKey: key)
+                                    }
                                 }
                             } else if let value: [Int: AnyObject] = snapshot[key] as? [Int: AnyObject] {
                                 print(value, key)
@@ -171,8 +177,8 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                     case is Int: if let value: Int = value as? Int { object[key] = value }
                     case is [String]: if let value: [String] = value as? [String] where !value.isEmpty { object[key] = value }
                     case is Set<String>: if let value: Set<String> = value as? Set<String> where !value.isEmpty { object[key] = value.toKeys() }
-                    case is SaladaFile:
-                        if let file: SaladaFile = value as? SaladaFile {
+                    case is File:
+                        if let file: File = value as? File {
                             file.parent = self
                         }
                     default: if let value: AnyObject = value as? AnyObject { object[key] = value }
@@ -210,13 +216,14 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                 self.dynamicType.databaseRef.child(ref.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                     self.snapshot = snapshot
                     
+                    // File save
                     Mirror(reflecting: self).children.forEach({ (key, value) in
                         if let key: String = key {
                             if !self.ignore.contains(key) {
                                 let mirror: Mirror = Mirror(reflecting: value)
                                 guard let subjectType: Any.Type = mirror.subjectType else { return }
-                                if subjectType == SaladaFile?.self || subjectType == SaladaFile.self {
-                                    if let file: SaladaFile = value as? SaladaFile {
+                                if subjectType == File?.self || subjectType == File.self {
+                                    if let file: File = value as? File {
                                         file.save(key)
                                     }
                                 }
@@ -254,11 +261,17 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         let keys: [String] = Mirror(reflecting: self).children.flatMap({ return $0.label })
         if keys.contains(keyPath) {
             if let value: AnyObject = object.valueForKey(keyPath) {
-                if let file: SaladaFile = value as? SaladaFile {
-                    if let _: [String: AnyObject] = change {
-                        self.dynamicType.databaseRef.child(self.id).child(keyPath).setValue(file.name)
-                        //let new: SaladaFile = change["new"] as! SaladaFile
-                        //let old: SaladaFile = change["old"] as! SaladaFile
+                if let file: File = value as? File {
+                    if let change: [String: AnyObject] = change {
+                        let new: File = change["new"] as! File
+                        let old: File = change["old"] as! File
+                        if old.name != new.name {
+                            new.parent = self
+                            old.parent = self
+                            file.save(keyPath, completion: { (meta, error) in
+                                old.remove()
+                            })
+                        }
                     }
                 } else if let values: Set<String> = value as? Set<String> {
                     if values.isEmpty { return }
@@ -403,13 +416,14 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
 
 // MARK: -
 
-public class SaladaFile: NSObject {
+public class File: NSObject {
     
     public var saved: Bool = false
     public var data: NSData?
     public var name: String
     public var metadata: FIRStorageMetadata?
     public var parent: Ingredient?
+    public private(set) var uploadTask: FIRStorageUploadTask?
     
     public var ref: FIRStorageReference? {
         if let parent: Ingredient = self.parent {
@@ -424,7 +438,7 @@ public class SaladaFile: NSObject {
     
     public convenience init(name: String, data: NSData) {
         self.init(name: name)
-        self.data = data        
+        self.data = data
     }
     
     public func save(keyPath: String) {
@@ -432,12 +446,22 @@ public class SaladaFile: NSObject {
     }
     
     public func save(keyPath: String, completion: ((FIRStorageMetadata?, NSError?) -> Void)?) {
-        if let data: NSData = self.data {
-            self.ref?.putData(data, metadata: nil) { (metadata, error) in
+        if let data: NSData = self.data, parent: Ingredient = self.parent {
+            // If parent have uploadTask cancel
+            parent.uploadTasks[keyPath]?.cancel()
+            self.uploadTask = self.ref?.putData(data, metadata: nil) { (metadata, error) in
                 self.metadata = metadata
-                self.parent?.setValue(self, forKey: keyPath)
-                completion?(metadata, error)
+                if let error: NSError = error {
+                    completion?(metadata, error)
+                    return
+                }
+                parent.dynamicType.databaseRef.child(parent.id).child(keyPath).setValue(self.name, withCompletionBlock: { (error, ref) in
+                    parent.uploadTasks.removeValueForKey(keyPath)
+                    self.uploadTask = nil
+                    completion?(metadata, error)
+                })
             }
+            parent.uploadTasks[keyPath] = self.uploadTask
         }
     }
     
