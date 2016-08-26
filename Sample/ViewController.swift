@@ -17,6 +17,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let view: UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
         view.dataSource = self
         view.delegate = self
+        view.alwaysBounceVertical = true
         view.registerClass(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
         return view
     }()
@@ -51,6 +52,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.groups.insert(ref.key)
                 user.location = CLLocation(latitude: 0, longitude: 0)
                 user.save({ (error, ref) in
+                    user.name = "Iron Man"
                     group.users.insert(ref.key)
                 })
             }
@@ -69,6 +71,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.items = ["Rip"]
                 user.groups.insert(ref.key)
                 user.save({ (error, ref) in
+                    user.name = "Mark Zuckerberg"
                     group.users.insert(ref.key)
                 })
             }
@@ -83,7 +86,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //                print(user.gender)
 //                print(user.groups)
 //                print(user.items)
-//                
+//
 //                if let groupId: String = user.groups.first {
 //                    Group.observeSingle(groupId, eventType: .Value, block: { (group) in
 //                        print(group)
@@ -133,8 +136,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//        let cell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath)
-        let cell: UITableViewCell = UITableViewCell(style: .Default, reuseIdentifier: "UITableViewCell")
+        let cell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath)
+//        let cell: UITableViewCell = UITableViewCell(style: .Default, reuseIdentifier: "UITableViewCell")
         configure(cell, atIndexPath: indexPath)
         return cell
     }
@@ -159,5 +162,3 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
 }
-
-
