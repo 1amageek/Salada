@@ -12,6 +12,7 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 - iOS 8 or later
 - Swift 2.3
 - [Firebase database](https://firebase.google.com/docs/database/ios/start)
+- [Firebase storage](https://firebase.google.com/docs/storage/ios/start)
 
 ## Installation ⚙
 <!--
@@ -27,6 +28,7 @@ Add the following to the pod file, `Pods install`
 ``` ruby
 pod 'Firebase'
 pod 'Firebase/Database'
+pod 'Firebase/Storage'
 ```
 
 1. [Download this project](https://github.com/1amageek/Salada/archive/master.zip)
@@ -47,31 +49,6 @@ class User: Ingredient {
     dynamic var gender: String?
     dynamic var groups: Set<String> = []
     dynamic var items: [String] = []
-    dynamic var location: CLLocation?
-    
-    var tempName: String? 
-    
-    override var ignore: [String] {
-        return ["tempName"]
-    }
-    
-    override func encode(key: String, value: Any) -> AnyObject? {
-        if "location" == key {
-            if let location = self.location {
-                return ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
-            }
-        }
-        return nil
-    }
-    
-    override func decode(key: String, value: Any) -> AnyObject? {
-        if "location" == key {
-            if let location: [String: Double] = value as? [String: Double] {
-                return CLLocation(latitude: location["latitude"]!, longitude: location["longitude"]!)
-            }
-        }
-        return nil
-    }
 }
 ```
 
@@ -175,6 +152,71 @@ if let groupId: String = user.groups.first {
     })
 }
 
+```
+
+### Custom property
+``` Swift
+class User: Ingredient {
+    typealias Tsp = User
+    dynamic var name: String?
+    dynamic var age: Int = 0
+    dynamic var gender: String?
+    dynamic var groups: Set<String> = []
+    dynamic var items: [String] = []
+    dynamic var location: CLLocation?
+    
+    var tempName: String? 
+    
+    override var ignore: [String] {
+        return ["tempName"]
+    }
+    
+    override func encode(key: String, value: Any) -> AnyObject? {
+        if "location" == key {
+            if let location = self.location {
+                return ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
+            }
+        }
+        return nil
+    }
+    
+    override func decode(key: String, value: Any) -> AnyObject? {
+        if "location" == key {
+            if let location: [String: Double] = value as? [String: Double] {
+                return CLLocation(latitude: location["latitude"]!, longitude: location["longitude"]!)
+            }
+        }
+        return nil
+    }
+}
+```
+
+#### Upload file
+
+``` Swift
+let user: User = User()
+let image: UIImage = UIImage(named: "Salada")!
+let data: NSData = UIImagePNGRepresentation(image)!
+let thumbnail: SaladaFile = SaladaFile(name: "salada_test.png", data: data)
+thumbnail.data = data
+user.thumbnail = thumbnail
+user.save({ (error, ref) in
+    // do something
+})
+```
+
+#### Download file
+
+``` Swift
+guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
+user.thumbnail?.dataWithMaxSize(1 * 200 * 200, completion: { (data, error) in
+    if let error: NSError = error {
+        print(error)
+        return
+    }
+    cell.imageView?.image = UIImage(data: data!)
+    cell.setNeedsLayout()
+})
 ```
 
 # Salada datasource
