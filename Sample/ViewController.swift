@@ -54,6 +54,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.save({ (error, ref) in
                     user.name = "Iron Man"
                     group.users.insert(ref.key)
+                    
+                    let image: UIImage = UIImage(named: "Salada1")!
+                    let data: NSData = UIImageJPEGRepresentation(image, 1)!
+                    let thumbnail: File = File(name: "salada_test1.jpg", data: data)
+                    user.thumbnail = thumbnail
+                    
                 })
             }
             
@@ -137,14 +143,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath)
-//        let cell: UITableViewCell = UITableViewCell(style: .Default, reuseIdentifier: "UITableViewCell")
         configure(cell, atIndexPath: indexPath)
         return cell
     }
     
     func configure(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
         guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
-        user.thumbnail?.dataWithMaxSize(1 * 200 * 200, completion: { (data, error) in
+        user.thumbnail?.dataWithMaxSize(1 * 400 * 400, completion: { (data, error) in
             if let error: NSError = error {
                 print(error)
                 return
