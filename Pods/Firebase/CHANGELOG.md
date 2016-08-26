@@ -1,3 +1,6 @@
+# 3.5.0
+* Updates for Firebase/Analytics, Firebase/AppIndexing, Firebase/Auth, Firebase/DynamicLinks, Firebase/Invites, Firebase/Storage.
+
 # 3.4.0
 * Updates for Firebase/AdMob, Firebase/Analytics, Firebase/AppIndexing, Firebase/Auth, Firebase/Crash, Firebase/DynamicLinks, Firebase/Invites, Firebase/Messaging, Firebase/RemoteConfig.
 
