@@ -418,19 +418,33 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
 
 public class File: NSObject {
     
-    public var saved: Bool = false
-    public var data: NSData?
-    public var name: String
-    public var metadata: FIRStorageMetadata?
-    public var parent: Ingredient?
-    public private(set) var uploadTask: FIRStorageUploadTask?
-    
+    /// Save location
     public var ref: FIRStorageReference? {
         if let parent: Ingredient = self.parent {
             return parent.dynamicType.storageRef.child(parent.id).child(self.name)
         }
         return nil
     }
+    
+    /// Save data
+    public var data: NSData?
+    
+    /// File name
+    public var name: String
+    
+    /// File metadata
+    public var metadata: FIRStorageMetadata?
+    
+    /// Parent to hold the location where you want to save
+    public var parent: Ingredient?
+    
+    /// Firebase uploading task
+    public private(set) var uploadTask: FIRStorageUploadTask?
+    
+    /// Firebase downloading task
+    public private(set) var downloadTask: FIRStorageDownloadTask?
+    
+    // MARK: - Initialize
     
     public init(name: String) {
         self.name = name
@@ -441,6 +455,8 @@ public class File: NSObject {
         self.data = data
     }
     
+    // MARK: - Save
+    
     public func save(keyPath: String) {
         self.save(keyPath, completion: nil)
     }
@@ -449,7 +465,8 @@ public class File: NSObject {
         if let data: NSData = self.data, parent: Ingredient = self.parent {
             // If parent have uploadTask cancel
             parent.uploadTasks[keyPath]?.cancel()
-            self.uploadTask = self.ref?.putData(data, metadata: nil) { (metadata, error) in
+            self.downloadTask?.cancel()
+            self.uploadTask = self.ref?.putData(data, metadata: self.metadata) { (metadata, error) in
                 self.metadata = metadata
                 if let error: NSError = error {
                     completion?(metadata, error)
@@ -465,8 +482,14 @@ public class File: NSObject {
         }
     }
     
+    // MARK: - Load
+    
     public func dataWithMaxSize(size: Int64, completion: (NSData?, NSError?) -> Void) {
-        self.ref?.dataWithMaxSize(size, completion: completion)
+        self.downloadTask?.cancel()
+        self.downloadTask = self.ref?.dataWithMaxSize(size, completion: { (data, error) in
+            self.downloadTask = nil
+            completion(data, error)
+        })
     }
     
     public func remove() {
