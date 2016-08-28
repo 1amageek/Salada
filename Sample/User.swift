@@ -9,6 +9,11 @@
 import Foundation
 import CoreLocation
 
+@objc enum UserType: Int {
+    case first
+    case second
+}
+
 class User: Ingredient {
     typealias Tsp = User
     dynamic var name: String?
@@ -18,7 +23,9 @@ class User: Ingredient {
     dynamic var items: [String] = []
     dynamic var location: CLLocation?
     dynamic var url: NSURL?
+    dynamic var birth: NSDate?
     dynamic var thumbnail: File?
+    dynamic var type: UserType = .first
     
     var tempName: String? 
     
@@ -28,10 +35,12 @@ class User: Ingredient {
     
     override func encode(key: String, value: Any) -> AnyObject? {
         
-        if "location" == key {
+        if key == "location" {
             if let location = self.location {
                 return ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
             }
+        } else if key == "type" {
+            return self.type.rawValue
         }
         
         return nil
@@ -39,12 +48,17 @@ class User: Ingredient {
     
     override func decode(key: String, value: Any) -> AnyObject? {
         
-        if "location" == key {
+        if key == "location" {
             if let location: [String: Double] = value as? [String: Double] {
                 return CLLocation(latitude: location["latitude"]!, longitude: location["longitude"]!)
             }
+        } else if key == "type" {
+            if let type: Int = value as? Int {
+                self.type = UserType(rawValue: type)!
+            }
+
         }
-        
+    
         return nil
     }
     
