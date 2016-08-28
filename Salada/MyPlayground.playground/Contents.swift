@@ -60,3 +60,19 @@ class User: Ingredient {
 
 let user: User = User.observe()
 
+@objc enum UserType: Int {
+    case User
+    case Group
+}
+
+let mirror: Mirror = Mirror(reflecting: UserType.User)
+mirror.displayStyle
+mirror.subjectType
+mirror.children
+mirror.description
+mirror.superclassMirror()
+
+
+let t = mirror.subjectType
+t
+

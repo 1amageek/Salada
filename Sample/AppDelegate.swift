@@ -15,6 +15,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+        NSSetUncaughtExceptionHandler { exception in
+            print(exception)
+            print(exception.callStackSymbols)
+        }
+        
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
