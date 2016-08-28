@@ -67,12 +67,28 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     
     public typealias Tsp = Ingredient
     
+    // MARK: Initialize
+    
+    public override init() {
+        self.localTimestamp = NSDate()
+    }
+    
+    convenience required public init?(snapshot: FIRDataSnapshot) {
+        self.init()
+        _setSnapshot(snapshot)
+    }
+    
+    convenience required public init?(id: String) {
+        self.init()
+    }
+    
     public static var path: String {
         let type = Mirror(reflecting: self).subjectType
         return String(type).componentsSeparatedByString(".").first!.lowercaseString
     }
     
     private var tmpID: String = NSUUID().UUIDString
+    private var _ID: String?
     
     public var id: String {
         if let id: String = self.snapshot?.key { return id }
@@ -90,8 +106,9 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                 Mirror(reflecting: self).children.forEach { (key, value) in
                     if let key: String = key {
                         if !self.ignore.contains(key) {
-                            if let newValue: AnyObject = self.decode(key, value: snapshot) {
+                            if let newValue: AnyObject = self.decode(key, value: snapshot[key]) {
                                 self.setValue(newValue, forKey: key)
+                                self.addObserver(self, forKeyPath: key, options: [.New, .Old], context: nil)
                                 return
                             }
                             let mirror: Mirror = Mirror(reflecting: value)
@@ -99,6 +116,11 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                             if subjectType == NSURL?.self || subjectType == NSURL.self {
                                 if let value: String = snapshot[key] as? String {
                                     self.setValue(value, forKey: key)
+                                }
+                            } else if subjectType == NSDate?.self || subjectType == NSDate.self {
+                                if let value: Double = snapshot[key] as? Double {
+                                    let date: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(value))
+                                    self.setValue(date, forKey: key)
                                 }
                             } else if subjectType == File?.self || subjectType == File.self {
                                 if let name: String = snapshot[key] as? String {
@@ -147,20 +169,9 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     public var ignore: [String] {
         return []
     }
- 
+    
     private var hasObserve: Bool = false
     
-    // MARK: Initialize
-    
-    public override init() {
-        self.localTimestamp = NSDate()
-    }
-    
-    convenience required public init?(snapshot: FIRDataSnapshot) {
-        self.init()
-        _setSnapshot(snapshot)
-    }
-
     public var value: [String: AnyObject] {
         let mirror = Mirror(reflecting: self)
         var object: [String: AnyObject] = [:]
@@ -174,6 +185,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                     switch value.self {
                     case is String: if let value: String = value as? String { object[key] = value }
                     case is NSURL: if let value: NSURL = value as? NSURL { object[key] = value.absoluteString }
+                    case is NSDate: if let value: NSDate = value as? NSDate { object[key] = value.timeIntervalSince1970 }
                     case is Int: if let value: Int = value as? Int { object[key] = value }
                     case is [String]: if let value: [String] = value as? [String] where !value.isEmpty { object[key] = value }
                     case is Set<String>: if let value: Set<String> = value as? Set<String> where !value.isEmpty { object[key] = value.toKeys() }
@@ -211,7 +223,15 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         if self.id == self.tmpID {
             var value: [String: AnyObject] = self.value
             value["_timestamp"] = FIRServerValue.timestamp()
-            self.dynamicType.databaseRef.childByAutoId().setValue(value, withCompletionBlock: { (error, ref) in
+            
+            var ref: FIRDatabaseReference
+            if let ID: String = self._ID {
+                ref = self.dynamicType.databaseRef.child(ID)
+            } else {
+                ref = self.dynamicType.databaseRef.childByAutoId()
+            }
+            
+            ref.setValue(value, withCompletionBlock: { (error, ref) in
                 if let error: NSError = error { print(error) }
                 self.dynamicType.databaseRef.child(ref.key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                     self.snapshot = snapshot
@@ -232,7 +252,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                     })
                     
                     completion?(error, ref)
-                })                
+                })
             })
         }
     }
@@ -247,7 +267,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     // MARK: - KVO
     
     override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-
+        
         guard let keyPath: String = keyPath else {
             super.observeValueForKeyPath(nil, ofObject: object, change: change, context: context)
             return
@@ -276,7 +296,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                 } else if let values: Set<String> = value as? Set<String> {
                     if values.isEmpty { return }
                     if let change: [String: AnyObject] = change {
-
+                        
                         let new: Set<String> = change["new"] as! Set<String>
                         let old: Set<String> = change["old"] as! Set<String>
                         
@@ -289,7 +309,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                         old.subtract(new).forEach({ (id) in
                             self.dynamicType.databaseRef.child(self.id).child(keyPath).child(id).removeValue()
                         })
-
+                        
                     }
                 } else if let values: [String] = value as? [String] {
                     if values.isEmpty { return }
@@ -343,7 +363,10 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     public var sortDescriptors: [NSSortDescriptor] = []
     
     public func objectAtIndex(index: Int) -> T? {
-        return bowl[index]
+        if bowl.count > index {
+            return bowl[index]
+        }
+        return nil
     }
     
     public func indexOfObject(tsp: T) -> Int? {
@@ -385,7 +408,7 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
                 block(SaladaChange(deletions: [], insertions: [index], modifications: []))
                 objc_sync_exit(salada)
             }
-        })
+            })
         
         salada.changedHandle = salada.databaseRef?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
             print("change")
@@ -396,7 +419,7 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
                     block(SaladaChange(deletions: [], insertions: [], modifications: [index]))
                 }
             }
-        })
+            })
         
         salada.removedHandle = salada.databaseRef?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
             print("remove")
@@ -407,7 +430,7 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
                     block(SaladaChange(deletions: [index], insertions: [], modifications: []))
                 }
             }
-        })
+            })
         
         return salada
     }
