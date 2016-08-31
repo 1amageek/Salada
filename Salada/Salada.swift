@@ -63,6 +63,8 @@ public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
     
 }
 
+public typealias File = Ingredient.File
+
 public class Ingredient: NSObject, IngredientType, Tasting {
     
     public typealias Tsp = Ingredient
@@ -339,6 +341,102 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         }
     }
     
+    // MARK: -
+    
+    public class File: NSObject {
+        
+        /// Save location
+        public var ref: FIRStorageReference? {
+            if let parent: Ingredient = self.parent {
+                return parent.dynamicType.storageRef.child(parent.id).child(self.name)
+            }
+            return nil
+        }
+        
+        /// Save data
+        public var data: NSData?
+        
+        /// File name
+        public var name: String
+        
+        /// File metadata
+        public var metadata: FIRStorageMetadata?
+        
+        /// Parent to hold the location where you want to save
+        public var parent: Ingredient?
+        
+        /// Firebase uploading task
+        public private(set) var uploadTask: FIRStorageUploadTask?
+        
+        /// Firebase downloading task
+        public private(set) var downloadTask: FIRStorageDownloadTask?
+        
+        // MARK: - Initialize
+        
+        public init(name: String) {
+            self.name = name
+        }
+        
+        public convenience init(name: String, data: NSData) {
+            self.init(name: name)
+            self.data = data
+        }
+        
+        // MARK: - Save
+        
+        public func save(keyPath: String) {
+            self.save(keyPath, completion: nil)
+        }
+        
+        public func save(keyPath: String, completion: ((FIRStorageMetadata?, NSError?) -> Void)?) {
+            if let data: NSData = self.data, parent: Ingredient = self.parent {
+                // If parent have uploadTask cancel
+                parent.uploadTasks[keyPath]?.cancel()
+                self.downloadTask?.cancel()
+                self.uploadTask = self.ref?.putData(data, metadata: self.metadata) { (metadata, error) in
+                    self.metadata = metadata
+                    if let error: NSError = error {
+                        completion?(metadata, error)
+                        return
+                    }
+                    parent.dynamicType.databaseRef.child(parent.id).child(keyPath).setValue(self.name, withCompletionBlock: { (error, ref) in
+                        parent.uploadTasks.removeValueForKey(keyPath)
+                        self.uploadTask = nil
+                        completion?(metadata, error)
+                    })
+                }
+                parent.uploadTasks[keyPath] = self.uploadTask
+            }
+        }
+        
+        // MARK: - Load
+        
+        public func dataWithMaxSize(size: Int64, completion: (NSData?, NSError?) -> Void) -> FIRStorageDownloadTask? {
+            self.downloadTask?.cancel()
+            let task: FIRStorageDownloadTask? = self.ref?.dataWithMaxSize(size, completion: { (data, error) in
+                self.downloadTask = nil
+                completion(data, error)
+            })
+            self.downloadTask = task
+            return task
+        }
+        
+        public func remove() {
+            self.remove(nil)
+        }
+        
+        public func remove(completion: ((NSError?) -> Void)?) {
+            self.ref?.deleteWithCompletion({ (error) in
+                completion?(error)
+            })
+        }
+        
+        deinit {
+            self.parent = nil
+        }
+        
+    }
+    
 }
 
 extension Ingredient {
@@ -433,100 +531,6 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
             })
         
         return salada
-    }
-    
-}
-
-// MARK: -
-
-public class File: NSObject {
-    
-    /// Save location
-    public var ref: FIRStorageReference? {
-        if let parent: Ingredient = self.parent {
-            return parent.dynamicType.storageRef.child(parent.id).child(self.name)
-        }
-        return nil
-    }
-    
-    /// Save data
-    public var data: NSData?
-    
-    /// File name
-    public var name: String
-    
-    /// File metadata
-    public var metadata: FIRStorageMetadata?
-    
-    /// Parent to hold the location where you want to save
-    public var parent: Ingredient?
-    
-    /// Firebase uploading task
-    public private(set) var uploadTask: FIRStorageUploadTask?
-    
-    /// Firebase downloading task
-    public private(set) var downloadTask: FIRStorageDownloadTask?
-    
-    // MARK: - Initialize
-    
-    public init(name: String) {
-        self.name = name
-    }
-    
-    public convenience init(name: String, data: NSData) {
-        self.init(name: name)
-        self.data = data
-    }
-    
-    // MARK: - Save
-    
-    public func save(keyPath: String) {
-        self.save(keyPath, completion: nil)
-    }
-    
-    public func save(keyPath: String, completion: ((FIRStorageMetadata?, NSError?) -> Void)?) {
-        if let data: NSData = self.data, parent: Ingredient = self.parent {
-            // If parent have uploadTask cancel
-            parent.uploadTasks[keyPath]?.cancel()
-            self.downloadTask?.cancel()
-            self.uploadTask = self.ref?.putData(data, metadata: self.metadata) { (metadata, error) in
-                self.metadata = metadata
-                if let error: NSError = error {
-                    completion?(metadata, error)
-                    return
-                }
-                parent.dynamicType.databaseRef.child(parent.id).child(keyPath).setValue(self.name, withCompletionBlock: { (error, ref) in
-                    parent.uploadTasks.removeValueForKey(keyPath)
-                    self.uploadTask = nil
-                    completion?(metadata, error)
-                })
-            }
-            parent.uploadTasks[keyPath] = self.uploadTask
-        }
-    }
-    
-    // MARK: - Load
-    
-    public func dataWithMaxSize(size: Int64, completion: (NSData?, NSError?) -> Void) {
-        self.downloadTask?.cancel()
-        self.downloadTask = self.ref?.dataWithMaxSize(size, completion: { (data, error) in
-            self.downloadTask = nil
-            completion(data, error)
-        })
-    }
-    
-    public func remove() {
-        self.remove(nil)
-    }
-    
-    public func remove(completion: ((NSError?) -> Void)?) {
-        self.ref?.deleteWithCompletion({ (error) in
-            completion?(error)
-        })
-    }
-    
-    deinit {
-        self.parent = nil
     }
     
 }
