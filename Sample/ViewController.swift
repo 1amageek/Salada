@@ -55,8 +55,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.type = .second
                 user.birth = NSDate()
                 user.save({ (error, ref) in
-                    user.name = "Iron Man"
-                    group.users.insert(ref.key)
+//                    user.name = "Iron Man"
+//                    group.users.insert(ref.key)
                     
 //                    let image: UIImage = UIImage(named: "Salada1")!
 //                    let data: NSData = UIImageJPEGRepresentation(image, 1)!
@@ -162,18 +162,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         })
         cell.imageView?.contentMode = .ScaleAspectFill
         cell.textLabel?.text = user.name
-        print(user.tempName)
-        print(user.thumbnail)
-        print(user.tempName)
-        print(user.name)
-        print(user.gender)
-        print(user.age)
-        print(user.url)
-        print(user.items)
-        print(user.groups)
-        print(user.location)
-        print(user.type)
-        print(user.birth)
+//        print(user.tempName)
+//        print(user.thumbnail)
+//        print(user.tempName)
+//        print(user.name)
+//        print(user.gender)
+//        print(user.age)
+//        print(user.url)
+//        print(user.items)
+//        print(user.groups)
+//        print(user.location)
+//        print(user.type)
+//        print(user.birth)
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -183,7 +183,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
-        user.thumbnail?.downloadTask?.cancel()
+        //user.thumbnail?.downloadTask?.cancel()
     }
     
 }
