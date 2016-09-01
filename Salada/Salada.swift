@@ -53,10 +53,14 @@ public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
         })
     }
     
-    public static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp) -> Void) {
+    public static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp?) -> Void) {
         self.databaseRef.child(id).observeSingleEventOfType(eventType, withBlock: { (snapshot) in
-            if let tsp: Tsp = Tsp(snapshot: snapshot) {
-                block(tsp)
+            if snapshot.exists() {
+                if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                    block(tsp)
+                }
+            } else {
+                block(nil)
             }
         })
     }
@@ -108,8 +112,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                 Mirror(reflecting: self).children.forEach { (key, value) in
                     if let key: String = key {
                         if !self.ignore.contains(key) {
-                            if let newValue: AnyObject = self.decode(key, value: snapshot[key]) {
-                                self.setValue(newValue, forKey: key)
+                            if let _: Any = self.decode(key, value: snapshot[key]) {
                                 self.addObserver(self, forKeyPath: key, options: [.New, .Old], context: nil)
                                 return
                             }
@@ -211,7 +214,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     }
     
     /// Snapshot -> Model
-    public func decode(key: String, value: Any) -> AnyObject? {
+    public func decode(key: String, value: Any) -> Any? {
         return nil
     }
     
@@ -378,6 +381,12 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         }
         
         public convenience init(name: String, data: NSData) {
+            self.init(name: name)
+            self.data = data
+        }
+        
+        public convenience init(data: NSData) {
+            let name: String = "\(NSDate().timeIntervalSince1970 * 1000)"
             self.init(name: name)
             self.data = data
         }
