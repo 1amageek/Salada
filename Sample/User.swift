@@ -46,17 +46,18 @@ class User: Ingredient {
         return nil
     }
     
-    override func decode(key: String, value: Any) -> AnyObject? {
+    override func decode(key: String, value: Any) -> Any? {
         
         if key == "location" {
             if let location: [String: Double] = value as? [String: Double] {
-                return CLLocation(latitude: location["latitude"]!, longitude: location["longitude"]!)
+                self.location = CLLocation(latitude: location["latitude"]!, longitude: location["longitude"]!)
+                return self.location
             }
         } else if key == "type" {
             if let type: Int = value as? Int {
                 self.type = UserType(rawValue: type)!
+                return self.type
             }
-
         }
     
         return nil
