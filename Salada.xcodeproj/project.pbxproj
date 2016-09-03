@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D7EE46696AB12D55577F63B /* Pods_SaladaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */; };
+		1200530D1D7823F700E557AA /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1200530C1D7823F700E557AA /* GroupViewController.swift */; };
 		1223153B1D645A7A003864BD /* Salada.h in Headers */ = {isa = PBXBuildFile; fileRef = 1223153A1D645A7A003864BD /* Salada.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		122315451D645AA0003864BD /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
 		1223156C1D645B73003864BD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1223156A1D645B73003864BD /* Main.storyboard */; };
@@ -46,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1200530C1D7823F700E557AA /* GroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
 		122315051D618E11003864BD /* Salada.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Salada.swift; sourceTree = "<group>"; };
 		1223150D1D631C02003864BD /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MyPlayground.playground; path = ../Salada/MyPlayground.playground; sourceTree = "<group>"; };
 		122315381D645A7A003864BD /* Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,6 +153,7 @@
 				1223150D1D631C02003864BD /* MyPlayground.playground */,
 				122315661D645B73003864BD /* AppDelegate.swift */,
 				122315681D645B73003864BD /* ViewController.swift */,
+				1200530C1D7823F700E557AA /* GroupViewController.swift */,
 				122315821D645E22003864BD /* Group.swift */,
 				122315831D645E22003864BD /* User.swift */,
 				1223156A1D645B73003864BD /* Main.storyboard */,
@@ -286,6 +289,7 @@
 					};
 					122315631D645B73003864BD = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 					129DF2731D654A1F00AD8148 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -478,6 +482,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1200530D1D7823F700E557AA /* GroupViewController.swift in Sources */,
 				129DF26F1D64881200AD8148 /* Salada.swift in Sources */,
 				122315801D645E11003864BD /* AppDelegate.swift in Sources */,
 				122315811D645E11003864BD /* ViewController.swift in Sources */,
@@ -669,6 +674,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -685,6 +691,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
