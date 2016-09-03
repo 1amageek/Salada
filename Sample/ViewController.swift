@@ -185,7 +185,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
-        user.thumbnail?.downloadTask?.cancel()
+        //user.thumbnail?.downloadTask?.cancel()
     }
     
 }
