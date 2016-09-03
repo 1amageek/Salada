@@ -58,7 +58,6 @@ class User: Ingredient {
                 self.type = UserType(rawValue: type)!
                 return self.type
             }
-
         }
     
         return nil
