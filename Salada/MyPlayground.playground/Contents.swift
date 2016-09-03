@@ -60,19 +60,24 @@ class User: Ingredient {
 
 let user: User = User.observe()
 
-@objc enum UserType: Int {
-    case User
-    case Group
+class Salada<T: Ingredient>: NSObject {
+    class func func1() -> T {
+        return T(value: [:])
+    }
 }
 
-let mirror: Mirror = Mirror(reflecting: UserType.User)
-mirror.displayStyle
-mirror.subjectType
-mirror.children
-mirror.description
-mirror.superclassMirror()
+protocol Saladable: class {
+    associatedtype W: Ingredient
+}
+
+extension Saladable where Self.W: Ingredient {
+    
+    
+    
+    func func2() -> W {
+        return W(value: [:])
+    }
+}
 
 
-let t = mirror.subjectType
-t
 
