@@ -8,6 +8,7 @@
 
 import Foundation
 import Firebase
+import FirebaseDatabase
 import FirebaseStorage
 
 public protocol IngredientType {
@@ -34,27 +35,64 @@ public extension IngredientType {
 }
 
 public protocol Tasting {
-    associatedtype Tsp: Ingredient
+    associatedtype Tsp: IngredientType
+    static func observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void)
+    static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp?) -> Void)
+    static func observe(eventType: FIRDataEventType, block: ([Tsp]) -> Void) -> UInt
+    static func observe(id: String, eventType: FIRDataEventType, block: (Tsp?) -> Void) -> UInt
 }
 
-public extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
+public extension Tasting where Self: IngredientType {
     
     public static func observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void) {
         self.databaseRef.observeSingleEventOfType(eventType, withBlock: { (snapshot) in
-            var children: [Tsp] = []
-            snapshot.children.forEach({ (snapshot) in
-                if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
-                    if let tsp: Tsp = Tsp(snapshot: snapshot) {
-                        children.append(tsp)
+            if snapshot.exists() {
+                var children: [Tsp] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                            children.append(tsp)
+                        }
                     }
-                }
-            })
-            block(children)
+                })
+            } else {
+                block([])
+            }
         })
     }
     
     public static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp?) -> Void) {
         self.databaseRef.child(id).observeSingleEventOfType(eventType, withBlock: { (snapshot) in
+            if snapshot.exists() {
+                print(Tsp)
+                if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                    block(tsp)
+                }
+            } else {
+                block(nil)
+            }
+        })
+    }
+    
+    public static func observe(eventType: FIRDataEventType, block: ([Tsp]) -> Void) -> UInt {
+        return self.databaseRef.observeEventType(eventType, withBlock: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Tsp] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                            children.append(tsp)
+                        }
+                    }
+                })
+            } else {
+                block([])
+            }
+        })
+    }
+    
+    public static func observe(id: String, eventType: FIRDataEventType, block: (Tsp?) -> Void) -> UInt {
+        return self.databaseRef.child(id).observeEventType(eventType, withBlock: { (snapshot) in
             if snapshot.exists() {
                 if let tsp: Tsp = Tsp(snapshot: snapshot) {
                     block(tsp)
@@ -464,7 +502,9 @@ public typealias SaladaChange = (deletions: [Int], insertions: [Int], modificati
 /// Observe at a Firebase Database location.
 public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject {
     
+    /// DatabaseReference
     public var databaseRef: FIRDatabaseReference?
+    
     public var bowl: [T] = []
     public var count: Int { return bowl.count }
     public var sortDescriptors: [NSSortDescriptor] = []
@@ -478,6 +518,10 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     
     public func indexOfObject(tsp: T) -> Int? {
         return bowl.indexOf({ $0.id == tsp.id })
+    }
+    
+    public func indexOfKey(key: String) -> Int? {
+        return bowl.indexOf({ $0.id == key })
     }
     
     deinit {
@@ -499,11 +543,12 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     
     // http://jsfiddle.net/katowulf/yumaB/
     
+
     public class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
-        
+
         let salada: Salada<T> = Salada()
         salada.databaseRef = T.databaseRef
-        salada.addedHandle = salada.databaseRef?.queryLimitedToLast(10).observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
+        salada.addedHandle = salada.databaseRef?.observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
             print("added")
             guard let salada = salada else { return }
             if let t: T = T(snapshot: snapshot) {
@@ -538,6 +583,65 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
                 }
             }
             })
+        
+        return salada
+    }
+    
+}
+
+extension Salada where T: Ingredient, T.Tsp == T {
+    
+    public class func observe(with reference: FIRDatabaseReference, block: (SaladaChange) -> Void) -> Salada<T> {
+        
+        let salada: Salada<T> = Salada<T>()
+        salada.databaseRef = reference
+        salada.addedHandle = salada.databaseRef?.observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
+            
+            guard let salada = salada else { return }
+            guard let key: String = snapshot.key else { return }
+
+            T.databaseRef.child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                if snapshot.exists() {
+                    if let t: T = T(snapshot: snapshot) {
+                        objc_sync_enter(salada)
+                        salada.bowl.append(t)
+                        let bowl: [T] = salada.bowl.sort(sortDescriptors: salada.sortDescriptors)
+                        salada.bowl = bowl
+                        let index: Int = salada.indexOfObject(t)!
+                        block(SaladaChange(deletions: [], insertions: [index], modifications: []))
+                        objc_sync_exit(salada)
+                    }
+                }
+            })
+        })
+        
+        salada.changedHandle = salada.databaseRef?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
+            
+            guard let salada = salada else { return }
+            guard let key: String = snapshot.key else { return }
+            
+            T.databaseRef.child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                if snapshot.exists() {
+                    if let t: T = T(snapshot: snapshot) {
+                        if let index: Int = salada.indexOfObject(t) {
+                            salada.bowl[index] = t
+                            block(SaladaChange(deletions: [], insertions: [], modifications: [index]))
+                        }
+                    }
+                }
+            })
+        })
+        
+        salada.removedHandle = salada.databaseRef?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
+            
+            guard let salada = salada else { return }
+            guard let key: String = snapshot.key else { return }
+            
+            if let index: Int = salada.indexOfKey(key) {
+                salada.bowl.removeAtIndex(index)
+                block(SaladaChange(deletions: [index], insertions: [], modifications: []))
+            }
+        })
         
         return salada
     }
