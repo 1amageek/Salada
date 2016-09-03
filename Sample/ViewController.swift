@@ -33,39 +33,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.whiteColor()
         
-        let group: Group = Group()
-        group.name = "iOS Development Team"
-        group.save { (error, ref) in
-            
-            do {
-                let user: User = User()
-                let image: UIImage = UIImage(named: "Salada")!
-                let data: NSData = UIImagePNGRepresentation(image)!
-                let thumbnail: File = File(name: "salada_test.png", data: data)
-                thumbnail.data = data
-                user.thumbnail = thumbnail
-                user.tempName = "Test1_name"
-                user.name = "john appleseed"
-                user.gender = "man"
-                user.age = 22
-                user.url = NSURL(string: "https://www.google.co.jp/")
-                user.items = ["Book", "Pen"]
-                user.groups.insert(ref.key)
-                user.location = CLLocation(latitude: 1, longitude: 1)
-                user.type = .second
-                user.birth = NSDate()
-                user.save({ (error, ref) in
-                    user.name = "Iron Man"
-                    group.users.insert(ref.key)
-                    
-//                    let image: UIImage = UIImage(named: "Salada1")!
-//                    let data: NSData = UIImageJPEGRepresentation(image, 1)!
-//                    let thumbnail: File = File(name: "salada_test1.jpg", data: data)
-//                    user.thumbnail = thumbnail
-                    
-                })
-            }
-            
+//        let group: Group = Group()
+//        group.name = "iOS Development Team"
+//        group.save { (error, ref) in
+//            
 //            do {
 //                let user: User = User()
 //                let image: UIImage = UIImage(named: "Salada")!
@@ -73,19 +44,48 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //                let thumbnail: File = File(name: "salada_test.png", data: data)
 //                thumbnail.data = data
 //                user.thumbnail = thumbnail
-//                user.name = "Marilyn Monroe"
-//                user.gender = "woman"
-//                user.age = 34
+//                user.tempName = "Test1_name"
+//                user.name = "john appleseed"
+//                user.gender = "man"
+//                user.age = 22
 //                user.url = NSURL(string: "https://www.google.co.jp/")
-//                user.items = ["Rip"]
+//                user.items = ["Book", "Pen"]
 //                user.groups.insert(ref.key)
+//                user.location = CLLocation(latitude: 1, longitude: 1)
+//                user.type = .second
+//                user.birth = NSDate()
 //                user.save({ (error, ref) in
-//                    user.name = "Mark Zuckerberg"
+//                    user.name = "Iron Man"
 //                    group.users.insert(ref.key)
+//                    
+////                    let image: UIImage = UIImage(named: "Salada1")!
+////                    let data: NSData = UIImageJPEGRepresentation(image, 1)!
+////                    let thumbnail: File = File(name: "salada_test1.jpg", data: data)
+////                    user.thumbnail = thumbnail
+//                    
 //                })
 //            }
-            
-        }
+//            
+////            do {
+////                let user: User = User()
+////                let image: UIImage = UIImage(named: "Salada")!
+////                let data: NSData = UIImagePNGRepresentation(image)!
+////                let thumbnail: File = File(name: "salada_test.png", data: data)
+////                thumbnail.data = data
+////                user.thumbnail = thumbnail
+////                user.name = "Marilyn Monroe"
+////                user.gender = "woman"
+////                user.age = 34
+////                user.url = NSURL(string: "https://www.google.co.jp/")
+////                user.items = ["Rip"]
+////                user.groups.insert(ref.key)
+////                user.save({ (error, ref) in
+////                    user.name = "Mark Zuckerberg"
+////                    group.users.insert(ref.key)
+////                })
+////            }
+//            
+//        }
 
 //        User.observeSingle(FIRDataEventType.Value) { (results) in
 //            results.forEach({ (user) in
@@ -162,23 +162,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         })
         cell.imageView?.contentMode = .ScaleAspectFill
         cell.textLabel?.text = user.name
-        print(user.tempName)
-        print(user.thumbnail)
-        print(user.tempName)
-        print(user.name)
-        print(user.gender)
-        print(user.age)
-        print(user.url)
-        print(user.items)
-        print(user.groups)
-        print(user.location)
-        print(user.type)
-        print(user.birth)
+//        print(user.tempName)
+//        print(user.thumbnail)
+//        print(user.tempName)
+//        print(user.name)
+//        print(user.gender)
+//        print(user.age)
+//        print(user.url)
+//        print(user.items)
+//        print(user.groups)
+//        print(user.location)
+//        print(user.type)
+//        print(user.birth)
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
-        print(user)
+        let viewConntroller: GroupViewController = GroupViewController()
+        viewConntroller.userID = user.id
+        self.presentViewController(viewConntroller, animated: true, completion: nil)
     }
     
     func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
