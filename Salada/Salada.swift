@@ -133,11 +133,13 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return String(type).componentsSeparatedByString(".").first!.lowercaseString
     }
     
-    private var _id: String = NSUUID().UUIDString
+    private var tmpID: String = NSUUID().UUIDString
+    private var _id: String?
     
     public var id: String {
         if let id: String = self.snapshot?.key { return id }
-        return self._id
+        if let id: String = self._id { return id }
+        return tmpID
     }
     
     public var uploadTasks: [String: FIRStorageUploadTask] = [:]
@@ -264,7 +266,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     }
     
     public func save(completion: ((NSError?, FIRDatabaseReference) -> Void)?) {
-        if self.id == self._id {
+        if self.id == self.tmpID || self.id == self._id {
             var value: [String: AnyObject] = self.value
             value["_timestamp"] = FIRServerValue.timestamp()
             
