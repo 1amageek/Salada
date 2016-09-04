@@ -62,13 +62,17 @@ public extension Tasting where Self: IngredientType, Tsp == Self {
     }
     
     public static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp?) -> Void) {
-        self.databaseRef.child(id).observeSingleEventOfType(eventType, withBlock: { (snapshot) in
-            if snapshot.exists() {
-                if let tsp: Tsp = Tsp(snapshot: snapshot) {
-                    print(Tsp)
-                    print(tsp)
-                    block(tsp)
-                }
+        self.databaseRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if snapshot.hasChild(id) {
+                self.databaseRef.child(id).observeSingleEventOfType(eventType, withBlock: { (snapshot) in
+                    if snapshot.exists() {
+                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                            block(tsp)
+                        }
+                    } else {
+                        block(nil)
+                    }
+                })
             } else {
                 block(nil)
             }
@@ -330,13 +334,17 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                 if let file: File = value as? File {
                     if let change: [String: AnyObject] = change {
                         let new: File = change["new"] as! File
-                        let old: File = change["old"] as! File
-                        if old.name != new.name {
+                        if let old: File = change["old"] as? File {
+                            if old.name != new.name {
+                                new.parent = self
+                                old.parent = self
+                                file.save(keyPath, completion: { (meta, error) in
+                                    old.remove()
+                                })
+                            }
+                        } else {
                             new.parent = self
-                            old.parent = self
-                            file.save(keyPath, completion: { (meta, error) in
-                                old.remove()
-                            })
+                            file.save(keyPath)
                         }
                     }
                 } else if let values: Set<String> = value as? Set<String> {
