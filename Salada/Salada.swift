@@ -42,7 +42,7 @@ public protocol Tasting {
     static func observe(id: String, eventType: FIRDataEventType, block: (Tsp?) -> Void) -> UInt
 }
 
-public extension Tasting where Self: IngredientType {
+public extension Tasting where Self: IngredientType, Tsp == Self {
     
     public static func observeSingle(eventType: FIRDataEventType, block: ([Tsp]) -> Void) {
         self.databaseRef.observeSingleEventOfType(eventType, withBlock: { (snapshot) in
@@ -64,8 +64,9 @@ public extension Tasting where Self: IngredientType {
     public static func observeSingle(id: String, eventType: FIRDataEventType, block: (Tsp?) -> Void) {
         self.databaseRef.child(id).observeSingleEventOfType(eventType, withBlock: { (snapshot) in
             if snapshot.exists() {
-                print(Tsp)
                 if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                    print(Tsp)
+                    print(tsp)
                     block(tsp)
                 }
             } else {
@@ -124,6 +125,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     
     convenience required public init?(id: String) {
         self.init()
+        self._id = id
     }
     
     public static var path: String {
@@ -131,12 +133,11 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         return String(type).componentsSeparatedByString(".").first!.lowercaseString
     }
     
-    private var tmpID: String = NSUUID().UUIDString
-    private var _ID: String?
+    private var _id: String = NSUUID().UUIDString
     
     public var id: String {
         if let id: String = self.snapshot?.key { return id }
-        return self.tmpID
+        return self._id
     }
     
     public var uploadTasks: [String: FIRStorageUploadTask] = [:]
@@ -263,13 +264,13 @@ public class Ingredient: NSObject, IngredientType, Tasting {
     }
     
     public func save(completion: ((NSError?, FIRDatabaseReference) -> Void)?) {
-        if self.id == self.tmpID {
+        if self.id == self._id {
             var value: [String: AnyObject] = self.value
             value["_timestamp"] = FIRServerValue.timestamp()
             
             var ref: FIRDatabaseReference
-            if let ID: String = self._ID {
-                ref = self.dynamicType.databaseRef.child(ID)
+            if let id: String = self._id {
+                ref = self.dynamicType.databaseRef.child(id)
             } else {
                 ref = self.dynamicType.databaseRef.childByAutoId()
             }
@@ -424,7 +425,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         }
         
         public convenience init(data: NSData) {
-            let name: String = "\(NSDate().timeIntervalSince1970 * 1000)"
+            let name: String = "\(Int(NSDate().timeIntervalSince1970 * 1000))"
             self.init(name: name)
             self.data = data
         }
@@ -543,9 +544,9 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     
     // http://jsfiddle.net/katowulf/yumaB/
     
-
+    
     public class func observe(block: (SaladaChange) -> Void) -> Salada<T> {
-
+        
         let salada: Salada<T> = Salada()
         salada.databaseRef = T.databaseRef
         salada.addedHandle = salada.databaseRef?.observeEventType(.ChildAdded, withBlock: { [weak salada](snapshot) in
@@ -599,7 +600,7 @@ extension Salada where T: Ingredient, T.Tsp == T {
             
             guard let salada = salada else { return }
             guard let key: String = snapshot.key else { return }
-
+            
             T.databaseRef.child(key).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 if snapshot.exists() {
                     if let t: T = T(snapshot: snapshot) {
@@ -613,7 +614,7 @@ extension Salada where T: Ingredient, T.Tsp == T {
                     }
                 }
             })
-        })
+            })
         
         salada.changedHandle = salada.databaseRef?.observeEventType(.ChildChanged, withBlock: { [weak salada](snapshot) in
             
@@ -630,7 +631,7 @@ extension Salada where T: Ingredient, T.Tsp == T {
                     }
                 }
             })
-        })
+            })
         
         salada.removedHandle = salada.databaseRef?.observeEventType(.ChildRemoved, withBlock: { [weak salada](snapshot) in
             
@@ -641,7 +642,7 @@ extension Salada where T: Ingredient, T.Tsp == T {
                 salada.bowl.removeAtIndex(index)
                 block(SaladaChange(deletions: [index], insertions: [], modifications: []))
             }
-        })
+            })
         
         return salada
     }
