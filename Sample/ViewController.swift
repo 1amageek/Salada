@@ -33,10 +33,39 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.whiteColor()
         
-//        let group: Group = Group()
-//        group.name = "iOS Development Team"
-//        group.save { (error, ref) in
-//            
+        let group: Group = Group()
+        group.name = "iOS Development Team"
+        group.save { (error, ref) in
+            
+            do {
+                let user: User = User()
+                let image: UIImage = UIImage(named: "Salada")!
+                let data: NSData = UIImagePNGRepresentation(image)!
+                let thumbnail: File = File(name: "salada_test.png", data: data)
+                thumbnail.data = data
+                user.thumbnail = thumbnail
+                user.tempName = "Test1_name"
+                user.name = "john appleseed"
+                user.gender = "man"
+                user.age = 22
+                user.url = NSURL(string: "https://www.google.co.jp/")
+                user.items = ["Book", "Pen"]
+                user.groups.insert(ref.key)
+                user.location = CLLocation(latitude: 1, longitude: 1)
+                user.type = .second
+                user.birth = NSDate()
+                user.save({ (error, ref) in
+//                    user.name = "Iron Man"
+//                    group.users.insert(ref.key)
+                    
+//                    let image: UIImage = UIImage(named: "Salada1")!
+//                    let data: NSData = UIImageJPEGRepresentation(image, 1)!
+//                    let thumbnail: File = File(name: "salada_test1.jpg", data: data)
+//                    user.thumbnail = thumbnail
+                    
+                })
+            }
+            
 //            do {
 //                let user: User = User()
 //                let image: UIImage = UIImage(named: "Salada")!
