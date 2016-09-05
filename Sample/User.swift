@@ -34,7 +34,6 @@ class User: Ingredient {
     }
     
     override func encode(key: String, value: Any) -> AnyObject? {
-        
         if key == "location" {
             if let location = self.location {
                 return ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
@@ -42,12 +41,10 @@ class User: Ingredient {
         } else if key == "type" {
             return self.type.rawValue
         }
-        
         return nil
     }
     
     override func decode(key: String, value: Any) -> Any? {
-        
         if key == "location" {
             if let location: [String: Double] = value as? [String: Double] {
                 self.location = CLLocation(latitude: location["latitude"]!, longitude: location["longitude"]!)
@@ -59,8 +56,6 @@ class User: Ingredient {
                 return self.type
             }
         }
-    
         return nil
     }
-    
 }

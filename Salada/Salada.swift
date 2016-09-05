@@ -164,8 +164,8 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                             let mirror: Mirror = Mirror(reflecting: value)
                             guard let subjectType: Any.Type = mirror.subjectType else { return }
                             if subjectType == NSURL?.self || subjectType == NSURL.self {
-                                if let value: String = snapshot[key] as? String {
-                                    self.setValue(value, forKey: key)
+                                if let value: String = snapshot[key] as? String, url: NSURL = NSURL(string: value) {
+                                    self.setValue(url, forKey: key)
                                 }
                             } else if subjectType == NSDate?.self || subjectType == NSDate.self {
                                 if let value: Double = snapshot[key] as? Double {
@@ -179,6 +179,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                                     } else {
                                         let file: File = File(name: name)
                                         file.parent = self
+                                        file.keyPath = key
                                         self.setValue(file, forKey: key)
                                     }
                                 }
@@ -242,6 +243,7 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                     case is File:
                         if let file: File = value as? File {
                             file.parent = self
+                            file.keyPath = key
                         }
                     default: if let value: AnyObject = value as? AnyObject { object[key] = value }
                     }
@@ -331,20 +333,22 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         let keys: [String] = Mirror(reflecting: self).children.flatMap({ return $0.label })
         if keys.contains(keyPath) {
             if let value: AnyObject = object.valueForKey(keyPath) {
-                if let file: File = value as? File {
+                if let _: File = value as? File {
                     if let change: [String: AnyObject] = change {
                         let new: File = change["new"] as! File
                         if let old: File = change["old"] as? File {
                             if old.name != new.name {
                                 new.parent = self
+                                new.keyPath = keyPath
                                 old.parent = self
-                                file.save(keyPath, completion: { (meta, error) in
+                                old.keyPath = keyPath
+                                new.save(keyPath, completion: { (meta, error) in
                                     old.remove()
                                 })
                             }
                         } else {
                             new.parent = self
-                            file.save(keyPath)
+                            new.save(keyPath)
                         }
                     }
                 } else if let values: Set<String> = value as? Set<String> {
@@ -417,6 +421,9 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         /// Parent to hold the location where you want to save
         public var parent: Ingredient?
         
+        /// Property name to save
+        public var keyPath: String?
+        
         /// Firebase uploading task
         public private(set) var uploadTask: FIRStorageUploadTask?
         
@@ -442,11 +449,11 @@ public class Ingredient: NSObject, IngredientType, Tasting {
         
         // MARK: - Save
         
-        public func save(keyPath: String) {
-            self.save(keyPath, completion: nil)
+        public func save(keyPath: String) -> FIRStorageUploadTask? {
+            return self.save(keyPath, completion: nil)
         }
         
-        public func save(keyPath: String, completion: ((FIRStorageMetadata?, NSError?) -> Void)?) {
+        public func save(keyPath: String, completion: ((FIRStorageMetadata?, NSError?) -> Void)?) -> FIRStorageUploadTask? {
             if let data: NSData = self.data, parent: Ingredient = self.parent {
                 // If parent have uploadTask cancel
                 parent.uploadTasks[keyPath]?.cancel()
@@ -464,7 +471,9 @@ public class Ingredient: NSObject, IngredientType, Tasting {
                     })
                 }
                 parent.uploadTasks[keyPath] = self.uploadTask
+                return self.uploadTask
             }
+            return nil
         }
         
         // MARK: - Load
@@ -536,7 +545,6 @@ public class Salada<T: Ingredient where T: IngredientType, T: Tasting>: NSObject
     }
     
     deinit {
-        print(#function)
         if let handle: UInt = self.addedHandle {
             self.databaseRef?.removeObserverWithHandle(handle)
         }
