@@ -210,11 +210,11 @@ user.save({ (error, ref) in
 
 #### Download file
 
-Download of File is also available through the SaladaFile.
+Download of File is also available through the File.
 
 ``` Swift
 guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
-user.thumbnail?.dataWithMaxSize(1 * 200 * 200, completion: { (data, error) in
+user.thumbnail?.dataWithMaxSize(1 * 2000 * 2000, completion: { (data, error) in
     if let error: NSError = error {
         print(error)
         return
