@@ -72,6 +72,7 @@ Property are four that can be specified in Salada.
 | String | Simple string. |
 | Number\(Int, UInt, Double ...\) | Simple number. |
 | NSURL | URL |
+| NSDate | date |
 | Array\<String\> | Array of strings. |
 | Set \<String\>| Array of strings. Set is used in relationships. |
 | AnyObject | Use encode, decode function. |
