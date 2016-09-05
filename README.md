@@ -194,15 +194,14 @@ class User: Ingredient {
 
 #### Upload file
 
-You can easily save the file if you use the SaladaFile.
-SaladaFile saves the File in FirebaseStorage.
+You can easily save the file if you use the File.
+File saves the File in FirebaseStorage.
 
 ``` Swift
 let user: User = User()
 let image: UIImage = UIImage(named: "Salada")!
 let data: NSData = UIImagePNGRepresentation(image)!
-let thumbnail: SaladaFile = SaladaFile(name: "salada_test.png", data: data)
-thumbnail.data = data
+let thumbnail: File = File(data: data)
 user.thumbnail = thumbnail
 user.save({ (error, ref) in
     // do something
