@@ -15,7 +15,7 @@ class GroupViewController: UITableViewController {
     
     override func loadView() {
         super.loadView()
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
     }
     
     override func viewDidLoad() {
@@ -29,27 +29,27 @@ class GroupViewController: UITableViewController {
             let modifications: [Int] = change.modifications
             
             tableView.beginUpdates()
-            tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-            tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-            tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
+            tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
             tableView.endUpdates()
         }
         
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.datasource?.count ?? 0
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
         configure(cell, atIndexPath: indexPath)
         return cell
     }
     
-    func configure(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
-        guard let group: Group = self.datasource?.objectAtIndex(indexPath.item) else { return }
-        cell.imageView?.contentMode = .ScaleAspectFill
+    func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
+        guard let group: Group = self.datasource?.objectAtIndex((indexPath as NSIndexPath).item) else { return }
+        cell.imageView?.contentMode = .scaleAspectFill
         cell.textLabel?.text = group.name
         //        print(user.tempName)
         //        print(user.thumbnail)

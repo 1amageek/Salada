@@ -22,8 +22,8 @@ class User: Ingredient {
     dynamic var groups: Set<String> = []
     dynamic var items: [String] = []
     dynamic var location: CLLocation?
-    dynamic var url: NSURL?
-    dynamic var birth: NSDate?
+    dynamic var url: URL?
+    dynamic var birth: Date?
     dynamic var thumbnail: File?
     dynamic var type: UserType = .first
     
@@ -33,18 +33,18 @@ class User: Ingredient {
         return ["tempName"]
     }
     
-    override func encode(key: String, value: Any) -> AnyObject? {
+    override func encode(_ key: String, value: Any) -> Any? {
         if key == "location" {
             if let location = self.location {
                 return ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
             }
         } else if key == "type" {
-            return self.type.rawValue
+            return self.type.rawValue as AnyObject?
         }
         return nil
     }
     
-    override func decode(key: String, value: Any) -> Any? {
+    override func decode(_ key: String, value: Any) -> Any? {
         if key == "location" {
             if let location: [String: Double] = value as? [String: Double] {
                 self.location = CLLocation(latitude: location["latitude"]!, longitude: location["longitude"]!)

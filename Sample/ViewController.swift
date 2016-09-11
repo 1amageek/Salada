@@ -14,11 +14,11 @@ import CoreLocation
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     lazy var tableView: UITableView = {
-        let view: UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
+        let view: UITableView = UITableView(frame: self.view.bounds, style: .grouped)
         view.dataSource = self
         view.delegate = self
         view.alwaysBounceVertical = true
-        view.registerClass(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+        view.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
         return view
     }()
     
@@ -31,7 +31,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         let group: Group = Group()
         group.name = "iOS Development Team"
@@ -40,7 +40,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             do {
                 let user: User = User()
                 let image: UIImage = UIImage(named: "Salada")!
-                let data: NSData = UIImagePNGRepresentation(image)!
+                let data: Data = UIImagePNGRepresentation(image)!
                 let thumbnail: File = File(name: "salada_test.png", data: data)
                 thumbnail.data = data
                 user.thumbnail = thumbnail
@@ -48,12 +48,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.name = "john appleseed"
                 user.gender = "man"
                 user.age = 22
-                user.url = NSURL(string: "https://www.google.co.jp/")
+                user.url = URL(string: "https://www.google.co.jp/")
                 user.items = ["Book", "Pen"]
                 user.groups.insert(ref.key)
                 user.location = CLLocation(latitude: 1, longitude: 1)
                 user.type = .second
-                user.birth = NSDate()
+                user.birth = Date()
                 user.save({ (error, ref) in
 //                    user.name = "Iron Man"
 //                    group.users.insert(ref.key)
@@ -69,7 +69,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             do {
                 let user: User = User()
                 let image: UIImage = UIImage(named: "Salada")!
-                let data: NSData = UIImagePNGRepresentation(image)!
+                let data: Data = UIImagePNGRepresentation(image)!
                 let thumbnail: File = File(name: "salada_test.png", data: data)
                 thumbnail.data = data
                 user.thumbnail = thumbnail
@@ -77,12 +77,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.name = "john appleseed"
                 user.gender = "man"
                 user.age = 22
-                user.url = NSURL(string: "https://www.google.co.jp/")
+                user.url = URL(string: "https://www.google.co.jp/")
                 user.items = ["Book", "Pen"]
                 user.groups.insert(ref.key)
                 user.location = CLLocation(latitude: 1, longitude: 1)
                 user.type = .second
-                user.birth = NSDate()
+                user.birth = Date()
                 user.save({ (error, ref) in
                     user.name = "Iron Man"
                     group.users.insert(ref.key)
@@ -153,9 +153,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let modifications: [Int] = change.modifications
             
             tableView.beginUpdates()
-            tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-            tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-            tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
+            tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
             tableView.endUpdates()
             
         })
@@ -169,18 +169,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.datasource?.count ?? 0
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
         configure(cell, atIndexPath: indexPath)
         return cell
     }
     
-    func configure(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
-        guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
+    func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
+        guard let user: User = self.datasource?.objectAtIndex((indexPath as NSIndexPath).item) else { return }
         user.thumbnail?.dataWithMaxSize(1 * 1000 * 1000, completion: { (data, error) in
             if let error: NSError = error {
                 print(error)
@@ -189,7 +189,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             cell.imageView?.image = UIImage(data: data!)
             cell.setNeedsLayout()
         })
-        cell.imageView?.contentMode = .ScaleAspectFill
+        cell.imageView?.contentMode = .scaleAspectFill
         cell.textLabel?.text = user.name
 //        print(user.tempName)
 //        print(user.thumbnail)
@@ -205,15 +205,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //        print(user.birth)
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let user: User = self.datasource?.objectAtIndex((indexPath as NSIndexPath).item) else { return }
         let viewConntroller: GroupViewController = GroupViewController()
         viewConntroller.userID = user.id
-        self.presentViewController(viewConntroller, animated: true, completion: nil)
+        self.present(viewConntroller, animated: true, completion: nil)
     }
     
-    func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        guard let user: User = self.datasource?.objectAtIndex(indexPath.item) else { return }
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let user: User = self.datasource?.objectAtIndex((indexPath as NSIndexPath).item) else { return }
         //user.thumbnail?.downloadTask?.cancel()
     }
     

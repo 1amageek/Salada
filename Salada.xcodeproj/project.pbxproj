@@ -10,7 +10,6 @@
 		0D7EE46696AB12D55577F63B /* Pods_SaladaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */; };
 		1200530D1D7823F700E557AA /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1200530C1D7823F700E557AA /* GroupViewController.swift */; };
 		1223153B1D645A7A003864BD /* Salada.h in Headers */ = {isa = PBXBuildFile; fileRef = 1223153A1D645A7A003864BD /* Salada.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		122315451D645AA0003864BD /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
 		1223156C1D645B73003864BD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1223156A1D645B73003864BD /* Main.storyboard */; };
 		1223156E1D645B73003864BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1223156D1D645B73003864BD /* Assets.xcassets */; };
 		122315711D645B73003864BD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1223156F1D645B73003864BD /* LaunchScreen.storyboard */; };
@@ -21,9 +20,9 @@
 		122315871D645E2F003864BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 122315861D645E2F003864BD /* GoogleService-Info.plist */; };
 		1242009E1D658E4F004B87B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 122315861D645E2F003864BD /* GoogleService-Info.plist */; };
 		1242009F1D658ECB004B87B1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 129DF2781D654A1F00AD8148 /* Info.plist */; };
-		129DF26F1D64881200AD8148 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
+		128C829B1D855B4E001321B9 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 128C829A1D855B4E001321B9 /* Salada.swift */; };
+		128C829C1D855B4E001321B9 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 128C829A1D855B4E001321B9 /* Salada.swift */; };
 		129DF2771D654A1F00AD8148 /* SaladaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129DF2761D654A1F00AD8148 /* SaladaTests.swift */; };
-		129DF2811D654EAE00AD8148 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315051D618E11003864BD /* Salada.swift */; };
 		129DF2831D65511900AD8148 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129DF2821D65511900AD8148 /* TestModel.swift */; };
 		3A727F340C83AD670D531A0A /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; };
 		F13412DBB83C9E6904D8D9B3 /* Pods_Sample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D5576D8CC9B13C671F0A5B3 /* Pods_Sample.framework */; };
@@ -48,7 +47,6 @@
 
 /* Begin PBXFileReference section */
 		1200530C1D7823F700E557AA /* GroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
-		122315051D618E11003864BD /* Salada.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Salada.swift; sourceTree = "<group>"; };
 		1223150D1D631C02003864BD /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MyPlayground.playground; path = ../Salada/MyPlayground.playground; sourceTree = "<group>"; };
 		122315381D645A7A003864BD /* Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1223153A1D645A7A003864BD /* Salada.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Salada.h; sourceTree = "<group>"; };
@@ -63,6 +61,7 @@
 		122315821D645E22003864BD /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		122315831D645E22003864BD /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		122315861D645E2F003864BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		128C829A1D855B4E001321B9 /* Salada.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Salada.swift; sourceTree = "<group>"; };
 		129DF2741D654A1F00AD8148 /* SaladaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaladaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		129DF2761D654A1F00AD8148 /* SaladaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaladaTests.swift; sourceTree = "<group>"; };
 		129DF2781D654A1F00AD8148 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -132,7 +131,7 @@
 		122314F01D618B22003864BD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				122315051D618E11003864BD /* Salada.swift */,
+				128C829A1D855B4E001321B9 /* Salada.swift */,
 			);
 			name = Sources;
 			path = Salada;
@@ -286,9 +285,11 @@
 				TargetAttributes = {
 					122315371D645A7A003864BD = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 					122315631D645B73003864BD = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 88ACA86N96;
 						LastSwiftMigration = 0800;
 					};
 					129DF2731D654A1F00AD8148 = {
@@ -474,7 +475,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				122315451D645AA0003864BD /* Salada.swift in Sources */,
+				128C829B1D855B4E001321B9 /* Salada.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,11 +484,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				1200530D1D7823F700E557AA /* GroupViewController.swift in Sources */,
-				129DF26F1D64881200AD8148 /* Salada.swift in Sources */,
 				122315801D645E11003864BD /* AppDelegate.swift in Sources */,
 				122315811D645E11003864BD /* ViewController.swift in Sources */,
 				122315851D645E22003864BD /* User.swift in Sources */,
 				122315841D645E22003864BD /* Group.swift in Sources */,
+				128C829C1D855B4E001321B9 /* Salada.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -496,7 +497,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				129DF2771D654A1F00AD8148 /* SaladaTests.swift in Sources */,
-				129DF2811D654EAE00AD8148 /* Salada.swift in Sources */,
 				129DF2831D65511900AD8148 /* TestModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -623,6 +623,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CACFF8A827AF5750D7560F54 /* Pods-Salada.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -634,6 +635,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Salada;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -644,6 +647,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B527BBE07E11D96C847178F4 /* Pods-Salada.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -655,6 +659,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Salada;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -666,6 +671,7 @@
 			baseConfigurationReference = A6747FD1E1E343A1E7091EB3 /* Pods-Sample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 88ACA86N96;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -674,7 +680,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -683,6 +689,7 @@
 			baseConfigurationReference = 5981409A572993E67CFF83AB /* Pods-Sample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 88ACA86N96;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -691,7 +698,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -699,6 +706,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5C21CD4DC65FAE7AFB891C9A /* Pods-SaladaTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = SaladaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.SaladaTests;
@@ -710,6 +718,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 75D049275275D7639E7CADB5 /* Pods-SaladaTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = SaladaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.SaladaTests;
