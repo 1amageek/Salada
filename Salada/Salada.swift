@@ -621,7 +621,7 @@ extension Salada {
         salada.addedHandle = salada.databaseRef?.observe(.childAdded, with: { [weak salada](snapshot) in
             
             guard let salada = salada else { return }
-            guard let key: String = snapshot.key else { return }
+            let key: String = snapshot.key
             
             T.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
                 if snapshot.exists() {
@@ -641,7 +641,7 @@ extension Salada {
         salada.changedHandle = salada.databaseRef?.observe(.childChanged, with: { [weak salada](snapshot) in
             
             guard let salada = salada else { return }
-            guard let key: String = snapshot.key else { return }
+            let key: String = snapshot.key
             
             T.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
                 if snapshot.exists() {
@@ -658,7 +658,7 @@ extension Salada {
         salada.removedHandle = salada.databaseRef?.observe(.childRemoved, with: { [weak salada](snapshot) in
             
             guard let salada = salada else { return }
-            guard let key: String = snapshot.key else { return }
+            let key: String = snapshot.key
             
             if let index: Int = salada.indexOfKey(key) {
                 salada.bowl.remove(at: index)
