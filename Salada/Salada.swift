@@ -524,7 +524,7 @@ public typealias SaladaChange = (deletions: [Int], insertions: [Int], modificati
 
 /// Datasource class.
 /// Observe at a Firebase Database location.
-open class Salada<T: Ingredient>: NSObject where T: IngredientType, T: Tasting {
+open class Salada<T>: NSObject where T: IngredientType, T: Tasting {
     
     /// DatabaseReference
     open var databaseRef: FIRDatabaseReference?
@@ -612,7 +612,7 @@ open class Salada<T: Ingredient>: NSObject where T: IngredientType, T: Tasting {
     
 }
 
-extension Salada {
+extension Salada where T.Tsp == T {
     
     public class func observe(with reference: FIRDatabaseReference, block: @escaping (SaladaChange) -> Void) -> Salada<T> {
         
@@ -685,7 +685,7 @@ extension Collection where Iterator.Element == String {
     }
 }
 
-extension Sequence where Iterator.Element : AnyObject {
+extension Sequence where Iterator.Element: Any {
     /// Return an `Array` containing the sorted elements of `source`
     /// using criteria stored in a NSSortDescriptors array.
     
