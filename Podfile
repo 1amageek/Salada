@@ -8,11 +8,10 @@ use_frameworks!
 target 'Salada' do
 pod 'Firebase'
 pod 'Firebase/Database'
-pod 'Firebase/Database'
 pod 'Firebase/Storage'
 end
 
-target 'Sample' do
+target 'SaladBar' do
 pod 'Firebase'
 pod 'Firebase/Database'
 pod 'Firebase/Storage'
