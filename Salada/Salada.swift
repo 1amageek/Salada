@@ -162,7 +162,7 @@ open class Ingredient: NSObject, IngredientType, Tasting {
                                 return
                             }
                             let mirror: Mirror = Mirror(reflecting: value)
-                            guard let subjectType: Any.Type = mirror.subjectType else { return }
+                            let subjectType: Any.Type = mirror.subjectType
                             if subjectType == URL?.self || subjectType == URL.self {
                                 if let value: String = snapshot[key] as? String, let url: URL = URL(string: value) {
                                     self.setValue(url, forKey: key)
@@ -283,36 +283,43 @@ open class Ingredient: NSObject, IngredientType, Tasting {
                 ref = type(of: self).databaseRef.childByAutoId()
             }
             
-            ref.setValue(value, withCompletionBlock: { (error, ref) in
-                if let error: NSError = error as NSError? { print(error) }
-                type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
-                    self.snapshot = snapshot
+            ref.runTransactionBlock({ (data) -> FIRTransactionResult in
+                
+                data.value = value
+                return .success(withValue: data)
+                
+                }, andCompletionBlock: { (error, committed, snapshot) in
                     
-                    // File save
-                    Mirror(reflecting: self).children.forEach({ (key, value) in
-                        if let key: String = key {
-                            if !self.ignore.contains(key) {
-                                let mirror: Mirror = Mirror(reflecting: value)
-                                guard let subjectType: Any.Type = mirror.subjectType else { return }
-                                if subjectType == File?.self || subjectType == File.self {
-                                    if let file: File = value as? File {
-                                        _ = file.save(key)
+                    type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
+                        self.snapshot = snapshot
+                        
+                        // File save
+                        Mirror(reflecting: self).children.forEach({ (key, value) in
+                            if let key: String = key {
+                                if !self.ignore.contains(key) {
+                                    let mirror: Mirror = Mirror(reflecting: value)
+                                    let subjectType: Any.Type = mirror.subjectType
+                                    if subjectType == File?.self || subjectType == File.self {
+                                        if let file: File = value as? File {
+                                            _ = file.save(key)
+                                        }
                                     }
                                 }
                             }
-                        }
+                        })
+                        
+                        completion?(error as NSError?, ref)
                     })
                     
-                    completion?(error as NSError?, ref)
-                })
-            })
+                }, withLocalEvents: false)
+            
         }
     }
     
     // MARK: - Delete
     
     open func remove() {
-        guard let id: String = self.id else { return }
+        let id: String = self.id
         type(of: self).databaseRef.child(id).removeValue()
     }
     

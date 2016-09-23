@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Salada.xcscheme_^#shared#^_</key>
+		<key>SaladBar.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -13,11 +13,6 @@
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
-		<key>Sample.xcscheme</key>
-		<dict>
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
@@ -60,6 +55,21 @@
 			<true/>
 		</dict>
 		<key>129DF2731D654A1F00AD8148</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>12CB1A561D95184300E69000</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>12CB1A691D95184300E69000</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>12CB1A741D95184300E69000</key>
 		<dict>
 			<key>primary</key>
 			<true/>
