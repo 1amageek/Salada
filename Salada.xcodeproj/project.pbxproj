@@ -16,8 +16,6 @@
 		12CB1A5F1D95184300E69000 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A5D1D95184300E69000 /* Main.storyboard */; };
 		12CB1A611D95184300E69000 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A601D95184300E69000 /* Assets.xcassets */; };
 		12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A621D95184300E69000 /* LaunchScreen.storyboard */; };
-		12CB1A6F1D95184300E69000 /* SaladBarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CB1A6E1D95184300E69000 /* SaladBarTests.swift */; };
-		12CB1A7A1D95184300E69000 /* SaladBarUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CB1A791D95184300E69000 /* SaladBarUITests.swift */; };
 		12CB1A851D95187A00E69000 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315831D645E22003864BD /* User.swift */; };
 		12CB1A861D95187E00E69000 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122315821D645E22003864BD /* Group.swift */; };
 		12CB1A871D95189400E69000 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 122315861D645E2F003864BD /* GoogleService-Info.plist */; };
@@ -55,6 +53,7 @@
 		122315821D645E22003864BD /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Group.swift; path = ../Sample/Group.swift; sourceTree = "<group>"; };
 		122315831D645E22003864BD /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = ../Sample/User.swift; sourceTree = "<group>"; };
 		122315861D645E2F003864BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../Sample/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		12454D541D98E6E100FF6027 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		128C829A1D855B4E001321B9 /* Salada.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Salada.swift; sourceTree = "<group>"; };
 		129DF2741D654A1F00AD8148 /* SaladaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaladaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		129DF2761D654A1F00AD8148 /* SaladaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaladaTests.swift; sourceTree = "<group>"; };
@@ -68,11 +67,7 @@
 		12CB1A631D95184300E69000 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		12CB1A651D95184300E69000 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12CB1A6A1D95184300E69000 /* SaladBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaladBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		12CB1A6E1D95184300E69000 /* SaladBarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaladBarTests.swift; sourceTree = "<group>"; };
-		12CB1A701D95184300E69000 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12CB1A751D95184300E69000 /* SaladBarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaladBarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		12CB1A791D95184300E69000 /* SaladBarUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaladBarUITests.swift; sourceTree = "<group>"; };
-		12CB1A7B1D95184300E69000 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D5576D8CC9B13C671F0A5B3 /* Pods_Sample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,8 +127,6 @@
 			children = (
 				122315391D645A7A003864BD /* Salada */,
 				12CB1A581D95184300E69000 /* SaladBar */,
-				12CB1A6D1D95184300E69000 /* SaladBarTests */,
-				12CB1A781D95184300E69000 /* SaladBarUITests */,
 				122314EF1D618B22003864BD /* Products */,
 				129DF2751D654A1F00AD8148 /* SaladaTests */,
 				F3116AD0B5DBD472DD5E7AA8 /* Pods */,
@@ -157,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				128C829A1D855B4E001321B9 /* Salada.swift */,
+				12454D541D98E6E100FF6027 /* MyPlayground.playground */,
 			);
 			path = Salada;
 			sourceTree = "<group>";
@@ -185,24 +179,6 @@
 				12CB1A651D95184300E69000 /* Info.plist */,
 			);
 			path = SaladBar;
-			sourceTree = "<group>";
-		};
-		12CB1A6D1D95184300E69000 /* SaladBarTests */ = {
-			isa = PBXGroup;
-			children = (
-				12CB1A6E1D95184300E69000 /* SaladBarTests.swift */,
-				12CB1A701D95184300E69000 /* Info.plist */,
-			);
-			path = SaladBarTests;
-			sourceTree = "<group>";
-		};
-		12CB1A781D95184300E69000 /* SaladBarUITests */ = {
-			isa = PBXGroup;
-			children = (
-				12CB1A791D95184300E69000 /* SaladBarUITests.swift */,
-				12CB1A7B1D95184300E69000 /* Info.plist */,
-			);
-			path = SaladBarUITests;
 			sourceTree = "<group>";
 		};
 		8110B8D679C43AD435231EAB /* Frameworks */ = {
@@ -358,15 +334,18 @@
 					};
 					12CB1A561D95184300E69000 = {
 						CreatedOnToolsVersion = 8.0;
+						LastSwiftMigration = 0810;
 						ProvisioningStyle = Automatic;
 					};
 					12CB1A691D95184300E69000 = {
 						CreatedOnToolsVersion = 8.0;
+						LastSwiftMigration = 0810;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 12CB1A561D95184300E69000;
 					};
 					12CB1A741D95184300E69000 = {
 						CreatedOnToolsVersion = 8.0;
+						LastSwiftMigration = 0810;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 12CB1A561D95184300E69000;
 					};
@@ -593,7 +572,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12CB1A6F1D95184300E69000 /* SaladBarTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,7 +579,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12CB1A7A1D95184300E69000 /* SaladBarUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
