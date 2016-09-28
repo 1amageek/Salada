@@ -1,83 +1,87 @@
 //: Playground - noun: a place where people can play
 
-import Foundation
+import UIKit
 
-protocol IngredientType {
-    var id: String? { get }
-    var createdAt: NSDate { get }
-    init(value: [String: AnyObject])
+protocol Referenceable {
+    static var database: Any { get }
+    static var databaseRef: Any { get }
+    static var storage: Any { get }
+    static var storageRef: Any { get }
+    static var path: String { get }
+    init()
 }
 
 protocol Tasting {
-    associatedtype Tsp: Ingredient
+    associatedtype Tsp: Referenceable
+    static func a() -> Tsp
+    static func observe(_ eventType: Any, block: @escaping ([Tsp]) -> Void) -> UInt
 }
 
-extension Tasting where Self.Tsp: IngredientType, Self.Tsp == Self {
-    static func observe() -> Tsp {
-        let tsp: Tsp = Tsp(value: [:])
-        return tsp
+extension Tasting where Tsp == Self, Tsp: Referenceable {
+
+    static func observe(_ eventType: Any, block: @escaping ([Tsp]) -> Void) -> UInt {
+        let tsp: Tsp = Tsp()
+        block([tsp])
+        return 1
     }
+    
+    static func a() -> Tsp {
+        return Tsp()
+    }
+    
 }
 
-class Ingredient: NSObject, IngredientType, Tasting {
+class Ingredient: Referenceable, Tasting {
     
     typealias Tsp = Ingredient
     
-    var id: String? { return "123" }
-    
-    var createdAt: NSDate
-    
-    private var hasObserve: Bool = false
-    
-    private let ignore: [String] = ["snapshot", "hasObserve", "ignore"]
-    
-    override init() {
-        self.createdAt = NSDate()
+    static var database: Any { return [] }
+    static var databaseRef: Any { return [] }
+    static var storage: Any { return [] }
+    static var storageRef: Any { return [] }
+    static var path: String { return "" }
+
+    required init() {
+        
     }
     
-    convenience required init(value: [String: AnyObject]) {
-        self.init()
-        self.hasObserve = true
-        Mirror(reflecting: self).children.forEach { (key, _) in
-            print(key)
-            if let key: String = key {
-                if !self.ignore.contains(key) {
-                    self.addObserver(self, forKeyPath: key, options: [.New], context: nil)
-                    if let value: AnyObject = value[key] {
-                        self.setValue(value, forKey: key)
-                    }
-                }
-            }
-        }
-    }
 }
 
 class User: Ingredient {
     typealias Tsp = User
-    var name: String?
+    var name: String = "223232"
 }
 
 
-let user: User = User.observe()
+class Salada<T> where T: Referenceable, T: Tasting {
+    
+}
 
-class Salada<T: Ingredient>: NSObject {
-    class func func1() -> T {
-        return T(value: [:])
+extension Salada where T == T.Tsp {
+    func object(at index: Int, block: @escaping (T.Tsp) -> Void) {
+        T.observe("") { (t) in
+            print(t)
+            block(t.first!)
+        }
+    }
+    
+    func objectAt() -> T? {
+        let a: T = T()
+        let b: T.Tsp = T.Tsp()
+        let c: T = T.a()
+        return T.a()
+    }
+    
+    func objec() -> T.Tsp {
+        return T.Tsp()
     }
 }
 
-protocol Saladable: class {
-    associatedtype W: Ingredient
-}
 
-extension Saladable where Self.W: Ingredient {
-    
-    
-    
-    func func2() -> W {
-        return W(value: [:])
-    }
-}
-
-
+let s: Salada<User> = Salada()
+s.objec()
+s.objectAt()
+//s.object(at: 0) { (user) in
+//    print(user.name)
+//}
 
