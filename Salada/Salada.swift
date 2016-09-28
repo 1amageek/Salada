@@ -404,6 +404,8 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     // Value will be deleted if the nil.
     private func updateValue(_ keyPath: String, child: String?, value: Any?) {
         
+        print(keyPath, child, value)
+        
         let reference: FIRDatabaseReference = type(of: self).databaseRef.child(self.id)
         let timestamp: AnyObject = FIRServerValue.timestamp() as AnyObject
         
@@ -588,10 +590,19 @@ public struct SaladaObject {
 
 /// Datasource class.
 /// Observe at a Firebase Database location.
-open class Salada<T> where T: Referenceable, T: Tasting {
+open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, Child: Referenceable, Child: Tasting {
     
     /// DatabaseReference
-    open var databaseRef: FIRDatabaseReference?
+    
+    var databaseRef: FIRDatabaseReference { return FIRDatabase.database().reference() }
+    
+    open var parentRef: FIRDatabaseReference
+    
+    open var reference: FIRDatabaseReference
+    
+    open var parentKey: String
+    
+    open var referenceKey: String
     
     open var count: Int { return pool.count }
     
@@ -601,13 +612,13 @@ open class Salada<T> where T: Referenceable, T: Tasting {
     
     deinit {
         if let handle: UInt = self.addedHandle {
-            self.databaseRef?.removeObserver(withHandle: handle)
+            self.reference.removeObserver(withHandle: handle)
         }
         if let handle: UInt = self.changedHandle {
-            self.databaseRef?.removeObserver(withHandle: handle)
+            self.reference.removeObserver(withHandle: handle)
         }
         if let handle: UInt = self.removedHandle {
-            self.databaseRef?.removeObserver(withHandle: handle)
+            self.reference.removeObserver(withHandle: handle)
         }
     }
     
@@ -619,13 +630,19 @@ open class Salada<T> where T: Referenceable, T: Tasting {
     
     private var changedBlock: (SaladaCollectionChange) -> Void
     
-    public init(with reference: FIRDatabaseReference, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
+    public init(with parentKey: String, referenceKey: String, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
         
         if let options: SaladaOptions = options {
             limit = options.limit
         }
         
-        self.databaseRef = reference
+        self.parentKey = parentKey
+        
+        self.referenceKey = referenceKey
+        
+        self.parentRef = Parent.databaseRef.child(parentKey)
+        
+        self.reference = self.parentRef.child(referenceKey)
         
         self.changedBlock = block
         
@@ -634,7 +651,7 @@ open class Salada<T> where T: Referenceable, T: Tasting {
             block(SaladaCollectionChange.fromObject(change: nil, error: error))
         
             // add
-            self.addedHandle = reference.queryStarting(atValue: self.pool.last).observe(.childAdded, with: { (snapshot) in
+            self.addedHandle = self.reference.queryStarting(atValue: self.pool.last).observe(.childAdded, with: { (snapshot) in
                 objc_sync_enter(self)
                 self.pool.append(snapshot.key)
                 if let i: Int = self.pool.index(of: snapshot.key) {
@@ -646,7 +663,7 @@ open class Salada<T> where T: Referenceable, T: Tasting {
             })
             
             // change
-            self.changedHandle = reference.observe(.childChanged, with: { (snapshot) in
+            self.changedHandle = self.reference.observe(.childChanged, with: { (snapshot) in
                 if let i: Int = self.pool.index(of: snapshot.key) {
                     block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                 }
@@ -655,9 +672,10 @@ open class Salada<T> where T: Referenceable, T: Tasting {
             })
             
             // remove
-            self.removedHandle = reference.observe(.childRemoved, with: { (snapshot) in
+            self.removedHandle = self.reference.observe(.childRemoved, with: { (snapshot) in
                 objc_sync_enter(self)
                 if let i: Int = self.pool.index(of: snapshot.key) {
+                    self.removeObserver(at: i)
                     self.pool.remove(at: i)
                     block(SaladaCollectionChange.fromObject(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
@@ -667,7 +685,7 @@ open class Salada<T> where T: Referenceable, T: Tasting {
             })
             
         }
-        
+    
     }
     
     var isFirst: Bool = false
@@ -686,7 +704,7 @@ open class Salada<T> where T: Referenceable, T: Tasting {
             return
         }
         
-        var reference: FIRDatabaseQuery = self.databaseRef!.queryOrderedByKey()
+        var reference: FIRDatabaseQuery = self.reference.queryOrderedByKey()
         var limit: UInt = limit
         if let lastKey: String = lastKey as! String? {
             reference = reference.queryEnding(atValue: lastKey)
@@ -710,29 +728,64 @@ open class Salada<T> where T: Referenceable, T: Tasting {
             }
             objc_sync_exit(self)
             block?((deletions: [], insertions: changes, modifications: []), nil)
-        }) { (error) in
-            
+        }) { (error) in            
             block?(nil, error)
-            
+        }
+    }
+    
+    public func removeObject(at index: Int, block: @escaping (Error?) -> Void) {
+        let key: String = self.pool[index]
+        
+        let parentPath: AnyHashable = "/\(Parent.path)/\(parentKey)/\(self.reference.key)/\(key)"
+        let childPath: AnyHashable = "/\(Child.path)/\(key)"
+        
+        self.databaseRef.updateChildValues([parentPath : NSNull(), childPath: NSNull()]) { (error, ref) in
+            if let error: Error = error {
+                block(error)
+                return
+            }
+            block(nil)
+        }
+    }
+    
+    public func removeObserver(at index: Int) {
+        if index < self.pool.count {
+            let key: String = self.pool[index]
+            Child.databaseRef.child(key).removeAllObservers()
         }
     }
     
 }
 
 
-extension Salada where T.Tsp == T {
+extension Salada where Child.Tsp == Child {
         
-    public func object(at index: Int, block: @escaping (T.Tsp?) -> Void) {
+    public func object(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
         let key: String = self.pool[index]
-        T.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
+        Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
             if snapshot.exists() {
-                if let tsp: T.Tsp = T.Tsp(snapshot: snapshot) {
+                if let tsp: Child.Tsp = Child.Tsp(snapshot: snapshot) {
                     block(tsp)
                 }
             } else {
                 block(nil)
             }
         })
+    }
+    
+    public func observeObject(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
+        let key: String = self.pool[index]
+        Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
+            if snapshot.exists() {
+                if let tsp: Child.Tsp = Child.Tsp(snapshot: snapshot) {
+                    block(tsp)
+                }
+            } else {
+                block(nil)
+            }
+        }) { (error) in
+            block(nil)
+        }
     }
     
 }
