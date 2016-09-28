@@ -239,46 +239,72 @@ user.thumbnail?.dataWithMaxSize(1 * 2000 * 2000, completion: { (data, error) in
 
 # Salada datasource
 
+see SaladBar
+
 For example 
 
 ``` Swift
 // in ViewController property
-var salada: Salada<User>?
+var datasource: Salada<Group, User>?
 ```
 
 ``` Swift
 // in viewDidLoad
-self.salada = Salada.observe({ [weak self](change) in
-    
+let options: SaladaOptions = SaladaOptions()
+options.limit = 10
+
+self.datasource = Salada(with: ref.key, referenceKey: "users", options: options, block: { [weak self](changes) in
     guard let tableView: UITableView = self?.tableView else { return }
     
-    let deletions: [Int] = change.deletions
-    let insertions: [Int] = change.insertions
-    let modifications: [Int] = change.modifications
-    
-    tableView.beginUpdates()
-    tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-    tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-    tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) }, withRowAnimation: .Automatic)
-    tableView.endUpdates()
-    
+    switch changes {
+    case .initial:
+        tableView.reloadData()
+    case .update(let deletions, let insertions, let modifications):
+        tableView.beginUpdates()
+        tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+        tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+        tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+        tableView.endUpdates()
+    case .error(let error):
+        print(error)
+    }
 })
 ```
 
 ``` Swift
 // TableViewDatasource
 func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.salada?.count ?? 0
+    return self.datasource?.count ?? 0
 }
     
-func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath)
+func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
     configure(cell, atIndexPath: indexPath)
     return cell
 }
-    
-func configure(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
-    guard let user: User = self.salada?.objectAtIndex(indexPath.item) else { return }
-    cell.textLabel?.text = user.name
+
+func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
+    self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+        cell.imageView?.contentMode = .scaleAspectFill
+        cell.textLabel?.text = user?.name
+    })
+}
+
+func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    self.datasource?.removeObserver(at: indexPath.item)
+}
+
+func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
+    return true
+}
+
+func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    if editingStyle == .delete {
+        self.datasource?.removeObject(at: indexPath.item, block: { (error) in
+            if let error: Error = error {
+                print(error)
+            }
+        })
+    }
 }
 ```
