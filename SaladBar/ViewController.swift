@@ -60,7 +60,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return view
     }()
     
-    var datasource: Salada<User>?
+    var datasource: Salada<Group, User>?
     
     override func loadView() {
         super.loadView()
@@ -77,7 +77,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             self.groupID = ref.key
             
-            do {
+            (0..<5).forEach({ (index) in
                 let user: User = User()
                 let image: UIImage = UIImage(named: "salada")!
                 let data: Data = UIImagePNGRepresentation(image)!
@@ -85,9 +85,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 thumbnail.data = data
                 user.thumbnail = thumbnail
                 user.tempName = "Test1_name"
-                user.name = "Super man"
+                user.name = "\(index)"
                 user.gender = "man"
-                user.age = 22
+                user.age = index
                 user.url = URL(string: "https://www.google.co.jp/")
                 user.items = ["Book", "Pen"]
                 user.groups.insert(ref.key)
@@ -95,39 +95,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.type = .second
                 user.birth = Date()
                 user.save({ (error, ref) in
-                    group.users.insert(ref.key)                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        user.name = "Iron Man"
-                    }
-                    
-                    //                    let image: UIImage = UIImage(named: "Salada1")!
-                    //                    let data: NSData = UIImageJPEGRepresentation(image, 1)!
-                    //                    let thumbnail: File = File(name: "salada_test1.jpg", data: data)
-                    //                    user.thumbnail = thumbnail
-                    
-                })
-            }
-
-            do {
-                let user: User = User()
-                let image: UIImage = UIImage(named: "salada")!
-                let data: Data = UIImagePNGRepresentation(image)!
-                let thumbnail: File = File(name: "salada.png", data: data)
-                thumbnail.data = data
-                user.thumbnail = thumbnail
-                user.tempName = "Test1_name"
-                user.name = "john appleseed"
-                user.gender = "man"
-                user.age = 22
-                user.url = URL(string: "https://www.google.co.jp/")
-                user.items = ["Book", "Pen"]
-                user.groups.insert(ref.key)
-                user.location = CLLocation(latitude: 1, longitude: 1)
-                user.type = .second
-                user.birth = Date()
-                user.save({ (error, ref) in
-                    //user.name = "Iron Man"
                     group.users.insert(ref.key)
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                        user.name = "Iron Man"
+//                    }
                     
                     //                    let image: UIImage = UIImage(named: "Salada1")!
                     //                    let data: NSData = UIImageJPEGRepresentation(image, 1)!
@@ -135,7 +106,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     //                    user.thumbnail = thumbnail
                     
                 })
-            }
+            })
             
             do {
                 
@@ -144,7 +115,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //                options.sortDescriptors = [sortDescriptor]
                 options.limit = 10
                 
-                self.datasource = Salada<User>(with: Group.databaseRef.child(ref.key).child("users"), options: options, block: { [weak self](changes) in
+                self.datasource = Salada(with: ref.key, referenceKey: "users", options: options, block: { [weak self](changes) in
                     guard let tableView: UITableView = self?.tableView else { return }
                     
                     switch changes {
@@ -159,13 +130,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     case .error(let error):
                         print(error)
                     }
-                    
                 })
                 
             }
-            
         }
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -185,31 +153,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
-        self.datasource?.object(at: indexPath.item, block: { (user) in
-//            user.thumbnail?.dataWithMaxSize(1 * 1000 * 1000, completion: { (data, error) in
-//                if let error: NSError = error {
-//                    print(error)
-//                    return
-//                }
-//                cell.imageView?.image = UIImage(data: data!)
-//                cell.setNeedsLayout()
-//            })
+        self.datasource?.observeObject(at: indexPath.item, block: { (user) in
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
         })
-        
-        //        print(user.tempName)
-        //        print(user.thumbnail)
-        //        print(user.tempName)
-        //        print(user.name)
-        //        print(user.gender)
-        //        print(user.age)
-        //        print(user.url)
-        //        print(user.items)
-        //        print(user.groups)
-        //        print(user.location)
-        //        print(user.type)
-        //        print(user.birth)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -220,9 +167,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        self.datasource?.object(at: indexPath.item, block: { (user) in
-            
-        })
+        self.datasource?.removeObserver(at: indexPath.item)
     }
     
+    func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            self.datasource?.removeObject(at: indexPath.item, block: { (error) in
+                if let error: Error = error {
+                    print(error)
+                }
+            })
+        }
+    }
 }
