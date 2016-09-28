@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0730"
+   LastUpgradeVersion = "0800"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "122315371D645A7A003864BD"
-               BuildableName = "Salada.framework"
-               BlueprintName = "Salada"
+               BlueprintIdentifier = "12CB1A561D95184300E69000"
+               BuildableName = "SaladBar.app"
+               BlueprintName = "SaladBar"
                ReferencedContainer = "container:Salada.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,7 +28,36 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "12CB1A691D95184300E69000"
+               BuildableName = "SaladBarTests.xctest"
+               BlueprintName = "SaladBarTests"
+               ReferencedContainer = "container:Salada.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "12CB1A741D95184300E69000"
+               BuildableName = "SaladBarUITests.xctest"
+               BlueprintName = "SaladBarUITests"
+               ReferencedContainer = "container:Salada.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "12CB1A561D95184300E69000"
+            BuildableName = "SaladBar.app"
+            BlueprintName = "SaladBar"
+            ReferencedContainer = "container:Salada.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -42,15 +71,23 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "122315371D645A7A003864BD"
-            BuildableName = "Salada.framework"
-            BlueprintName = "Salada"
+            BlueprintIdentifier = "12CB1A561D95184300E69000"
+            BuildableName = "SaladBar.app"
+            BlueprintName = "SaladBar"
             ReferencedContainer = "container:Salada.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "OS_ACTIVITY_MODE"
+            value = "disable"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -60,15 +97,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "122315371D645A7A003864BD"
-            BuildableName = "Salada.framework"
-            BlueprintName = "Salada"
+            BlueprintIdentifier = "12CB1A561D95184300E69000"
+            BuildableName = "SaladBar.app"
+            BlueprintName = "SaladBar"
             ReferencedContainer = "container:Salada.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
