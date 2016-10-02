@@ -96,14 +96,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.birth = Date()
                 user.save({ (error, ref) in
                     group.users.insert(ref.key)
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                        user.name = "Iron Man"
-//                    }
-                    
-                    //                    let image: UIImage = UIImage(named: "Salada1")!
-                    //                    let data: NSData = UIImageJPEGRepresentation(image, 1)!
-                    //                    let thumbnail: File = File(name: "salada_test1.jpg", data: data)
-                    //                    user.thumbnail = thumbnail
                     
                 })
             })
@@ -115,7 +107,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //                options.sortDescriptors = [sortDescriptor]
                 options.limit = 10
                 
-                self.datasource = Salada(with: ref.key, referenceKey: "users", options: options, block: { [weak self](changes) in
+                self.datasource = Salada(parentKey: ref.key, referenceKey: "users", options: options, block: { [weak self](changes) in
                     guard let tableView: UITableView = self?.tableView else { return }
                     
                     switch changes {
@@ -176,7 +168,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.datasource?.removeObject(at: indexPath.item, block: { (error) in
+            self.datasource?.removeObject(at: indexPath.item, cascade: true, block: { (error) in
                 if let error: Error = error {
                     print(error)
                 }
