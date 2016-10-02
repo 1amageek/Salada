@@ -630,7 +630,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     
     private var changedBlock: (SaladaCollectionChange) -> Void
     
-    public init(with parentKey: String, referenceKey: String, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
+    public init(parentKey: String, referenceKey: String, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
         
         if let options: SaladaOptions = options {
             limit = options.limit
@@ -733,19 +733,30 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         }
     }
     
-    public func removeObject(at index: Int, block: @escaping (Error?) -> Void) {
+    public func removeObject(at index: Int, cascade: Bool, block: @escaping (Error?) -> Void) {
         let key: String = self.pool[index]
         
-        let parentPath: AnyHashable = "/\(Parent.path)/\(parentKey)/\(self.reference.key)/\(key)"
-        let childPath: AnyHashable = "/\(Child.path)/\(key)"
-        
-        self.databaseRef.updateChildValues([parentPath : NSNull(), childPath: NSNull()]) { (error, ref) in
-            if let error: Error = error {
-                block(error)
-                return
+        if cascade {
+            let parentPath: AnyHashable = "/\(Parent.path)/\(parentKey)/\(self.reference.key)/\(key)"
+            let childPath: AnyHashable = "/\(Child.path)/\(key)"
+            
+            self.databaseRef.updateChildValues([parentPath : NSNull(), childPath: NSNull()]) { (error, ref) in
+                if let error: Error = error {
+                    block(error)
+                    return
+                }
+                block(nil)
             }
-            block(nil)
+        } else {
+            self.reference.child(key).removeValue(completionBlock: { (error, ref) in
+                if let error: Error = error {
+                    block(error)
+                    return
+                }
+                block(nil)
+            })
         }
+
     }
     
     public func removeObserver(at index: Int) {
