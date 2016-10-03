@@ -13,6 +13,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/1amageek/Salada.git", :tag => "#{s.version}" }
   s.source_files  = ["Salada/Salada.swift"]
   s.exclude_files = []
-  s.dependency  "Firebase"
+  s.dependency	= ["Firebase", "Firebase/Database", "Firebase/Storage"]
 
 end
