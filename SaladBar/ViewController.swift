@@ -88,12 +88,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.name = "\(index)"
                 user.gender = "man"
                 user.age = index
-                /*user.url = URL(string: "https://www.google.co.jp/")
+                user.url = URL(string: "https://www.google.co.jp/")
                 user.items = ["Book", "Pen"]
                 user.groups.insert(ref.key)
                 user.location = CLLocation(latitude: 1, longitude: 1)
                 user.type = .second
-                user.birth = Date()*/
+                user.birth = Date()
                 user.save({ (error, ref) in
                     group.users.insert(ref.key)
                     
@@ -148,6 +148,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.datasource?.observeObject(at: indexPath.item, block: { (user) in
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
+            
+            print(user?.name)
+            print(user?.age)
+            print(user?.birth)
+            print(user?.gender)
+            print(user?.url)
+            print(user?.items)
+            print(user?.location)
+            print(user?.type)
+            print(user?.groups)
+            print(user?.thumbnail)
+            
         })
     }
     
