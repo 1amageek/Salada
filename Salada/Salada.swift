@@ -21,7 +21,7 @@ public protocol Referenceable {
     var id: String { get }
     var snapshot: FIRDataSnapshot? { get }
     var createdAt: Date { get }
-    var value: [String: AnyObject] { get }
+    var value: [String: Any] { get }
     var ignore: [String] { get }
     
     init?(snapshot: FIRDataSnapshot)
@@ -110,6 +110,76 @@ open class Ingredient: NSObject, Referenceable, Tasting {
 
     public typealias Tsp = Ingredient
     
+    enum ValueType {
+        
+        case string(String, String)
+        case number(String, Double)
+        case date(String, TimeInterval, Date)
+        case url(String, URL)
+        case array(String, [Any])
+        case relation(String, [String: Bool], Set<String>)
+        case file(String, File)
+        case any(String, Any)
+        
+        static func from(key: String, value: Any) -> ValueType {
+            switch value.self {
+            case is String:         if let value: String        = value as? String      { return .string(key, value)  }
+            case is URL:            if let value: URL           = value as? URL         { return .url(key, value) }
+            case is Date:           if let value: Date          = value as? Date        { return .date(key, value.timeIntervalSince1970, value)}
+            case is Double:         if let value: Double        = value as? Double      { return .number(key, Double(value)) }
+            case is [String]:       if let value: [String]      = value as? [String]    , !value.isEmpty { return .array(key, value) }
+            case is Set<String>:    if let value: Set<String>   = value as? Set<String> , !value.isEmpty { return .relation(key, value.toKeys(), value) }
+            case is File:           if let value: File          = value as? File        { return .file(key, value) }
+            default:                if let value: Any           = value as Any?         { return .any(key, value) }
+            }
+            return .any(key, value)
+        }
+        
+        static func from(key: String, mirror: Mirror, with snapshot: [String: Any]) -> ValueType {
+            let subjectType: Any.Type = mirror.subjectType
+            if subjectType == String.self || subjectType == String?.self {
+                if let value: String = snapshot[key] as? String {
+                    return .string(key, value)
+                }
+            } else if subjectType == URL.self || subjectType == URL?.self {
+                if
+                    let value: String = snapshot[key] as? String,
+                    let url: URL = URL(string: value)  {
+                    return .url(key, url)
+                }
+            } else if subjectType == Date.self || subjectType == Date?.self {
+                if let value: Double = snapshot[key] as? Double {
+                    let date: Date = Date(timeIntervalSince1970: TimeInterval(value))
+                    return .date(key, value, date)
+                }
+            } else if subjectType == Double.self || subjectType == Double?.self || subjectType == Int.self || subjectType == Int?.self, subjectType == Float.self || subjectType == Float?.self {
+                if let value: Double = snapshot[key] as? Double {
+                    return .number(key, Double(value))
+                }
+            } else if subjectType == [String].self || subjectType == [String]?.self {
+                if let value: [String] = snapshot[key] as? [String] , !value.isEmpty {
+                    return .array(key, value)
+                }
+            } else if subjectType == Set<String>.self || subjectType == Set<String>?.self {
+                if let value: [String: Bool] = snapshot[key] as? [String: Bool] , !value.isEmpty {
+                    return .relation(key, value, Set(value.keys))
+                }
+            } else if subjectType == File.self || subjectType == File?.self {
+                if let _: String = snapshot[key] as? String {
+                    /*if let _: File = value as? File {
+                        
+                    } else {
+                        let file: File = File(name: name)
+                        file.keyPath = key
+                        self.setValue(file, forKey: key)
+                    }*/
+                }
+            }
+            let value: Any = snapshot[key]
+            return .any(key, value)
+        }
+    }
+    
     // MARK: Initialize
     
     public override init() {
@@ -146,7 +216,7 @@ open class Ingredient: NSObject, Referenceable, Tasting {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
                 self.hasObserve = true
-                guard let snapshot: [String: AnyObject] = snapshot.value as? [String: AnyObject] else { return }
+                guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
                 self.serverCreatedAtTimestamp = value["_createdAt"] as? Double
                 self.serverUpdatedAtTimestamp = value["_updatedAt"] as? Double
                 Mirror(reflecting: self).children.forEach { (key, value) in
@@ -156,6 +226,23 @@ open class Ingredient: NSObject, Referenceable, Tasting {
                                 self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                                 return
                             }
+                            /*
+                            let mirror: Mirror = Mirror(reflecting: value)
+                            switch ValueType.from(key: key, mirror: mirror, with: snapshot) {
+                            case .string(let key, let value):   self.setValue(value, forKey: key)
+                            case .number(let key, let value):   self.setValue(value, forKey: key)
+                            case .url(let key, let value):      self.setValue(value, forKey: key)
+                            case .date(let key, _, let value):  self.setValue(value, forKey: key)
+                            case .array(let key, let value):    self.setValue(value, forKey: key)
+                            case .relation(let key, _, let value): self.setValue(value, forKey: key)
+                            case .file(let key, let file):
+                                file.parent = self
+                                file.keyPath = key
+                                self.setValue(value, forKey: key)
+                            case .any(let key, let value): self.setValue(value, forKey: key)
+                            }*/
+                            
+                            /*
                             let mirror: Mirror = Mirror(reflecting: value)
                             let subjectType: Any.Type = mirror.subjectType
                             if subjectType == URL?.self || subjectType == URL.self {
@@ -183,9 +270,9 @@ open class Ingredient: NSObject, Referenceable, Tasting {
                                 // TODO array
                             } else if let value: [String: AnyObject] = snapshot[key] as? [String: AnyObject] {
                                 self.setValue(Set(value.keys), forKey: key)
-                            } else if let value: AnyObject = snapshot[key] {
+                            } else if let value: Any = snapshot[key] {
                                 self.setValue(value, forKey: key)
-                            }
+                            }*/
                             self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                         }
                     }
@@ -228,30 +315,44 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     
     fileprivate var hasObserve: Bool = false
     
-    open var value: [String: AnyObject] {
+    open var value: [String: Any] {
         let mirror = Mirror(reflecting: self)
-        var object: [String: AnyObject] = [:]
+        var object: [String: Any] = [:]
         mirror.children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     if let newValue: Any = self.encode(key, value: value) {
-                        object[key] = newValue as AnyObject?
+                        object[key] = newValue
                         return
                     }
-                    switch value.self {
-                    case is String: if let value: String = value as? String { object[key] = value as AnyObject? }
-                    case is URL: if let value: URL = value as? URL { object[key] = value.absoluteString as AnyObject? }
-                    case is Date: if let value: Date = value as? Date { object[key] = value.timeIntervalSince1970 as AnyObject? }
-                    case is Int: if let value: Int = value as? Int { object[key] = value as AnyObject? }
-                    case is [String]: if let value: [String] = value as? [String] , !value.isEmpty { object[key] = value as AnyObject? }
-                    case is Set<String>: if let value: Set<String> = value as? Set<String> , !value.isEmpty { object[key] = value.toKeys() as AnyObject? }
-                    case is File:
-                        if let file: File = value as? File {
-                            file.parent = self
-                            file.keyPath = key
-                        }
-                    default: if let value: AnyObject = value as AnyObject? { object[key] = value as AnyObject? }
+                    
+                    switch ValueType.from(key: key, value: value) {
+                    case .string(let key, let value): object[key] = value
+                    case .number(let key, let value): object[key] = value
+                    case .url(let key, let value): object[key] = value
+                    case .date(let key, let value, _): object[key] = value
+                    case .array(let key, let value): object[key] = value
+                    case .relation(let key, let value, _): object[key] = value
+                    case .file(let key, let file):
+                        file.parent = self
+                        file.keyPath = key
+                    case .any(let key, let value): object[key] = value
                     }
+                    
+//                    switch value.self {
+//                    case is String: if let value: String = value as? String { object[key] = value as AnyObject? }
+//                    case is URL: if let value: URL = value as? URL { object[key] = value.absoluteString as AnyObject? }
+//                    case is Date: if let value: Date = value as? Date { object[key] = value.timeIntervalSince1970 as AnyObject? }
+//                    case is Int: if let value: Int = value as? Int { object[key] = value as AnyObject? }
+//                    case is [String]: if let value: [String] = value as? [String] , !value.isEmpty { object[key] = value as AnyObject? }
+//                    case is Set<String>: if let value: Set<String> = value as? Set<String> , !value.isEmpty { object[key] = value.toKeys() as AnyObject? }
+//                    case is File:
+//                        if let file: File = value as? File {
+//                            file.parent = self
+//                            file.keyPath = key
+//                        }
+//                    default: if let value: AnyObject = value as AnyObject? { object[key] = value as AnyObject? }
+//                    }
                 }
             }
         }
@@ -278,7 +379,7 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     
     open func save(_ completion: ((Error?, FIRDatabaseReference) -> Void)?) {
         if self.id == self.tmpID || self.id == self._id {
-            var value: [String: AnyObject] = self.value
+            var value: [String: Any] = self.value
             
             let timestamp: AnyObject = FIRServerValue.timestamp() as AnyObject
             
@@ -403,9 +504,6 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     // update value & update timestamp
     // Value will be deleted if the nil.
     private func updateValue(_ keyPath: String, child: String?, value: Any?) {
-        
-        print(keyPath, child, value)
-        
         let reference: FIRDatabaseReference = type(of: self).databaseRef.child(self.id)
         let timestamp: AnyObject = FIRServerValue.timestamp() as AnyObject
         
