@@ -83,17 +83,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 let data: Data = UIImagePNGRepresentation(image)!
                 let thumbnail: File = File(name: "salada.png", data: data)
                 thumbnail.data = data
-                user.thumbnail = thumbnail
+                //user.thumbnail = thumbnail
                 user.tempName = "Test1_name"
                 user.name = "\(index)"
                 user.gender = "man"
                 user.age = index
-                user.url = URL(string: "https://www.google.co.jp/")
+                /*user.url = URL(string: "https://www.google.co.jp/")
                 user.items = ["Book", "Pen"]
                 user.groups.insert(ref.key)
                 user.location = CLLocation(latitude: 1, longitude: 1)
                 user.type = .second
-                user.birth = Date()
+                user.birth = Date()*/
                 user.save({ (error, ref) in
                     group.users.insert(ref.key)
                     
