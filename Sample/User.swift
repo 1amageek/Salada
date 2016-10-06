@@ -25,6 +25,7 @@ class User: Ingredient {
     dynamic var url: URL?
     dynamic var birth: Date?
     dynamic var thumbnail: File?
+    dynamic var cover: File?
     dynamic var type: UserType = .first
     
     var tempName: String? 
