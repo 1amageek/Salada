@@ -106,7 +106,7 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
 
 public typealias File = Ingredient.File
 
-open class Ingredient: NSObject, Referenceable, Tasting {
+public class Ingredient: NSObject, Referenceable, Tasting {
 
     public typealias Tsp = Ingredient
     
@@ -219,7 +219,7 @@ open class Ingredient: NSObject, Referenceable, Tasting {
         self._id = id
     }
     
-    open static var path: String {
+    public static var path: String {
         let type = Mirror(reflecting: self).subjectType
         return String(describing: type).components(separatedBy: ".").first!.lowercased()
     }
@@ -227,15 +227,15 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     fileprivate var tmpID: String = UUID().uuidString
     fileprivate var _id: String?
     
-    open var id: String {
+    public var id: String {
         if let id: String = self.snapshot?.key { return id }
         if let id: String = self._id { return id }
         return tmpID
     }
     
-    open var uploadTasks: [String: FIRStorageUploadTask] = [:]
+    public var uploadTasks: [String: FIRStorageUploadTask] = [:]
     
-    open var snapshot: FIRDataSnapshot? {
+    public var snapshot: FIRDataSnapshot? {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
                 self.hasObserve = true
@@ -281,7 +281,7 @@ open class Ingredient: NSObject, Referenceable, Tasting {
         self.snapshot = snapshot
     }
     
-    open var createdAt: Date {
+    public var createdAt: Date {
         if let serverTimestamp: Double = self.serverCreatedAtTimestamp {
             let timestamp: TimeInterval = TimeInterval(serverTimestamp / 1000)
             return Date(timeIntervalSince1970: timestamp)
@@ -289,7 +289,7 @@ open class Ingredient: NSObject, Referenceable, Tasting {
         return self.localTimestamp
     }
     
-    open var updatedAt: Date {
+    public var updatedAt: Date {
         if let serverTimestamp: Double = self.serverCreatedAtTimestamp {
             let timestamp: TimeInterval = TimeInterval(serverTimestamp / 1000)
             return Date(timeIntervalSince1970: timestamp)
@@ -303,15 +303,15 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     
     fileprivate var serverUpdatedAtTimestamp: Double?
     
-    // MARK: Ingnore
+    // MARK: Ignore
     
-    open var ignore: [String] {
+    public var ignore: [String] {
         return []
     }
     
     fileprivate var hasObserve: Bool = false
     
-    open var value: [String: Any] {
+    public var value: [String: Any] {
         let mirror = Mirror(reflecting: self)
         var object: [String: Any] = [:]
         mirror.children.forEach { (key, value) in
@@ -348,22 +348,23 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     // MARK: - Encode, Decode
     
     /// Model -> Firebase
-    open func encode(_ key: String, value: Any) -> Any? {
+    public func encode(_ key: String, value: Any) -> Any? {
         return nil
     }
     
     /// Snapshot -> Model
-    open func decode(_ key: String, value: Any) -> Any? {
+    public func decode(_ key: String, value: Any) -> Any? {
         return nil
     }
     
     // MARK: - Save
     
-    open func save() {
+    public func save() {
         self.save(nil)
     }
     
-    open func save(_ completion: ((Error?, FIRDatabaseReference) -> Void)?) {
+    public func save(_ completion: ((Error?, FIRDatabaseReference) -> Void)?) {
+        print(#function)
         if self.id == self.tmpID || self.id == self._id {
             var value: [String: Any] = self.value
             
@@ -390,7 +391,14 @@ open class Ingredient: NSObject, Referenceable, Tasting {
                         self.snapshot = snapshot
                         
                         // File save
-                        Mirror(reflecting: self).children.forEach({ (key, value) in
+                        self.saveFiles(block: { (error) in
+//                            if let error: Error = error {
+//                                completion?(error, ref)
+//                                return
+//                            }
+//                            completion?(nil, ref)
+                        })
+                        /*Mirror(reflecting: self).children.forEach({ (key, value) in
                             if let key: String = key {
                                 if !self.ignore.contains(key) {
                                     let mirror: Mirror = Mirror(reflecting: value)
@@ -402,13 +410,72 @@ open class Ingredient: NSObject, Referenceable, Tasting {
                                     }
                                 }
                             }
-                        })
+                        })*/
                         
                         completion?(error as Error?, ref)
                     })
                     
                 }, withLocalEvents: false)
             
+        }
+    }
+    
+    var timeout: Float = 20
+    let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
+    
+    private func saveFiles(block:((Error?) -> Void)?) {
+
+        DispatchQueue.global(qos: .default).async {
+            let group: DispatchGroup = DispatchGroup()
+            var uploadTasks: [FIRStorageUploadTask] = []
+            var hasError: Error? = nil
+            let workItem: DispatchWorkItem = DispatchWorkItem {
+                for (key, value) in Mirror(reflecting: self).children {
+                    
+                    guard let key: String = key else {
+                        break
+                    }
+                    
+                    if self.ignore.contains(key) {
+                        break
+                    }
+                    
+                    let mirror: Mirror = Mirror(reflecting: value)
+                    let subjectType: Any.Type = mirror.subjectType
+                    if subjectType == File?.self || subjectType == File.self {
+                        if let file: File = value as? File {
+                            group.enter()
+                            if let task: FIRStorageUploadTask = file.save(key, completion: { (meta, error) in
+                                if let error: Error = error {
+                                    hasError = error
+                                    uploadTasks.forEach({ (task) in
+                                        task.cancel()
+                                    })
+                                    group.leave()
+                                    return
+                                }
+                                group.leave()
+                            }) {
+                                uploadTasks.append(task)
+                            }
+                        }
+                    }
+                }
+            }
+            
+            self.uploadQueue.async(group: group, execute: workItem)
+            group.notify(queue: DispatchQueue.main, execute: {
+                block?(hasError)
+            })
+            switch group.wait(timeout: .now() + Double(Int64(4 * Double(NSEC_PER_SEC)))) {
+            case .success: break
+            case .timedOut:
+                uploadTasks.forEach({ (task) in
+                    task.cancel()
+                })
+                let error: File.FileError = File.FileError(localizedDescription: "file save timeout")
+                block?(error)
+            }
         }
     }
     
@@ -524,7 +591,13 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     
     // MARK: -
     
-    open class File: NSObject {
+    public class File: NSObject {
+        
+        struct FileError: Error {
+            // TODO
+            let localizedDescription: String
+            
+        }
         
         /// Save location
         open var ref: FIRStorageReference? {
@@ -574,11 +647,11 @@ open class Ingredient: NSObject, Referenceable, Tasting {
         
         // MARK: - Save
         
-        open func save(_ keyPath: String) -> FIRStorageUploadTask? {
+        public func save(_ keyPath: String) -> FIRStorageUploadTask? {
             return self.save(keyPath, completion: nil)
         }
         
-        open func save(_ keyPath: String, completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
+        public func save(_ keyPath: String, completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
             if let data: Data = self.data, let parent: Ingredient = self.parent {
                 // If parent have uploadTask cancel
                 parent.uploadTasks[keyPath]?.cancel()
@@ -597,13 +670,15 @@ open class Ingredient: NSObject, Referenceable, Tasting {
                 }
                 parent.uploadTasks[keyPath] = self.uploadTask
                 return self.uploadTask
+            } else {
+                completion?(nil, FileError(localizedDescription: "It requires data when you save the file"))
             }
             return nil
         }
         
         // MARK: - Load
         
-        open func dataWithMaxSize(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> FIRStorageDownloadTask? {
+        public func dataWithMaxSize(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> FIRStorageDownloadTask? {
             self.downloadTask?.cancel()
             let task: FIRStorageDownloadTask? = self.ref?.data(withMaxSize: size, completion: { (data, error) in
                 self.downloadTask = nil
@@ -613,11 +688,11 @@ open class Ingredient: NSObject, Referenceable, Tasting {
             return task
         }
         
-        open func remove() {
+        public func remove() {
             self.remove(nil)
         }
         
-        open func remove(_ completion: ((Error?) -> Void)?) {
+        public func remove(_ completion: ((Error?) -> Void)?) {
             self.ref?.delete(completion: { (error) in
                 completion?(error)
             })
@@ -852,7 +927,6 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     
 }
 
-
 extension Salada where Child.Tsp == Child {
         
     public func object(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
@@ -884,7 +958,6 @@ extension Salada where Child.Tsp == Child {
     }
     
 }
-
 
 // MARK: -
 

@@ -77,13 +77,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             self.groupID = ref.key
             
-            (0..<5).forEach({ (index) in
+            (0..<1).forEach({ (index) in
                 let user: User = User()
                 let image: UIImage = UIImage(named: "salada")!
                 let data: Data = UIImagePNGRepresentation(image)!
                 let thumbnail: File = File(name: "salada.png", data: data)
+                let cover: File = File(name: "ssswww", data: data)
                 thumbnail.data = data
-                //user.thumbnail = thumbnail
+                user.thumbnail = thumbnail
+                user.cover = cover
                 user.tempName = "Test1_name"
                 user.name = "\(index)"
                 user.gender = "man"
