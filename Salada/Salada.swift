@@ -21,7 +21,7 @@ public protocol Referenceable {
     var id: String { get }
     var snapshot: FIRDataSnapshot? { get }
     var createdAt: Date { get }
-    var value: [String: AnyObject] { get }
+    var value: [String: Any] { get }
     var ignore: [String] { get }
     
     init?(snapshot: FIRDataSnapshot)
@@ -106,9 +106,102 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
 
 public typealias File = Ingredient.File
 
-open class Ingredient: NSObject, Referenceable, Tasting {
+public class Ingredient: NSObject, Referenceable, Tasting {
 
     public typealias Tsp = Ingredient
+    
+    enum ValueType {
+        
+        case string(String, String)
+        case int(String, Int)
+        case double(String, Double)
+        case float(String, Float)
+        case bool(String, Bool)
+        case date(String, TimeInterval, Date)
+        case url(String, String, URL)
+        case array(String, [Any])
+        case relation(String, [String: Bool], Set<String>)
+        case file(String, File)
+        case object(String, Any)
+        case null
+        
+        static func from(key: String, value: Any) -> ValueType {
+            switch value.self {
+            case is String:         if let value: String        = value as? String      { return .string(key, value)  }
+            case is URL:            if let value: URL           = value as? URL         { return .url(key, value.absoluteString, value) }
+            case is Date:           if let value: Date          = value as? Date        { return .date(key, value.timeIntervalSince1970, value)}
+            case is Int:            if let value: Int           = value as? Int         { return .int(key, Int(value)) }
+            case is Double:         if let value: Double        = value as? Double      { return .double(key, Double(value)) }
+            case is Float:          if let value: Float         = value as? Float       { return .float(key, Float(value)) }
+            case is Bool:           if let value: Bool          = value as? Bool        { return .bool(key, Bool(value)) }
+            case is [String]:       if let value: [String]      = value as? [String]    , !value.isEmpty { return .array(key, value) }
+            case is Set<String>:    if let value: Set<String>   = value as? Set<String> , !value.isEmpty { return .relation(key, value.toKeys(), value) }
+            case is File:           if let value: File          = value as? File        { return .file(key, value) }
+            case is [String: Any]:  if let value: [String: Any] = value as? [String: Any] { return .object(key, value)}
+            default: break
+            }
+            return .null
+        }
+        
+        static func from(key: String, mirror: Mirror, with snapshot: [String: Any]) -> ValueType {
+            let subjectType: Any.Type = mirror.subjectType
+            if subjectType == String.self || subjectType == String?.self {
+                if let value: String = snapshot[key] as? String {
+                    return .string(key, value)
+                }
+            } else if subjectType == URL.self || subjectType == URL?.self {
+                if
+                    let value: String = snapshot[key] as? String,
+                    let url: URL = URL(string: value)  {
+                    return .url(key, value, url)
+                }
+            } else if subjectType == Date.self || subjectType == Date?.self {
+                if let value: Double = snapshot[key] as? Double {
+                    let date: Date = Date(timeIntervalSince1970: TimeInterval(value))
+                    return .date(key, value, date)
+                }
+            } else if subjectType == Double.self || subjectType == Double?.self {
+                if let value: Double = snapshot[key] as? Double {
+                    return .double(key, Double(value))
+                }
+            } else if subjectType == Int.self || subjectType == Int?.self {
+                if let value: Int = snapshot[key] as? Int {
+                    return .int(key, Int(value))
+                }
+            } else if subjectType == Float.self || subjectType == Float?.self {
+                if let value: Float = snapshot[key] as? Float {
+                    return .float(key, Float(value))
+                }
+            } else if subjectType == Bool.self || subjectType == Bool?.self {
+                if let value: Bool = snapshot[key] as? Bool {
+                    return .bool(key, Bool(value))
+                }
+            } else if subjectType == [String].self || subjectType == [String]?.self {
+                if let value: [String] = snapshot[key] as? [String] , !value.isEmpty {
+                    return .array(key, value)
+                }
+            } else if subjectType == Set<String>.self || subjectType == Set<String>?.self {
+                if let value: [String: Bool] = snapshot[key] as? [String: Bool] , !value.isEmpty {
+                    return .relation(key, value, Set(value.keys))
+                }
+            } else if subjectType == File.self || subjectType == File?.self {
+                if let value: [String: Any] = snapshot[key] as? [String: Any] {
+                    return .object(key, value)
+                }
+            } else if subjectType == File.self || subjectType == File?.self {
+                if let _: String = snapshot[key] as? String {
+                    /*if let _: File = value as? File {
+                        
+                    } else {
+                        let file: File = File(name: name)
+                        file.keyPath = key
+                        self.setValue(file, forKey: key)
+                    }*/
+                }
+            }
+            return .null
+        }
+    }
     
     // MARK: Initialize
     
@@ -126,7 +219,7 @@ open class Ingredient: NSObject, Referenceable, Tasting {
         self._id = id
     }
     
-    open static var path: String {
+    public static var path: String {
         let type = Mirror(reflecting: self).subjectType
         return String(describing: type).components(separatedBy: ".").first!.lowercased()
     }
@@ -134,19 +227,19 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     fileprivate var tmpID: String = UUID().uuidString
     fileprivate var _id: String?
     
-    open var id: String {
+    public var id: String {
         if let id: String = self.snapshot?.key { return id }
         if let id: String = self._id { return id }
         return tmpID
     }
     
-    open var uploadTasks: [String: FIRStorageUploadTask] = [:]
+    public var uploadTasks: [String: FIRStorageUploadTask] = [:]
     
-    open var snapshot: FIRDataSnapshot? {
+    public var snapshot: FIRDataSnapshot? {
         didSet {
             if let snapshot: FIRDataSnapshot = snapshot {
                 self.hasObserve = true
-                guard let snapshot: [String: AnyObject] = snapshot.value as? [String: AnyObject] else { return }
+                guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
                 self.serverCreatedAtTimestamp = value["_createdAt"] as? Double
                 self.serverUpdatedAtTimestamp = value["_updatedAt"] as? Double
                 Mirror(reflecting: self).children.forEach { (key, value) in
@@ -156,36 +249,26 @@ open class Ingredient: NSObject, Referenceable, Tasting {
                                 self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                                 return
                             }
+                            
                             let mirror: Mirror = Mirror(reflecting: value)
-                            let subjectType: Any.Type = mirror.subjectType
-                            if subjectType == URL?.self || subjectType == URL.self {
-                                if let value: String = snapshot[key] as? String, let url: URL = URL(string: value) {
-                                    self.setValue(url, forKey: key)
-                                }
-                            } else if subjectType == Date?.self || subjectType == Date.self {
-                                if let value: Double = snapshot[key] as? Double {
-                                    let date: Date = Date(timeIntervalSince1970: TimeInterval(value))
-                                    self.setValue(date, forKey: key)
-                                }
-                            } else if subjectType == File?.self || subjectType == File.self {
-                                if let name: String = snapshot[key] as? String {
-                                    if let _: File = value as? File {
-                                        
-                                    } else {
-                                        let file: File = File(name: name)
-                                        file.parent = self
-                                        file.keyPath = key
-                                        self.setValue(file, forKey: key)
-                                    }
-                                }
-                            } else if let value: [Int: AnyObject] = snapshot[key] as? [Int: AnyObject] {
-                                print(value, key)
-                                // TODO array
-                            } else if let value: [String: AnyObject] = snapshot[key] as? [String: AnyObject] {
-                                self.setValue(Set(value.keys), forKey: key)
-                            } else if let value: AnyObject = snapshot[key] {
+                            switch ValueType.from(key: key, mirror: mirror, with: snapshot) {
+                            case .string(let key, let value):   self.setValue(value, forKey: key)
+                            case .int(let key, let value):   self.setValue(value, forKey: key)
+                            case .float(let key, let value):   self.setValue(value, forKey: key)
+                            case .double(let key, let value):   self.setValue(value, forKey: key)
+                            case .bool(let key, let value):   self.setValue(value, forKey: key)
+                            case .url(let key, _, let value):      self.setValue(value, forKey: key)
+                            case .date(let key, _, let value):  self.setValue(value, forKey: key)
+                            case .array(let key, let value):    self.setValue(value, forKey: key)
+                            case .relation(let key, _, let value): self.setValue(value, forKey: key)
+                            case .file(let key, let file):
+                                file.parent = self
+                                file.keyPath = key
                                 self.setValue(value, forKey: key)
+                            case .object(let key, let value): self.setValue(value, forKey: key)
+                            case .null: break
                             }
+
                             self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                         }
                     }
@@ -198,7 +281,7 @@ open class Ingredient: NSObject, Referenceable, Tasting {
         self.snapshot = snapshot
     }
     
-    open var createdAt: Date {
+    public var createdAt: Date {
         if let serverTimestamp: Double = self.serverCreatedAtTimestamp {
             let timestamp: TimeInterval = TimeInterval(serverTimestamp / 1000)
             return Date(timeIntervalSince1970: timestamp)
@@ -206,7 +289,7 @@ open class Ingredient: NSObject, Referenceable, Tasting {
         return self.localTimestamp
     }
     
-    open var updatedAt: Date {
+    public var updatedAt: Date {
         if let serverTimestamp: Double = self.serverCreatedAtTimestamp {
             let timestamp: TimeInterval = TimeInterval(serverTimestamp / 1000)
             return Date(timeIntervalSince1970: timestamp)
@@ -220,38 +303,42 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     
     fileprivate var serverUpdatedAtTimestamp: Double?
     
-    // MARK: Ingnore
+    // MARK: Ignore
     
-    open var ignore: [String] {
+    public var ignore: [String] {
         return []
     }
     
     fileprivate var hasObserve: Bool = false
     
-    open var value: [String: AnyObject] {
+    public var value: [String: Any] {
         let mirror = Mirror(reflecting: self)
-        var object: [String: AnyObject] = [:]
+        var object: [String: Any] = [:]
         mirror.children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     if let newValue: Any = self.encode(key, value: value) {
-                        object[key] = newValue as AnyObject?
+                        object[key] = newValue
                         return
                     }
-                    switch value.self {
-                    case is String: if let value: String = value as? String { object[key] = value as AnyObject? }
-                    case is URL: if let value: URL = value as? URL { object[key] = value.absoluteString as AnyObject? }
-                    case is Date: if let value: Date = value as? Date { object[key] = value.timeIntervalSince1970 as AnyObject? }
-                    case is Int: if let value: Int = value as? Int { object[key] = value as AnyObject? }
-                    case is [String]: if let value: [String] = value as? [String] , !value.isEmpty { object[key] = value as AnyObject? }
-                    case is Set<String>: if let value: Set<String> = value as? Set<String> , !value.isEmpty { object[key] = value.toKeys() as AnyObject? }
-                    case is File:
-                        if let file: File = value as? File {
-                            file.parent = self
-                            file.keyPath = key
-                        }
-                    default: if let value: AnyObject = value as AnyObject? { object[key] = value as AnyObject? }
+                    
+                    switch ValueType.from(key: key, value: value) {
+                    case .string(let key, let value): object[key] = value
+                    case .double(let key, let value): object[key] = value
+                    case .int(let key, let value): object[key] = value
+                    case .float(let key, let value): object[key] = value
+                    case .bool(let key, let value): object[key] = value
+                    case .url(let key, let value, _): object[key] = value
+                    case .date(let key, let value, _): object[key] = value
+                    case .array(let key, let value): object[key] = value
+                    case .relation(let key, let value, _): object[key] = value
+                    case .file(let key, let value):
+                        value.parent = self
+                        value.keyPath = key
+                    case .object(let key, let value): object[key] = value
+                    case .null: break
                     }
+                    
                 }
             }
         }
@@ -261,24 +348,24 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     // MARK: - Encode, Decode
     
     /// Model -> Firebase
-    open func encode(_ key: String, value: Any) -> Any? {
+    public func encode(_ key: String, value: Any) -> Any? {
         return nil
     }
     
     /// Snapshot -> Model
-    open func decode(_ key: String, value: Any) -> Any? {
+    public func decode(_ key: String, value: Any) -> Any? {
         return nil
     }
     
     // MARK: - Save
     
-    open func save() {
+    public func save() {
         self.save(nil)
     }
     
-    open func save(_ completion: ((Error?, FIRDatabaseReference) -> Void)?) {
+    public func save(_ completion: ((Error?, FIRDatabaseReference) -> Void)?) {
         if self.id == self.tmpID || self.id == self._id {
-            var value: [String: AnyObject] = self.value
+            var value: [String: Any] = self.value
             
             let timestamp: AnyObject = FIRServerValue.timestamp() as AnyObject
             
@@ -303,25 +390,73 @@ open class Ingredient: NSObject, Referenceable, Tasting {
                         self.snapshot = snapshot
                         
                         // File save
-                        Mirror(reflecting: self).children.forEach({ (key, value) in
-                            if let key: String = key {
-                                if !self.ignore.contains(key) {
-                                    let mirror: Mirror = Mirror(reflecting: value)
-                                    let subjectType: Any.Type = mirror.subjectType
-                                    if subjectType == File?.self || subjectType == File.self {
-                                        if let file: File = value as? File {
-                                            _ = file.save(key)
-                                        }
-                                    }
-                                }
-                            }
+                        self.saveFiles(block: { (error) in
+                            completion?(error as Error?, ref)
                         })
                         
-                        completion?(error as Error?, ref)
                     })
                     
                 }, withLocalEvents: false)
             
+        }
+    }
+    
+    var timeout: Float = 20
+    let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
+    
+    private func saveFiles(block:((Error?) -> Void)?) {
+
+        DispatchQueue.global(qos: .default).async {
+            let group: DispatchGroup = DispatchGroup()
+            var uploadTasks: [FIRStorageUploadTask] = []
+            var hasError: Error? = nil
+            let workItem: DispatchWorkItem = DispatchWorkItem {
+                for (key, value) in Mirror(reflecting: self).children {
+                    
+                    guard let key: String = key else {
+                        break
+                    }
+                    
+                    if self.ignore.contains(key) {
+                        break
+                    }
+                    
+                    let mirror: Mirror = Mirror(reflecting: value)
+                    let subjectType: Any.Type = mirror.subjectType
+                    if subjectType == File?.self || subjectType == File.self {
+                        if let file: File = value as? File {
+                            group.enter()
+                            if let task: FIRStorageUploadTask = file.save(key, completion: { (meta, error) in
+                                if let error: Error = error {
+                                    hasError = error
+                                    uploadTasks.forEach({ (task) in
+                                        task.cancel()
+                                    })
+                                    group.leave()
+                                    return
+                                }
+                                group.leave()
+                            }) {
+                                uploadTasks.append(task)
+                            }
+                        }
+                    }
+                }
+            }
+            
+            self.uploadQueue.async(group: group, execute: workItem)
+            group.notify(queue: DispatchQueue.main, execute: {
+                block?(hasError)
+            })
+            switch group.wait(timeout: .now() + Double(Int64(4 * Double(NSEC_PER_SEC)))) {
+            case .success: break
+            case .timedOut:
+                uploadTasks.forEach({ (task) in
+                    task.cancel()
+                })
+                let error: File.FileError = File.FileError(localizedDescription: "file save timeout")
+                block?(error)
+            }
         }
     }
     
@@ -403,9 +538,6 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     // update value & update timestamp
     // Value will be deleted if the nil.
     private func updateValue(_ keyPath: String, child: String?, value: Any?) {
-        
-        print(keyPath, child, value)
-        
         let reference: FIRDatabaseReference = type(of: self).databaseRef.child(self.id)
         let timestamp: AnyObject = FIRServerValue.timestamp() as AnyObject
         
@@ -440,7 +572,13 @@ open class Ingredient: NSObject, Referenceable, Tasting {
     
     // MARK: -
     
-    open class File: NSObject {
+    public class File: NSObject {
+        
+        struct FileError: Error {
+            // TODO
+            let localizedDescription: String
+            
+        }
         
         /// Save location
         open var ref: FIRStorageReference? {
@@ -490,11 +628,11 @@ open class Ingredient: NSObject, Referenceable, Tasting {
         
         // MARK: - Save
         
-        open func save(_ keyPath: String) -> FIRStorageUploadTask? {
+        public func save(_ keyPath: String) -> FIRStorageUploadTask? {
             return self.save(keyPath, completion: nil)
         }
         
-        open func save(_ keyPath: String, completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
+        public func save(_ keyPath: String, completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
             if let data: Data = self.data, let parent: Ingredient = self.parent {
                 // If parent have uploadTask cancel
                 parent.uploadTasks[keyPath]?.cancel()
@@ -513,13 +651,15 @@ open class Ingredient: NSObject, Referenceable, Tasting {
                 }
                 parent.uploadTasks[keyPath] = self.uploadTask
                 return self.uploadTask
+            } else {
+                completion?(nil, FileError(localizedDescription: "It requires data when you save the file"))
             }
             return nil
         }
         
         // MARK: - Load
         
-        open func dataWithMaxSize(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> FIRStorageDownloadTask? {
+        public func dataWithMaxSize(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> FIRStorageDownloadTask? {
             self.downloadTask?.cancel()
             let task: FIRStorageDownloadTask? = self.ref?.data(withMaxSize: size, completion: { (data, error) in
                 self.downloadTask = nil
@@ -529,11 +669,11 @@ open class Ingredient: NSObject, Referenceable, Tasting {
             return task
         }
         
-        open func remove() {
+        public func remove() {
             self.remove(nil)
         }
         
-        open func remove(_ completion: ((Error?) -> Void)?) {
+        public func remove(_ completion: ((Error?) -> Void)?) {
             self.ref?.delete(completion: { (error) in
                 completion?(error)
             })
@@ -768,7 +908,6 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     
 }
 
-
 extension Salada where Child.Tsp == Child {
         
     public func object(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
@@ -800,7 +939,6 @@ extension Salada where Child.Tsp == Child {
     }
     
 }
-
 
 // MARK: -
 
