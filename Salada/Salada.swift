@@ -364,7 +364,6 @@ public class Ingredient: NSObject, Referenceable, Tasting {
     }
     
     public func save(_ completion: ((Error?, FIRDatabaseReference) -> Void)?) {
-        print(#function)
         if self.id == self.tmpID || self.id == self._id {
             var value: [String: Any] = self.value
             
@@ -392,27 +391,9 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                         
                         // File save
                         self.saveFiles(block: { (error) in
-//                            if let error: Error = error {
-//                                completion?(error, ref)
-//                                return
-//                            }
-//                            completion?(nil, ref)
+                            completion?(error as Error?, ref)
                         })
-                        /*Mirror(reflecting: self).children.forEach({ (key, value) in
-                            if let key: String = key {
-                                if !self.ignore.contains(key) {
-                                    let mirror: Mirror = Mirror(reflecting: value)
-                                    let subjectType: Any.Type = mirror.subjectType
-                                    if subjectType == File?.self || subjectType == File.self {
-                                        if let file: File = value as? File {
-                                            _ = file.save(key)
-                                        }
-                                    }
-                                }
-                            }
-                        })*/
                         
-                        completion?(error as Error?, ref)
                     })
                     
                 }, withLocalEvents: false)
