@@ -750,8 +750,6 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     
     open var ascending: Bool = false
     
-    open var sortDescriptors: [NSSortDescriptor] = []
-    
     deinit {
         if let handle: UInt = self.addedHandle {
             self.reference.removeObserver(withHandle: handle)
@@ -789,22 +787,24 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         
         self.changedBlock = block
         
-        prev(at: nil, toLast: self.limit) { (change, error) in
+        prev(at: nil, toLast: self.limit) { [weak self] (change, error) in
             
             block(SaladaCollectionChange.fromObject(change: nil, error: error))
         
+            guard let strongSelf = self else { return }
+            
             // add
-            var addReference: FIRDatabaseQuery = self.reference
-            if let fiarstKey: String = self.pool.first {
+            var addReference: FIRDatabaseQuery = strongSelf.reference
+            if let fiarstKey: String = strongSelf.pool.first {
                 addReference = addReference.queryOrderedByKey().queryStarting(atValue: fiarstKey)
             }
-            self.addedHandle = addReference.observe(.childAdded, with: { (snapshot) in
+            strongSelf.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
                 objc_sync_enter(self)
                 let key: String = snapshot.key
-                if !self.pool.contains(key) {
-                    self.pool.append(key)
-                    self.pool.sort { self.ascending ? $0 < $1 : $0 > $1 }
-                    if let i: Int = self.pool.index(of: key) {
+                if !strongSelf.pool.contains(key) {
+                    strongSelf.pool.append(key)
+                    strongSelf.pool = strongSelf.sortedPool
+                    if let i: Int = strongSelf.pool.index(of: key) {
                         block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                     }
                 }
@@ -814,8 +814,8 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             })
             
             // change
-            self.changedHandle = self.reference.observe(.childChanged, with: { (snapshot) in
-                if let i: Int = self.pool.index(of: snapshot.key) {
+            strongSelf.changedHandle = strongSelf.reference.observe(.childChanged, with: { (snapshot) in
+                if let i: Int = strongSelf.pool.index(of: snapshot.key) {
                     block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                 }
             }, withCancel: { (error) in
@@ -823,11 +823,11 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             })
             
             // remove
-            self.removedHandle = self.reference.observe(.childRemoved, with: { (snapshot) in
+            strongSelf.removedHandle = strongSelf.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
                 objc_sync_enter(self)
-                if let i: Int = self.pool.index(of: snapshot.key) {
-                    self.removeObserver(at: i)
-                    self.pool.remove(at: i)
+                if let i: Int = strongSelf.pool.index(of: snapshot.key) {
+                    strongSelf.removeObserver(at: i)
+                    strongSelf.pool.remove(at: i)
                     block(SaladaCollectionChange.fromObject(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
                 objc_sync_exit(self)
@@ -841,9 +841,24 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     
     var isFirst: Bool = false
     
+    // Firebase firstKey
+    private var firstKey: String? {
+        return self.ascending ? self.pool.last : self.pool.first
+    }
+    
+    // Firebase lastKey
+    private var lastKey: String? {
+        return self.ascending ? self.pool.first : self.pool.last
+    }
+    
+    private var sortedPool: [String] {
+        return self.pool.sorted { self.ascending ? $0 < $1 : $0 > $1 }
+    }
+    
     public func prev() {
-        self.prev(at: self.pool.last, toLast: self.limit) { (change, error) in
-            self.changedBlock(SaladaCollectionChange.fromObject(change: change, error: error))
+        self.prev(at: self.lastKey, toLast: self.limit) { [weak self](change, error) in
+            guard let strongSelf = self else { return }
+            strongSelf.changedBlock(SaladaCollectionChange.fromObject(change: change, error: error))
         }
     }
     
@@ -861,19 +876,36 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             reference = reference.queryEnding(atValue: lastKey)
             limit = limit + 1
         }
-        reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { (snapshot) in
+        reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+            
+            guard let strongSelf = self else { return }
+            
             if snapshot.childrenCount < limit {
-                self.isFirst = true
+                strongSelf.isFirst = true
             }
+            
             objc_sync_enter(self)
             var changes: [Int] = []
-            for (_, child) in snapshot.children.reversed().enumerated() {
-                let key: String = (child as AnyObject).key
-                if !self.pool.contains(key) {
-                    self.pool.append(key)
-                    self.pool.sort { self.ascending ? $0 < $1 : $0 > $1 }
-                    if let i: Int = self.pool.index(of: key) {
-                        changes.append(i)
+            if strongSelf.ascending {
+                for (_, child) in snapshot.children.enumerated() {
+                    let key: String = (child as AnyObject).key
+                    if !strongSelf.pool.contains(key) {
+                        strongSelf.pool.append(key)
+                        strongSelf.pool = strongSelf.sortedPool
+                        if let i: Int = strongSelf.pool.index(of: key) {
+                            changes.append(i)
+                        }
+                    }
+                }
+            } else {
+                for (_, child) in snapshot.children.reversed().enumerated() {
+                    let key: String = (child as AnyObject).key
+                    if !strongSelf.pool.contains(key) {
+                        strongSelf.pool.append(key)
+                        strongSelf.pool = strongSelf.sortedPool
+                        if let i: Int = strongSelf.pool.index(of: key) {
+                            changes.append(i)
+                        }
                     }
                 }
             }

@@ -106,7 +106,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 
                 let options: SaladaOptions = SaladaOptions()
                 options.limit = 10
-                options.ascending = true
+                options.ascending = false
                 
                 self.datasource = Salada(parentKey: "-KTwiQfuz_iFWbsCKft3", referenceKey: "users", options: options, block: { [weak self](changes) in
                     guard let tableView: UITableView = self?.tableView else { return }
