@@ -107,7 +107,7 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
 public typealias File = Ingredient.File
 
 public class Ingredient: NSObject, Referenceable, Tasting {
-
+    
     public typealias Tsp = Ingredient
     
     enum ValueType {
@@ -134,8 +134,8 @@ public class Ingredient: NSObject, Referenceable, Tasting {
             case is Double:         if let value: Double        = value as? Double      { return .double(key, Double(value)) }
             case is Float:          if let value: Float         = value as? Float       { return .float(key, Float(value)) }
             case is Bool:           if let value: Bool          = value as? Bool        { return .bool(key, Bool(value)) }
-            case is [String]:       if let value: [String]      = value as? [String]    , !value.isEmpty { return .array(key, value) }
-            case is Set<String>:    if let value: Set<String>   = value as? Set<String> , !value.isEmpty { return .relation(key, value.toKeys(), value) }
+            case is [String]:       if let value: [String]      = value as? [String], !value.isEmpty { return .array(key, value) }
+            case is Set<String>:    if let value: Set<String>   = value as? Set<String>, !value.isEmpty { return .relation(key, value.toKeys(), value) }
             case is File:           if let value: File          = value as? File        { return .file(key, value) }
             case is [String: Any]:  if let value: [String: Any] = value as? [String: Any] { return .object(key, value)}
             default: break
@@ -177,11 +177,11 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                     return .bool(key, Bool(value))
                 }
             } else if subjectType == [String].self || subjectType == [String]?.self {
-                if let value: [String] = snapshot[key] as? [String] , !value.isEmpty {
+                if let value: [String] = snapshot[key] as? [String], !value.isEmpty {
                     return .array(key, value)
                 }
             } else if subjectType == Set<String>.self || subjectType == Set<String>?.self {
-                if let value: [String: Bool] = snapshot[key] as? [String: Bool] , !value.isEmpty {
+                if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
                     return .relation(key, value, Set(value.keys))
                 }
             } else if subjectType == File.self || subjectType == File?.self {
@@ -191,12 +191,12 @@ public class Ingredient: NSObject, Referenceable, Tasting {
             } else if subjectType == File.self || subjectType == File?.self {
                 if let _: String = snapshot[key] as? String {
                     /*if let _: File = value as? File {
-                        
-                    } else {
-                        let file: File = File(name: name)
-                        file.keyPath = key
-                        self.setValue(file, forKey: key)
-                    }*/
+                     
+                     } else {
+                     let file: File = File(name: name)
+                     file.keyPath = key
+                     self.setValue(file, forKey: key)
+                     }*/
                 }
             }
             return .null
@@ -268,7 +268,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                             case .object(let key, let value): self.setValue(value, forKey: key)
                             case .null: break
                             }
-
+                            
                             self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                         }
                     }
@@ -404,8 +404,8 @@ public class Ingredient: NSObject, Referenceable, Tasting {
     var timeout: Float = 20
     let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
     
-    private func saveFiles(block:((Error?) -> Void)?) {
-
+    private func saveFiles(block: ((Error?) -> Void)?) {
+        
         DispatchQueue.global(qos: .default).async {
             let group: DispatchGroup = DispatchGroup()
             var uploadTasks: [FIRStorageUploadTask] = []
@@ -693,14 +693,14 @@ extension Ingredient {
     }
 }
 
-func ==(lhs: Ingredient, rhs: Ingredient) -> Bool {
+func == (lhs: Ingredient, rhs: Ingredient) -> Bool {
     return lhs.id == rhs.id
 }
 
 public typealias SaladaChange = (deletions: [Int], insertions: [Int], modifications: [Int])
 
 public enum SaladaCollectionChange {
-
+    
     case initial
     
     case update(SaladaChange)
@@ -790,7 +790,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         prev(at: nil, toLast: self.limit) { [weak self] (change, error) in
             
             block(SaladaCollectionChange.fromObject(change: nil, error: error))
-        
+            
             guard let strongSelf = self else { return }
             
             // add
@@ -809,8 +809,8 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
                     }
                 }
                 objc_sync_exit(self)
-            }, withCancel: { (error) in
-                block(SaladaCollectionChange.fromObject(change: nil, error: error))
+                }, withCancel: { (error) in
+                    block(SaladaCollectionChange.fromObject(change: nil, error: error))
             })
             
             // change
@@ -818,8 +818,8 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
                 if let i: Int = strongSelf.pool.index(of: snapshot.key) {
                     block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                 }
-            }, withCancel: { (error) in
-                block(SaladaCollectionChange.fromObject(change: nil, error: error))
+                }, withCancel: { (error) in
+                    block(SaladaCollectionChange.fromObject(change: nil, error: error))
             })
             
             // remove
@@ -831,12 +831,12 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
                     block(SaladaCollectionChange.fromObject(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
                 objc_sync_exit(self)
-            }, withCancel: { (error) in
-                block(SaladaCollectionChange.fromObject(change: nil, error: error))
+                }, withCancel: { (error) in
+                    block(SaladaCollectionChange.fromObject(change: nil, error: error))
             })
             
         }
-    
+        
     }
     
     var isFirst: Bool = false
@@ -911,7 +911,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             }
             objc_sync_exit(self)
             block?((deletions: [], insertions: changes, modifications: []), nil)
-        }) { (error) in            
+        }) { (error) in
             block?(nil, error)
         }
     }
@@ -939,7 +939,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
                 block(nil)
             })
         }
-
+        
     }
     
     public func removeObserver(at index: Int) {
@@ -952,7 +952,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
 }
 
 extension Salada where Child.Tsp == Child {
-        
+    
     public func object(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
         let key: String = self.pool[index]
         Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
