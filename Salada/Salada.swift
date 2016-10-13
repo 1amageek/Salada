@@ -720,7 +720,7 @@ public enum SaladaCollectionChange {
 
 open class SaladaOptions {
     var limit: UInt = 30
-    var sortDescriptors: [NSSortDescriptor] = []
+    var ascending: Bool = false
 }
 
 public struct SaladaObject {
@@ -748,6 +748,8 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     
     open var limit: UInt = 30
     
+    open var ascending: Bool = false
+    
     open var sortDescriptors: [NSSortDescriptor] = []
     
     deinit {
@@ -773,7 +775,8 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     public init(parentKey: String, referenceKey: String, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
         
         if let options: SaladaOptions = options {
-            limit = options.limit
+            self.limit = options.limit
+            self.ascending = options.ascending
         }
         
         self.parentKey = parentKey
@@ -791,11 +794,19 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             block(SaladaCollectionChange.fromObject(change: nil, error: error))
         
             // add
-            self.addedHandle = self.reference.queryStarting(atValue: self.pool.last).observe(.childAdded, with: { (snapshot) in
+            var addReference: FIRDatabaseQuery = self.reference
+            if let fiarstKey: String = self.pool.first {
+                addReference = addReference.queryOrderedByKey().queryStarting(atValue: fiarstKey)
+            }
+            self.addedHandle = addReference.observe(.childAdded, with: { (snapshot) in
                 objc_sync_enter(self)
-                self.pool.append(snapshot.key)
-                if let i: Int = self.pool.index(of: snapshot.key) {
-                    block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                let key: String = snapshot.key
+                if !self.pool.contains(key) {
+                    self.pool.append(key)
+                    self.pool.sort { self.ascending ? $0 < $1 : $0 > $1 }
+                    if let i: Int = self.pool.index(of: key) {
+                        block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                    }
                 }
                 objc_sync_exit(self)
             }, withCancel: { (error) in
@@ -837,7 +848,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     }
     
     // load previous data
-    public func prev(at lastKey: Any?, toLast limit: UInt, block: ((SaladaChange?, Error?) -> Void)?) {
+    public func prev(at lastKey: String?, toLast limit: UInt, block: ((SaladaChange?, Error?) -> Void)?) {
         
         if isFirst {
             block?((deletions: [], insertions: [], modifications: []), nil)
@@ -846,7 +857,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         
         var reference: FIRDatabaseQuery = self.reference.queryOrderedByKey()
         var limit: UInt = limit
-        if let lastKey: String = lastKey as! String? {
+        if let lastKey: String = lastKey {
             reference = reference.queryEnding(atValue: lastKey)
             limit = limit + 1
         }
@@ -854,13 +865,13 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             if snapshot.childrenCount < limit {
                 self.isFirst = true
             }
-            
             objc_sync_enter(self)
             var changes: [Int] = []
             for (_, child) in snapshot.children.reversed().enumerated() {
                 let key: String = (child as AnyObject).key
                 if !self.pool.contains(key) {
                     self.pool.append(key)
+                    self.pool.sort { self.ascending ? $0 < $1 : $0 > $1 }
                     if let i: Int = self.pool.index(of: key) {
                         changes.append(i)
                     }
