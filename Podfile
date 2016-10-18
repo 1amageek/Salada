@@ -16,3 +16,11 @@ pod 'Firebase'
 pod 'Firebase/Database'
 pod 'Firebase/Storage'
 end
+
+target 'SaladaTests' do
+pod 'Firebase'
+pod 'Firebase/Database'
+pod 'Firebase/Storage'
+pod 'Quick', '~> 0.10.0'
+pod 'Nimble'
+end
