@@ -17,7 +17,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.datasource?.prev()
     }
     
-    var groupID: String?
+    var groupID: String?// = "-KTw5x_4c5ux6X6W3_ax"
     
     @IBAction func add(_ sender: AnyObject) {
         if let id: String = self.groupID {
@@ -42,7 +42,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.location = CLLocation(latitude: 1, longitude: 1)
                 user.type = .second
                 user.birth = Date()
-                user.save({ (error, ref) in
+                user.save({ (ref, error) in
                     group.users.insert(ref.key)
                 })
             })
@@ -71,45 +71,44 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         
-        let group: Group = Group()
-        group.name = "iOS Development Team"
-        group.save { (error, ref) in
-            
-            self.groupID = ref.key
-            
-            (0..<1).forEach({ (index) in
-                let user: User = User()
-                let image: UIImage = UIImage(named: "salada")!
-                let data: Data = UIImagePNGRepresentation(image)!
-                let thumbnail: File = File(name: "salada.png", data: data)
-                let cover: File = File(name: "ssswww", data: data)
-                thumbnail.data = data
-                user.thumbnail = thumbnail
-                user.cover = cover
-                user.tempName = "Test1_name"
-                user.name = "\(index)"
-                user.gender = "man"
-                user.age = index
-                user.url = URL(string: "https://www.google.co.jp/")
-                user.items = ["Book", "Pen"]
-                user.groups.insert(ref.key)
-                user.location = CLLocation(latitude: 1, longitude: 1)
-                user.type = .second
-                user.birth = Date()
-                user.save({ (error, ref) in
-                    group.users.insert(ref.key)
-                    
-                })
-            })
-            
+//        let group: Group = Group()
+//        group.name = "iOS Development Team"
+//        group.save { (ref, error) in
+//        
+//            self.groupID = ref.key
+//            
+//            (0..<100).forEach({ (index) in
+//                let user: User = User()
+////                let image: UIImage = UIImage(named: "salada")!
+////                let data: Data = UIImagePNGRepresentation(image)!
+////                let thumbnail: File = File(name: "salada.png", data: data)
+////                let cover: File = File(name: "ssswww", data: data)
+////                thumbnail.data = data
+////                user.thumbnail = thumbnail
+////                user.cover = cover
+//                user.tempName = "Test1_name"
+//                user.name = "\(index)"
+//                user.gender = "man"
+//                user.age = index
+//                user.url = URL(string: "https://www.google.co.jp/")
+//                user.items = ["Book", "Pen"]
+//                user.groups.insert(ref.key)
+//                user.location = CLLocation(latitude: 1, longitude: 1)
+//                user.type = .second
+//                user.birth = Date()
+//                user.save({ (ref, error) in
+//                    group.users.insert(ref.key)
+//                    
+//                })
+//            })
+        
             do {
                 
                 let options: SaladaOptions = SaladaOptions()
-//                let sortDescriptor: NSSortDescriptor = NSSortDescriptor(key: "age", ascending: false)
-//                options.sortDescriptors = [sortDescriptor]
                 options.limit = 10
+                options.ascending = false
                 
-                self.datasource = Salada(parentKey: ref.key, referenceKey: "users", options: options, block: { [weak self](changes) in
+                self.datasource = Salada(parentKey: "-KTwiQfuz_iFWbsCKft3", referenceKey: "users", options: options, block: { [weak self](changes) in
                     guard let tableView: UITableView = self?.tableView else { return }
                     
                     switch changes {
@@ -127,7 +126,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 })
                 
             }
-        }
+//        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -151,16 +150,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
             
-            print(user?.name)
-            print(user?.age)
-            print(user?.birth)
-            print(user?.gender)
-            print(user?.url)
-            print(user?.items)
-            print(user?.location)
-            print(user?.type)
-            print(user?.groups)
-            print(user?.thumbnail)
+//            print(user?.name)
+//            print(user?.age)
+//            print(user?.birth)
+//            print(user?.gender)
+//            print(user?.url)
+//            print(user?.items)
+//            print(user?.location)
+//            print(user?.type)
+//            print(user?.groups)
+//            print(user?.thumbnail)
             
         })
     }
