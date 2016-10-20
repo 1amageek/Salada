@@ -102,6 +102,14 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
         })
     }
     
+    public static func removeObserver(with handle: UInt) {
+        self.databaseRef.removeObserver(withHandle: handle)
+    }
+    
+    public static func removeObserver(_ id: String, with handle: UInt) {
+        self.databaseRef.child(id).removeObserver(withHandle: handle)
+    }
+    
 }
 
 public typealias File = Ingredient.File
