@@ -184,7 +184,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                 if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
                     return .relation(key, value, Set(value.keys))
                 }
-            } else if subjectType == File.self || subjectType == File?.self {
+            } else if subjectType == [String: Any].self || subjectType == [String: Any]?.self {
                 if let value: [String: Any] = snapshot[key] as? [String: Any] {
                     return .object(key, value)
                 }
@@ -249,7 +249,6 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                                 self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                                 return
                             }
-                            
                             let mirror: Mirror = Mirror(reflecting: value)
                             switch ValueType.from(key: key, mirror: mirror, with: snapshot) {
                             case .string(let key, let value):   self.setValue(value, forKey: key)
@@ -363,7 +362,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         self.save(nil)
     }
     
-    public func save(_ completion: ((Error?, FIRDatabaseReference) -> Void)?) {
+    public func save(_ completion: ((FIRDatabaseReference, Error?) -> Void)?) {
         if self.id == self.tmpID || self.id == self._id {
             var value: [String: Any] = self.value
             
@@ -384,19 +383,19 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                 data.value = value
                 return .success(withValue: data)
                 
-                }, andCompletionBlock: { (error, committed, snapshot) in
+            }, andCompletionBlock: { (error, committed, snapshot) in
+                
+                type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
+                    self.snapshot = snapshot
                     
-                    type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
-                        self.snapshot = snapshot
-                        
-                        // File save
-                        self.saveFiles(block: { (error) in
-                            completion?(error as Error?, ref)
-                        })
-                        
+                    // File save
+                    self.saveFiles(block: { (error) in
+                        completion?(ref, error as Error?)
                     })
                     
-                }, withLocalEvents: false)
+                })
+                
+            }, withLocalEvents: false)
             
         }
     }
@@ -818,8 +817,8 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
                 if let i: Int = strongSelf.pool.index(of: snapshot.key) {
                     block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                 }
-                }, withCancel: { (error) in
-                    block(SaladaCollectionChange.fromObject(change: nil, error: error))
+            }, withCancel: { (error) in
+                block(SaladaCollectionChange.fromObject(change: nil, error: error))
             })
             
             // remove

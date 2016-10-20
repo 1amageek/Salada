@@ -42,7 +42,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.location = CLLocation(latitude: 1, longitude: 1)
                 user.type = .second
                 user.birth = Date()
-                user.save({ (error, ref) in
+                user.save({ (ref, error) in
                     group.users.insert(ref.key)
                 })
             })
@@ -73,7 +73,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
 //        let group: Group = Group()
 //        group.name = "iOS Development Team"
-//        group.save { (error, ref) in
+//        group.save { (ref, error) in
 //        
 //            self.groupID = ref.key
 //            
@@ -96,7 +96,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //                user.location = CLLocation(latitude: 1, longitude: 1)
 //                user.type = .second
 //                user.birth = Date()
-//                user.save({ (error, ref) in
+//                user.save({ (ref, error) in
 //                    group.users.insert(ref.key)
 //                    
 //                })
@@ -150,16 +150,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
             
-            print(user?.name)
-            print(user?.age)
-            print(user?.birth)
-            print(user?.gender)
-            print(user?.url)
-            print(user?.items)
-            print(user?.location)
-            print(user?.type)
-            print(user?.groups)
-            print(user?.thumbnail)
+//            print(user?.name)
+//            print(user?.age)
+//            print(user?.birth)
+//            print(user?.gender)
+//            print(user?.url)
+//            print(user?.items)
+//            print(user?.location)
+//            print(user?.type)
+//            print(user?.groups)
+//            print(user?.thumbnail)
             
         })
     }
