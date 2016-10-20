@@ -10,6 +10,8 @@ import Foundation
 
 class Object: Ingredient {
     
+    typealias Tsp = Object
+    
     // String
     dynamic var string:     String?
     
@@ -30,4 +32,6 @@ class Object: Ingredient {
     // Date
     dynamic var date:       Date?
     
+    // Object
+    dynamic var object:     [String: Any] = [:]
 }

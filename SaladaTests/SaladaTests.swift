@@ -13,32 +13,67 @@ import FirebaseStorage
 
 class SaladaTests: XCTestCase {
     
-    override func setUp() {
-        super.setUp()
-        
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
     
     func testObjectValues() {
+        
         FIRApp.configure()
+        
+        let date: Date = Date()
+        
+        let expetation: XCTestExpectation? = self.expectation(description: "Firebase object")
+        let object: Object = Object()
+        
+        // String
+        object.string = "string"
+        
+        // Number
+        object.int = 0
+        object.double = 0
+        object.float = 0.1
+        
+        // Relation
+        object.relation.insert("relation")
+        
+        // Array
+        object.array.append("array")
+        
+        // URL
+        object.url = URL(string: "https://google.com")
+        
+        // Date
+        object.date = date
+        
+        // Object
+        object.object = ["object": "object"]
+        
+        object.save { (ref, error) in
+            
+            XCTAssertNil(error)
+            XCTAssertNotNil(ref)
+
+            Object.observeSingle(ref.key, eventType: .value, block: { (obj) in
+                
+                XCTAssertEqual(obj!.string, "string")
+                XCTAssertEqual(obj!.int, 0)
+                XCTAssertEqual(obj!.double, 0)
+                XCTAssertEqual(obj!.float, 0.1)
+                
+                XCTAssertEqual(obj!.relation, ["relation"])
+                XCTAssertEqual(obj!.array, ["array"])
+                XCTAssertEqual(obj!.url?.absoluteString, "https://google.com")
+                
+                XCTAssertEqual(obj!.date, date)
+                let object: [String: String] = obj!.object as! [String: String]
+                XCTAssertEqual(object, ["object": "object"])
+                
+            })
+            
+            expetation?.fulfill()
+        }
+        
+        self.waitForExpectations(timeout: 1000, handler: nil)
         
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
+
 }
