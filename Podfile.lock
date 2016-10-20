@@ -31,15 +31,11 @@ PODS:
   - GoogleSymbolUtilities (1.1.2)
   - GoogleUtilities (1.3.2):
     - GoogleSymbolUtilities (~> 1.1)
-  - Nimble (5.0.0)
-  - Quick (0.10.0)
 
 DEPENDENCIES:
   - Firebase
   - Firebase/Database
   - Firebase/Storage
-  - Nimble
-  - Quick (~> 0.10.0)
 
 SPEC CHECKSUMS:
   Firebase: be473484f0d515e72ffd04acf22f981773c23e58
@@ -52,9 +48,7 @@ SPEC CHECKSUMS:
   GoogleNetworkingUtilities: 3edd3a8161347494f2da60ea0deddc8a472d94cb
   GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
   GoogleUtilities: 8bbc733218aad26306f9d4a253823986110e3358
-  Nimble: 56fc9f5020effa2206de22c3dd910f4fb011b92f
-  Quick: 5d290df1c69d5ee2f0729956dcf0fd9a30447eaa
 
-PODFILE CHECKSUM: 167fc6ae0afebd11e9eb04da61088b3c059e2593
+PODFILE CHECKSUM: 1ebfa73fe0be1241c964d59fdef04650879bc7ef
 
 COCOAPODS: 1.0.1
