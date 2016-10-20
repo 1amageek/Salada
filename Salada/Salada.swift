@@ -107,7 +107,7 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
 public typealias File = Ingredient.File
 
 public class Ingredient: NSObject, Referenceable, Tasting {
-
+    
     public typealias Tsp = Ingredient
     
     enum ValueType {
@@ -134,8 +134,8 @@ public class Ingredient: NSObject, Referenceable, Tasting {
             case is Double:         if let value: Double        = value as? Double      { return .double(key, Double(value)) }
             case is Float:          if let value: Float         = value as? Float       { return .float(key, Float(value)) }
             case is Bool:           if let value: Bool          = value as? Bool        { return .bool(key, Bool(value)) }
-            case is [String]:       if let value: [String]      = value as? [String]    , !value.isEmpty { return .array(key, value) }
-            case is Set<String>:    if let value: Set<String>   = value as? Set<String> , !value.isEmpty { return .relation(key, value.toKeys(), value) }
+            case is [String]:       if let value: [String]      = value as? [String], !value.isEmpty { return .array(key, value) }
+            case is Set<String>:    if let value: Set<String>   = value as? Set<String>, !value.isEmpty { return .relation(key, value.toKeys(), value) }
             case is File:           if let value: File          = value as? File        { return .file(key, value) }
             case is [String: Any]:  if let value: [String: Any] = value as? [String: Any] { return .object(key, value)}
             default: break
@@ -177,26 +177,26 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                     return .bool(key, Bool(value))
                 }
             } else if subjectType == [String].self || subjectType == [String]?.self {
-                if let value: [String] = snapshot[key] as? [String] , !value.isEmpty {
+                if let value: [String] = snapshot[key] as? [String], !value.isEmpty {
                     return .array(key, value)
                 }
             } else if subjectType == Set<String>.self || subjectType == Set<String>?.self {
-                if let value: [String: Bool] = snapshot[key] as? [String: Bool] , !value.isEmpty {
+                if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
                     return .relation(key, value, Set(value.keys))
                 }
-            } else if subjectType == File.self || subjectType == File?.self {
+            } else if subjectType == [String: Any].self || subjectType == [String: Any]?.self {
                 if let value: [String: Any] = snapshot[key] as? [String: Any] {
                     return .object(key, value)
                 }
             } else if subjectType == File.self || subjectType == File?.self {
                 if let _: String = snapshot[key] as? String {
                     /*if let _: File = value as? File {
-                        
-                    } else {
-                        let file: File = File(name: name)
-                        file.keyPath = key
-                        self.setValue(file, forKey: key)
-                    }*/
+                     
+                     } else {
+                     let file: File = File(name: name)
+                     file.keyPath = key
+                     self.setValue(file, forKey: key)
+                     }*/
                 }
             }
             return .null
@@ -249,7 +249,6 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                                 self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                                 return
                             }
-                            
                             let mirror: Mirror = Mirror(reflecting: value)
                             switch ValueType.from(key: key, mirror: mirror, with: snapshot) {
                             case .string(let key, let value):   self.setValue(value, forKey: key)
@@ -268,7 +267,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                             case .object(let key, let value): self.setValue(value, forKey: key)
                             case .null: break
                             }
-
+                            
                             self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                         }
                     }
@@ -363,7 +362,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         self.save(nil)
     }
     
-    public func save(_ completion: ((Error?, FIRDatabaseReference) -> Void)?) {
+    public func save(_ completion: ((FIRDatabaseReference, Error?) -> Void)?) {
         if self.id == self.tmpID || self.id == self._id {
             var value: [String: Any] = self.value
             
@@ -384,19 +383,19 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                 data.value = value
                 return .success(withValue: data)
                 
-                }, andCompletionBlock: { (error, committed, snapshot) in
+            }, andCompletionBlock: { (error, committed, snapshot) in
+                
+                type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
+                    self.snapshot = snapshot
                     
-                    type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
-                        self.snapshot = snapshot
-                        
-                        // File save
-                        self.saveFiles(block: { (error) in
-                            completion?(error as Error?, ref)
-                        })
-                        
+                    // File save
+                    self.saveFiles(block: { (error) in
+                        completion?(ref, error as Error?)
                     })
                     
-                }, withLocalEvents: false)
+                })
+                
+            }, withLocalEvents: false)
             
         }
     }
@@ -404,8 +403,8 @@ public class Ingredient: NSObject, Referenceable, Tasting {
     var timeout: Float = 20
     let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
     
-    private func saveFiles(block:((Error?) -> Void)?) {
-
+    private func saveFiles(block: ((Error?) -> Void)?) {
+        
         DispatchQueue.global(qos: .default).async {
             let group: DispatchGroup = DispatchGroup()
             var uploadTasks: [FIRStorageUploadTask] = []
@@ -693,14 +692,14 @@ extension Ingredient {
     }
 }
 
-func ==(lhs: Ingredient, rhs: Ingredient) -> Bool {
+func == (lhs: Ingredient, rhs: Ingredient) -> Bool {
     return lhs.id == rhs.id
 }
 
 public typealias SaladaChange = (deletions: [Int], insertions: [Int], modifications: [Int])
 
 public enum SaladaCollectionChange {
-
+    
     case initial
     
     case update(SaladaChange)
@@ -720,7 +719,7 @@ public enum SaladaCollectionChange {
 
 open class SaladaOptions {
     var limit: UInt = 30
-    var sortDescriptors: [NSSortDescriptor] = []
+    var ascending: Bool = false
 }
 
 public struct SaladaObject {
@@ -748,7 +747,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     
     open var limit: UInt = 30
     
-    open var sortDescriptors: [NSSortDescriptor] = []
+    open var ascending: Bool = false
     
     deinit {
         if let handle: UInt = self.addedHandle {
@@ -773,7 +772,8 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     public init(parentKey: String, referenceKey: String, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
         
         if let options: SaladaOptions = options {
-            limit = options.limit
+            self.limit = options.limit
+            self.ascending = options.ascending
         }
         
         self.parentKey = parentKey
@@ -786,25 +786,35 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         
         self.changedBlock = block
         
-        prev(at: nil, toLast: self.limit) { (change, error) in
+        prev(at: nil, toLast: self.limit) { [weak self] (change, error) in
             
             block(SaladaCollectionChange.fromObject(change: nil, error: error))
-        
+            
+            guard let strongSelf = self else { return }
+            
             // add
-            self.addedHandle = self.reference.queryStarting(atValue: self.pool.last).observe(.childAdded, with: { (snapshot) in
+            var addReference: FIRDatabaseQuery = strongSelf.reference
+            if let fiarstKey: String = strongSelf.pool.first {
+                addReference = addReference.queryOrderedByKey().queryStarting(atValue: fiarstKey)
+            }
+            strongSelf.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
                 objc_sync_enter(self)
-                self.pool.append(snapshot.key)
-                if let i: Int = self.pool.index(of: snapshot.key) {
-                    block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                let key: String = snapshot.key
+                if !strongSelf.pool.contains(key) {
+                    strongSelf.pool.append(key)
+                    strongSelf.pool = strongSelf.sortedPool
+                    if let i: Int = strongSelf.pool.index(of: key) {
+                        block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                    }
                 }
                 objc_sync_exit(self)
-            }, withCancel: { (error) in
-                block(SaladaCollectionChange.fromObject(change: nil, error: error))
+                }, withCancel: { (error) in
+                    block(SaladaCollectionChange.fromObject(change: nil, error: error))
             })
             
             // change
-            self.changedHandle = self.reference.observe(.childChanged, with: { (snapshot) in
-                if let i: Int = self.pool.index(of: snapshot.key) {
+            strongSelf.changedHandle = strongSelf.reference.observe(.childChanged, with: { (snapshot) in
+                if let i: Int = strongSelf.pool.index(of: snapshot.key) {
                     block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                 }
             }, withCancel: { (error) in
@@ -812,32 +822,47 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             })
             
             // remove
-            self.removedHandle = self.reference.observe(.childRemoved, with: { (snapshot) in
+            strongSelf.removedHandle = strongSelf.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
                 objc_sync_enter(self)
-                if let i: Int = self.pool.index(of: snapshot.key) {
-                    self.removeObserver(at: i)
-                    self.pool.remove(at: i)
+                if let i: Int = strongSelf.pool.index(of: snapshot.key) {
+                    strongSelf.removeObserver(at: i)
+                    strongSelf.pool.remove(at: i)
                     block(SaladaCollectionChange.fromObject(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
                 objc_sync_exit(self)
-            }, withCancel: { (error) in
-                block(SaladaCollectionChange.fromObject(change: nil, error: error))
+                }, withCancel: { (error) in
+                    block(SaladaCollectionChange.fromObject(change: nil, error: error))
             })
             
         }
-    
+        
     }
     
     var isFirst: Bool = false
     
+    // Firebase firstKey
+    private var firstKey: String? {
+        return self.ascending ? self.pool.last : self.pool.first
+    }
+    
+    // Firebase lastKey
+    private var lastKey: String? {
+        return self.ascending ? self.pool.first : self.pool.last
+    }
+    
+    private var sortedPool: [String] {
+        return self.pool.sorted { self.ascending ? $0 < $1 : $0 > $1 }
+    }
+    
     public func prev() {
-        self.prev(at: self.pool.last, toLast: self.limit) { (change, error) in
-            self.changedBlock(SaladaCollectionChange.fromObject(change: change, error: error))
+        self.prev(at: self.lastKey, toLast: self.limit) { [weak self](change, error) in
+            guard let strongSelf = self else { return }
+            strongSelf.changedBlock(SaladaCollectionChange.fromObject(change: change, error: error))
         }
     }
     
     // load previous data
-    public func prev(at lastKey: Any?, toLast limit: UInt, block: ((SaladaChange?, Error?) -> Void)?) {
+    public func prev(at lastKey: String?, toLast limit: UInt, block: ((SaladaChange?, Error?) -> Void)?) {
         
         if isFirst {
             block?((deletions: [], insertions: [], modifications: []), nil)
@@ -846,29 +871,46 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         
         var reference: FIRDatabaseQuery = self.reference.queryOrderedByKey()
         var limit: UInt = limit
-        if let lastKey: String = lastKey as! String? {
+        if let lastKey: String = lastKey {
             reference = reference.queryEnding(atValue: lastKey)
             limit = limit + 1
         }
-        reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { (snapshot) in
+        reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+            
+            guard let strongSelf = self else { return }
+            
             if snapshot.childrenCount < limit {
-                self.isFirst = true
+                strongSelf.isFirst = true
             }
             
             objc_sync_enter(self)
             var changes: [Int] = []
-            for (_, child) in snapshot.children.reversed().enumerated() {
-                let key: String = (child as AnyObject).key
-                if !self.pool.contains(key) {
-                    self.pool.append(key)
-                    if let i: Int = self.pool.index(of: key) {
-                        changes.append(i)
+            if strongSelf.ascending {
+                for (_, child) in snapshot.children.enumerated() {
+                    let key: String = (child as AnyObject).key
+                    if !strongSelf.pool.contains(key) {
+                        strongSelf.pool.append(key)
+                        strongSelf.pool = strongSelf.sortedPool
+                        if let i: Int = strongSelf.pool.index(of: key) {
+                            changes.append(i)
+                        }
+                    }
+                }
+            } else {
+                for (_, child) in snapshot.children.reversed().enumerated() {
+                    let key: String = (child as AnyObject).key
+                    if !strongSelf.pool.contains(key) {
+                        strongSelf.pool.append(key)
+                        strongSelf.pool = strongSelf.sortedPool
+                        if let i: Int = strongSelf.pool.index(of: key) {
+                            changes.append(i)
+                        }
                     }
                 }
             }
             objc_sync_exit(self)
             block?((deletions: [], insertions: changes, modifications: []), nil)
-        }) { (error) in            
+        }) { (error) in
             block?(nil, error)
         }
     }
@@ -896,7 +938,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
                 block(nil)
             })
         }
-
+        
     }
     
     public func removeObserver(at index: Int) {
@@ -909,7 +951,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
 }
 
 extension Salada where Child.Tsp == Child {
-        
+    
     public func object(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
         let key: String = self.pool[index]
         Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
