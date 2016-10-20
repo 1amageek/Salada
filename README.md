@@ -71,10 +71,11 @@ Property are four that can be specified in Salada.
 | --- | --- |
 | String | Simple string. |
 | Number\(Int, UInt, Double ...\) | Simple number. |
-| NSURL | URL |
-| NSDate | date |
+| URL | URL |
+| Date | date |
 | Array\<String\> | Array of strings. |
 | Set \<String\>| Array of strings. Set is used in relationships. |
+| [String: Any] | Object |
 | AnyObject | Use encode, decode function. |
 
 ### Save and Update
@@ -124,7 +125,7 @@ group.save { (error, ref) in
 }
 ```
 
-<img src="https://github.com/1amageek/Salada/blob/master/Sample/sample_code_0.png" width="400">
+<img src="https://github.com/1amageek/Salada/blob/master/SaladBar/sample_code_0.png" width="400">
 
 ### Retrieving Data
 
