@@ -614,13 +614,9 @@ public class Ingredient: NSObject, Referenceable, Tasting {
             if let child: String = child {
                 path = "\(keyPath)/\(child)"
             }
-            reference.updateChildValues([path: value, "_updatedAt": timestamp]) { (error, ref) in
-                // TODO
-            }
+            reference.updateChildValues([path: value, "_updatedAt": timestamp])
         } else {
-            reference.child(keyPath).child(id).removeValue(completionBlock: { (error, ref) in
-                // TODO
-            })
+            reference.child(keyPath).child(id).removeValue()
         }
     }
     
