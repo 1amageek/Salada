@@ -51,7 +51,7 @@ class SaladaTests: XCTestCase {
             XCTAssertNil(error)
             XCTAssertNotNil(ref)
 
-            Object.observeSingle(ref.key, eventType: .value, block: { (obj) in
+            Object.observeSingle(ref!.key, eventType: .value, block: { (obj) in
                 
                 XCTAssertEqual(obj!.string, "string")
                 XCTAssertEqual(obj!.int, 0)
