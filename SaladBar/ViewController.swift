@@ -43,11 +43,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.type = .second
                 user.birth = Date()
                 user.save({ (ref, error) in
-                    group.users.insert(ref.key)
+                    if let ref = ref {
+                        group.users.insert(ref.key)
+                    }
                 })
             })
             
-
         }
     }
     
