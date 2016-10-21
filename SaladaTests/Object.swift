@@ -35,3 +35,19 @@ class Object: Ingredient {
     // Object
     dynamic var object:     [String: Any] = [:]
 }
+
+class Parent: Ingredient {
+    
+    typealias Tsp = Parent
+    
+    dynamic var children: Set<String> = []
+    
+}
+
+class Child: Ingredient {
+    
+    typealias Tsp = Child
+    
+    dynamic var name: String?
+    
+}
