@@ -4,7 +4,7 @@
 //
 //  Created by 1amageek on 2016/08/15.
 //  Copyright © 2016年 Stamp. All rights reserved.
-//  
+//
 //  Github: https://github.com/1amageek/Salada
 //
 
@@ -16,12 +16,12 @@ import FirebaseStorage
 /**
  Protocol that holds a reference Firebase
  */
-public protocol Referenceable {
+public protocol Referenceable: NSObjectProtocol {
     static var database: FIRDatabaseReference { get }
     static var databaseRef: FIRDatabaseReference { get }
     static var storage: FIRStorageReference { get }
     static var storageRef: FIRStorageReference { get }
-    static var path: String { get }
+    static var _path: String { get }
     
     var id: String { get }
     var snapshot: FIRDataSnapshot? { get }
@@ -34,9 +34,9 @@ public protocol Referenceable {
 
 public extension Referenceable {
     static var database: FIRDatabaseReference { return FIRDatabase.database().reference() }
-    static var databaseRef: FIRDatabaseReference { return self.database.child(self.path) }
+    static var databaseRef: FIRDatabaseReference { return self.database.child(self._path) }
     static var storage: FIRStorageReference { return FIRStorage.storage().reference() }
-    static var storageRef: FIRStorageReference { return self.storage.child(self.path) }
+    static var storageRef: FIRStorageReference { return self.storage.child(self._path) }
 }
 
 /**
@@ -54,7 +54,7 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
     
     /**
      A function that gets all data from DB whose name is model.
-    */
+     */
     public static func observeSingle(_ eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void) {
         self.databaseRef.observeSingleEvent(of: eventType, with: { (snapshot) in
             if snapshot.exists() {
@@ -124,7 +124,7 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
     
     /**
      Remove the observer.
-    */
+     */
     public static func removeObserver(with handle: UInt) {
         self.databaseRef.removeObserver(withHandle: handle)
     }
@@ -256,6 +256,20 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         }
     }
     
+    // MARK: Referenceable
+    
+    public class var _modelName: String {
+        return String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!.lowercased()
+    }
+    
+    public class var _version: String {
+        return "v1"
+    }
+    
+    public static var _path: String {
+        return "\(self._version)/\(self._modelName)"
+    }
+    
     // MARK: Initialize
     
     public override init() {
@@ -270,11 +284,6 @@ public class Ingredient: NSObject, Referenceable, Tasting {
     convenience required public init?(id: String) {
         self.init()
         self._id = id
-    }
-    
-    public static var path: String {
-        let type = Mirror(reflecting: self).subjectType
-        return String(describing: type).components(separatedBy: ".").first!.lowercased()
     }
     
     fileprivate var tmpID: String = UUID().uuidString
@@ -336,7 +345,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
     
     /**
      The date when this object was created
-    */
+     */
     public var createdAt: Date {
         if let serverTimestamp: Double = self.serverCreatedAtTimestamp {
             let timestamp: TimeInterval = TimeInterval(serverTimestamp / 1000)
@@ -425,7 +434,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
     /**
      Save the new Object to Firebase. Save will fail in the off-line.
      - parameter completion: If successful reference will return. An error will return if it fails.
-    */
+     */
     public func save(_ completion: ((FIRDatabaseReference?, Error?) -> Void)?) {
         
         if self.id == self.tmpID || self.id == self._id {
@@ -890,7 +899,11 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         
     }
     
-    var isFirst: Bool = false
+    subscript(index: Int) -> String {
+        return self.pool[index]
+    }
+    
+    private var isFirst: Bool = false
     
     // Firebase firstKey
     private var firstKey: String? {
@@ -922,7 +935,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
      - parameter lastKey: It gets the data after the Key
      - parameter limit: It the limit of from after the lastKey.
      - parameter block: block The block that should be called. Change if successful will be returned. An error will return if it fails.
-    */
+     */
     public func prev(at lastKey: String?, toLast limit: UInt, block: ((SaladaChange?, Error?) -> Void)?) {
         
         if isFirst {
@@ -987,8 +1000,8 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         let key: String = self.pool[index]
         
         if cascade {
-            let parentPath: AnyHashable = "/\(Parent.path)/\(parentKey)/\(self.reference.key)/\(key)"
-            let childPath: AnyHashable = "/\(Child.path)/\(key)"
+            let parentPath: AnyHashable = "/\(Parent._path)/\(parentKey)/\(self.reference.key)/\(key)"
+            let childPath: AnyHashable = "/\(Child._path)/\(key)"
             
             self.databaseRef.updateChildValues([parentPath : NSNull(), childPath: NSNull()]) { (error, ref) in
                 if let error: Error = error {
@@ -1012,7 +1025,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     /**
      Removes all observers at the reference of key
      - parameter index: Order of the data source
-    */
+     */
     public func removeObserver(at index: Int) {
         if index < self.pool.count {
             let key: String = self.pool[index]
@@ -1028,7 +1041,7 @@ extension Salada where Child.Tsp == Child {
      Get an object from a data source
      - parameter index: Order of the data source
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
-    */
+     */
     public func object(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
         let key: String = self.pool[index]
         Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -1048,7 +1061,7 @@ extension Salada where Child.Tsp == Child {
      - parameter index: Orderr of the data source
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      - see removeObserver
-    */
+     */
     public func observeObject(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
         let key: String = self.pool[index]
         Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
