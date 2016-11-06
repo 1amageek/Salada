@@ -16,6 +16,11 @@ import CoreLocation
 
 class User: Ingredient {
     typealias Tsp = User
+    
+    override class var _version: String {
+        return "v2"
+    }
+    
     dynamic var name: String?
     dynamic var age: Int = 0
     dynamic var gender: String?
