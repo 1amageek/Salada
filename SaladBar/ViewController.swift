@@ -102,6 +102,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                         print(error)
                     }
                     group.users.insert(ref!.key)
+                    user.transaction(key: "age", value: 10, completion: { (ref, error) in
+                        if let error: Error = error {
+                            print(error)
+                        }
+                    })
                     
                 })
             })
