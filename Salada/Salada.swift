@@ -314,14 +314,14 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                             }
                             let mirror: Mirror = Mirror(reflecting: value)
                             switch ValueType.from(key: key, mirror: mirror, with: snapshot) {
-                            case .string(let key, let value):   self.setValue(value, forKey: key)
-                            case .int(let key, let value):   self.setValue(value, forKey: key)
-                            case .float(let key, let value):   self.setValue(value, forKey: key)
-                            case .double(let key, let value):   self.setValue(value, forKey: key)
-                            case .bool(let key, let value):   self.setValue(value, forKey: key)
-                            case .url(let key, _, let value):      self.setValue(value, forKey: key)
-                            case .date(let key, _, let value):  self.setValue(value, forKey: key)
-                            case .array(let key, let value):    self.setValue(value, forKey: key)
+                            case .string(let key, let value): self.setValue(value, forKey: key)
+                            case .int(let key, let value): self.setValue(value, forKey: key)
+                            case .float(let key, let value): self.setValue(value, forKey: key)
+                            case .double(let key, let value): self.setValue(value, forKey: key)
+                            case .bool(let key, let value): self.setValue(value, forKey: key)
+                            case .url(let key, _, let value): self.setValue(value, forKey: key)
+                            case .date(let key, _, let value): self.setValue(value, forKey: key)
+                            case .array(let key, let value): self.setValue(value, forKey: key)
                             case .relation(let key, _, let value): self.setValue(value, forKey: key)
                             case .file(let key, let file):
                                 file.parent = self
@@ -455,7 +455,11 @@ public class Ingredient: NSObject, Referenceable, Tasting {
             
             ref.runTransactionBlock({ (data) -> FIRTransactionResult in
                 
-                data.value = value
+                if data.value != nil {
+                    data.value = value
+                    return .success(withValue: data)
+                }
+                
                 return .success(withValue: data)
                 
             }, andCompletionBlock: { (error, committed, snapshot) in
@@ -537,6 +541,24 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         }
     }
     
+    // MARK: - Transaction
+    
+    /**
+     Set new value. Save will fail in the off-line.
+     - parameter key: 
+     - parameter value:
+     - parameter completion: If successful reference will return. An error will return if it fails.
+     */
+    
+    private var transactionBlock: ((FIRDatabaseReference?, Error?) -> Void)?
+    
+    public func transaction(key: String, value: Any, completion: ((FIRDatabaseReference?, Error?) -> Void)?) {
+        
+        self.transactionBlock = completion
+        self.setValue(value, forKey: key)
+        
+    }
+    
     // MARK: - Delete
     
     open func remove() {
@@ -561,9 +583,9 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         let keys: [String] = Mirror(reflecting: self).children.flatMap({ return $0.label })
         if keys.contains(keyPath) {
             
-            if let value: AnyObject = object.value(forKey: keyPath) as AnyObject? {
+            if let value: Any = object.value(forKey: keyPath) as Any? {
                 if let _: File = value as? File {
-                    if let change: [NSKeyValueChangeKey: AnyObject] = change as [NSKeyValueChangeKey: AnyObject]? {
+                    if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
                         let new: File = change[.newKey] as! File
                         if let old: File = change[.oldKey] as? File {
                             if old.name != new.name {
@@ -582,7 +604,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                     }
                 } else if let values: Set<String> = value as? Set<String> {
                     if values.isEmpty { return }
-                    if let change: [NSKeyValueChangeKey: AnyObject] = change as [NSKeyValueChangeKey: AnyObject]? {
+                    if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
                         
                         let new: Set<String> = change[.newKey] as! Set<String>
                         let old: Set<String> = change[.oldKey] as! Set<String>
@@ -623,7 +645,11 @@ public class Ingredient: NSObject, Referenceable, Tasting {
             if let child: String = child {
                 path = "\(keyPath)/\(child)"
             }
-            reference.updateChildValues([path: value, "_updatedAt": timestamp])
+            //reference.updateChildValues([path: value, "_updatedAt": timestamp])
+            reference.updateChildValues([path: value, "_updatedAt": timestamp], withCompletionBlock: { (error, ref) in
+                self.transactionBlock?(ref, error)
+                self.transactionBlock = nil
+            })
         } else {
             reference.child(keyPath).child(id).removeValue()
         }
