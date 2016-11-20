@@ -10,7 +10,7 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 
 ## Requirements ❗️
 - iOS 8 or later
-- Swift 2.3
+- Swift 3.0 or later
 - [Firebase database](https://firebase.google.com/docs/database/ios/start)
 - [Firebase storage](https://firebase.google.com/docs/storage/ios/start)
 
