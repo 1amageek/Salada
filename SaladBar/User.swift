@@ -18,7 +18,7 @@ class User: Ingredient {
     typealias Tsp = User
     
     override class var _version: String {
-        return "v2"
+        return "v1"
     }
     
     dynamic var name: String?

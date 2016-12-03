@@ -66,6 +66,7 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
                         }
                     }
                 })
+                block(children)
             } else {
                 block([])
             }
@@ -83,6 +84,24 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
                 }
             } else {
                 block(nil)
+            }
+        })
+    }
+    
+    public static func observeSingle(child key: String, contains value: String, eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void) {
+        self.databaseRef.queryOrdered(byChild: key).queryStarting(atValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Tsp] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                            children.append(tsp)
+                        }
+                    }
+                })
+                block(children)
+            } else {
+                block([])
             }
         })
     }
@@ -242,14 +261,9 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                     return .object(key, value)
                 }
             } else if subjectType == File.self || subjectType == File?.self {
-                if let _: String = snapshot[key] as? String {
-                    /*if let _: File = value as? File {
-                     
-                     } else {
-                     let file: File = File(name: name)
-                     file.keyPath = key
-                     self.setValue(file, forKey: key)
-                     }*/
+                if let value: String = snapshot[key] as? String {
+                    let file: File = File(name: value)
+                    return .file(key, file)
                 }
             }
             return .null
@@ -314,19 +328,19 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                             }
                             let mirror: Mirror = Mirror(reflecting: value)
                             switch ValueType.from(key: key, mirror: mirror, with: snapshot) {
-                            case .string(let key, let value):   self.setValue(value, forKey: key)
-                            case .int(let key, let value):   self.setValue(value, forKey: key)
-                            case .float(let key, let value):   self.setValue(value, forKey: key)
-                            case .double(let key, let value):   self.setValue(value, forKey: key)
-                            case .bool(let key, let value):   self.setValue(value, forKey: key)
-                            case .url(let key, _, let value):      self.setValue(value, forKey: key)
-                            case .date(let key, _, let value):  self.setValue(value, forKey: key)
-                            case .array(let key, let value):    self.setValue(value, forKey: key)
+                            case .string(let key, let value): self.setValue(value, forKey: key)
+                            case .int(let key, let value): self.setValue(value, forKey: key)
+                            case .float(let key, let value): self.setValue(value, forKey: key)
+                            case .double(let key, let value): self.setValue(value, forKey: key)
+                            case .bool(let key, let value): self.setValue(value, forKey: key)
+                            case .url(let key, _, let value): self.setValue(value, forKey: key)
+                            case .date(let key, _, let value): self.setValue(value, forKey: key)
+                            case .array(let key, let value): self.setValue(value, forKey: key)
                             case .relation(let key, _, let value): self.setValue(value, forKey: key)
                             case .file(let key, let file):
                                 file.parent = self
                                 file.keyPath = key
-                                self.setValue(value, forKey: key)
+                                self.setValue(file, forKey: key)
                             case .object(let key, let value): self.setValue(value, forKey: key)
                             case .null: break
                             }
@@ -455,7 +469,11 @@ public class Ingredient: NSObject, Referenceable, Tasting {
             
             ref.runTransactionBlock({ (data) -> FIRTransactionResult in
                 
-                data.value = value
+                if data.value != nil {
+                    data.value = value
+                    return .success(withValue: data)
+                }
+                
                 return .success(withValue: data)
                 
             }, andCompletionBlock: { (error, committed, snapshot) in
@@ -537,6 +555,24 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         }
     }
     
+    // MARK: - Transaction
+    
+    /**
+     Set new value. Save will fail in the off-line.
+     - parameter key:
+     - parameter value:
+     - parameter completion: If successful reference will return. An error will return if it fails.
+     */
+    
+    private var transactionBlock: ((FIRDatabaseReference?, Error?) -> Void)?
+    
+    public func transaction(key: String, value: Any, completion: ((FIRDatabaseReference?, Error?) -> Void)?) {
+        
+        self.transactionBlock = completion
+        self.setValue(value, forKey: key)
+        
+    }
+    
     // MARK: - Delete
     
     open func remove() {
@@ -561,9 +597,9 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         let keys: [String] = Mirror(reflecting: self).children.flatMap({ return $0.label })
         if keys.contains(keyPath) {
             
-            if let value: AnyObject = object.value(forKey: keyPath) as AnyObject? {
+            if let value: Any = object.value(forKey: keyPath) as Any? {
                 if let _: File = value as? File {
-                    if let change: [NSKeyValueChangeKey: AnyObject] = change as [NSKeyValueChangeKey: AnyObject]? {
+                    if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
                         let new: File = change[.newKey] as! File
                         if let old: File = change[.oldKey] as? File {
                             if old.name != new.name {
@@ -580,9 +616,9 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                             _ = new.save(keyPath)
                         }
                     }
-                } else if let values: Set<String> = value as? Set<String> {
-                    if values.isEmpty { return }
-                    if let change: [NSKeyValueChangeKey: AnyObject] = change as [NSKeyValueChangeKey: AnyObject]? {
+                } else if let _: Set<String> = value as? Set<String> {
+                    
+                    if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
                         
                         let new: Set<String> = change[.newKey] as! Set<String>
                         let old: Set<String> = change[.oldKey] as! Set<String>
@@ -623,9 +659,15 @@ public class Ingredient: NSObject, Referenceable, Tasting {
             if let child: String = child {
                 path = "\(keyPath)/\(child)"
             }
-            reference.updateChildValues([path: value, "_updatedAt": timestamp])
+            //reference.updateChildValues([path: value, "_updatedAt": timestamp])
+            reference.updateChildValues([path: value, "_updatedAt": timestamp], withCompletionBlock: { (error, ref) in
+                self.transactionBlock?(ref, error)
+                self.transactionBlock = nil
+            })
         } else {
-            reference.child(keyPath).child(id).removeValue()
+            if let childKey: String = child {
+                reference.child(keyPath).child(childKey).removeValue()
+            }
         }
     }
     
