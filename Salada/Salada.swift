@@ -66,6 +66,7 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
                         }
                     }
                 })
+                block(children)
             } else {
                 block([])
             }
@@ -83,6 +84,24 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
                 }
             } else {
                 block(nil)
+            }
+        })
+    }
+    
+    public static func observeSingle(child key: String, contains value: String, eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void) {
+        self.databaseRef.queryOrdered(byChild: key).queryStarting(atValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Tsp] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                            children.append(tsp)
+                        }
+                    }
+                })
+                block(children)
+            } else {
+                block([])
             }
         })
     }
@@ -242,14 +261,9 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                     return .object(key, value)
                 }
             } else if subjectType == File.self || subjectType == File?.self {
-                if let _: String = snapshot[key] as? String {
-                    /*if let _: File = value as? File {
-                     
-                     } else {
-                     let file: File = File(name: name)
-                     file.keyPath = key
-                     self.setValue(file, forKey: key)
-                     }*/
+                if let value: String = snapshot[key] as? String {
+                    let file: File = File(name: value)
+                    return .file(key, file)
                 }
             }
             return .null
@@ -326,7 +340,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                             case .file(let key, let file):
                                 file.parent = self
                                 file.keyPath = key
-                                self.setValue(value, forKey: key)
+                                self.setValue(file, forKey: key)
                             case .object(let key, let value): self.setValue(value, forKey: key)
                             case .null: break
                             }
@@ -545,7 +559,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
     
     /**
      Set new value. Save will fail in the off-line.
-     - parameter key: 
+     - parameter key:
      - parameter value:
      - parameter completion: If successful reference will return. An error will return if it fails.
      */
@@ -602,8 +616,8 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                             _ = new.save(keyPath)
                         }
                     }
-                } else if let values: Set<String> = value as? Set<String> {
-                    if values.isEmpty { return }
+                } else if let _: Set<String> = value as? Set<String> {
+                    
                     if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
                         
                         let new: Set<String> = change[.newKey] as! Set<String>
@@ -651,7 +665,9 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                 self.transactionBlock = nil
             })
         } else {
-            reference.child(keyPath).child(id).removeValue()
+            if let childKey: String = child {
+                reference.child(keyPath).child(childKey).removeValue()
+            }
         }
     }
     
