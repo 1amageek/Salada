@@ -17,7 +17,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.datasource?.prev()
     }
     
-    var groupID: String?// = "-KTw5x_4c5ux6X6W3_ax"
+    var groupID: String?
     
     @IBAction func add(_ sender: AnyObject) {
         if let id: String = self.groupID {
@@ -68,6 +68,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.view.addSubview(tableView)
     }
     
+    var dbRef: FIRDatabaseReference!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
@@ -78,7 +80,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     
             self.groupID = ref!.key
             
-            (0..<10).forEach({ (index) in
+            (0..<40).forEach({ (index) in
                 let user: User = User()
 //                let image: UIImage = UIImage(named: "salada")!
 //                let data: Data = UIImagePNGRepresentation(image)!
@@ -100,11 +102,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 user.save({ (ref, error) in
                     if let error: Error = error {
                         print(error)
+                        return
                     }
                     group.users.insert(ref!.key)
                     user.transaction(key: "age", value: 10, completion: { (ref, error) in
                         if let error: Error = error {
                             print(error)
+                            return
                         }
                     })
                     
@@ -138,12 +142,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.datasource?.count ?? 0
     }
@@ -158,26 +156,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.datasource?.observeObject(at: indexPath.item, block: { (user) in
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
-            
-//            print(user?.name)
-//            print(user?.age)
-//            print(user?.birth)
-//            print(user?.gender)
-//            print(user?.url)
-//            print(user?.items)
-//            print(user?.location)
-//            print(user?.type)
-//            print(user?.groups)
-//            print(user?.thumbnail)
-            
         })
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        guard let user: User = self.datasource?.objectAtIndex((indexPath as NSIndexPath).item) else { return }
-//        let viewConntroller: GroupViewController = GroupViewController()
-//        viewConntroller.userID = user.id
-//        self.present(viewConntroller, animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
