@@ -30,17 +30,17 @@
 ///     <li>user_engagement</li>
 /// </ul>
 ///
-/// @param name The name of the event. Should contain 1 to 32 alphanumeric characters or
+/// @param name The name of the event. Should contain 1 to 40 alphanumeric characters or
 ///     underscores. The name must start with an alphabetic character. Some event names are
 ///     reserved. See FIREventNames.h for the list of reserved event names. The "firebase_" prefix
 ///     is reserved and should not be used. Note that event names are case-sensitive and that
 ///     logging two events whose names differ only in case will result in two distinct events.
 /// @param parameters The dictionary of event parameters. Passing nil indicates that the event has
-///     no parameters. Parameter names can be up to 24 characters long and must start with an
+///     no parameters. Parameter names can be up to 40 characters long and must start with an
 ///     alphabetic character and contain only alphanumeric characters and underscores. Only NSString
 ///     and NSNumber (signed 64-bit integer and 64-bit floating-point number) parameter types are
-///     supported. NSString parameter values can be up to 36 characters long. The "firebase_" prefix
-///     is reserved and should not be used for parameter names.
+///     supported. NSString parameter values can be up to 100 characters long. The "firebase_"
+///     prefix is reserved and should not be used for parameter names.
 + (void)logEventWithName:(nonnull NSString *)name
               parameters:(nullable NSDictionary<NSString *, NSObject *> *)parameters;
 
@@ -67,5 +67,29 @@
 /// @param userID The user ID to ascribe to the user of this app on this device, which must be
 ///     non-empty and no more than 36 characters long. Setting userID to nil removes the user ID.
 + (void)setUserID:(nullable NSString *)userID;
+
+/// Sets the current screen name, which specifies the current visual context in your app. This helps
+/// identify the areas in your app where users spend their time and how they interact with your app.
+///
+/// Note that screen reporting is enabled automatically and records the class name of the current
+/// UIViewController for you without requiring you to call this method. If you implement
+/// viewDidAppear in your UIViewController but do not call [super viewDidAppear:], that screen class
+/// will not be automatically tracked. The class name can optionally be overridden by calling this
+/// method in the viewDidAppear callback of your UIViewController and specifying the
+/// screenClassOverride parameter.
+///
+/// If your app does not use a distinct UIViewController for each screen, you should call this
+/// method and specify a distinct screenName each time a new screen is presented to the user.
+///
+/// The screen name and screen class remain in effect until the current UIViewController changes or
+/// a new call to setScreenName:screenClass: is made.
+///
+/// @param screenName The name of the current screen. Should contain 1 to 100 characters. Set to nil
+///     to clear the current screen name.
+/// @param screenClassOverride The name of the screen class. Should contain 1 to 100 characters. By
+///     default this is the class name of the current UIViewController. Set to nil to revert to the
+///     default class name.
++ (void)setScreenName:(nullable NSString *)screenName
+          screenClass:(nullable NSString *)screenClassOverride;
 
 @end

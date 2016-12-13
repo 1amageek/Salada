@@ -74,72 +74,91 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         
-        let group: Group = Group()
-        group.name = "iOS Development Team"
-        group.save { (ref, error) in
-                    
-            self.groupID = ref!.key
-            
-            (0..<40).forEach({ (index) in
-                let user: User = User()
-//                let image: UIImage = UIImage(named: "salada")!
-//                let data: Data = UIImagePNGRepresentation(image)!
-//                let thumbnail: File = File(name: "salada.png", data: data)
-//                let cover: File = File(name: "ssswww", data: data)
-//                thumbnail.data = data
-//                user.thumbnail = thumbnail
-//                user.cover = cover
-                user.tempName = "Test1_name"
-                user.name = "\(index)"
-                user.gender = "man"
-                user.age = index
-                user.url = URL(string: "https://www.google.co.jp/")
-                user.items = ["Book", "Pen"]
-                user.groups.insert(ref!.key)
-                user.location = CLLocation(latitude: 1, longitude: 1)
-                user.type = .second
-                user.birth = Date()
-                user.save({ (ref, error) in
-                    if let error: Error = error {
-                        print(error)
-                        return
-                    }
-                    group.users.insert(ref!.key)
-                    user.transaction(key: "age", value: 10, completion: { (ref, error) in
-                        if let error: Error = error {
-                            print(error)
-                            return
-                        }
-                    })
-                    
-                })
-            })
+//        FIRAuth.auth()?.signInAnonymously(completion: { (user, erro) in
+//            
+//        })
         
-            do {
-                
-                let options: SaladaOptions = SaladaOptions()
-                options.limit = 10
-                options.ascending = false
-                
-                self.datasource = Salada(parentKey: ref!.key, referenceKey: "users", options: options, block: { [weak self](changes) in
-                    guard let tableView: UITableView = self?.tableView else { return }
-                    
-                    switch changes {
-                    case .initial:
-                        tableView.reloadData()
-                    case .update(let deletions, let insertions, let modifications):
-                        tableView.beginUpdates()
-                        tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-                        tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-                        tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-                        tableView.endUpdates()
-                    case .error(let error):
-                        print(error)
-                    }
-                })
-                
-            }
-        }
+        User.observeSingle(child: "groups", contains: "-KYIEXGoGZO-CWzrT2yU", eventType: .value, block: { users in
+            print(users)
+            users.forEach({ (user) in
+                print(user.name)
+            })
+        })
+        
+        User.observeSingle(child: "name", equal: "0", eventType: .value, block: { users in
+            print("!!!", users)
+            users.forEach({ (user) in
+                print(user.name)
+            })
+        })
+        
+        
+//        let group: Group = Group()
+//        group.name = "iOS Development Team"
+//        group.save { (ref, error) in
+//                    
+//            self.groupID = ref!.key
+//            
+//            (0..<40).forEach({ (index) in
+//                let user: User = User()
+////                let image: UIImage = UIImage(named: "salada")!
+////                let data: Data = UIImagePNGRepresentation(image)!
+////                let thumbnail: File = File(name: "salada.png", data: data)
+////                let cover: File = File(name: "ssswww", data: data)
+////                thumbnail.data = data
+////                user.thumbnail = thumbnail
+////                user.cover = cover
+//                user.tempName = "Test1_name"
+//                user.name = "\(index)"
+//                user.gender = "man"
+//                user.age = index
+//                user.url = URL(string: "https://www.google.co.jp/")
+//                user.items = ["Book", "Pen"]
+//                user.groups.insert(ref!.key)
+//                user.location = CLLocation(latitude: 1, longitude: 1)
+//                user.type = .second
+//                user.birth = Date()
+//                user.save({ (ref, error) in
+//                    if let error: Error = error {
+//                        print(error)
+//                        return
+//                    }
+//                    group.users.insert(ref!.key)
+//                    user.transaction(key: "age", value: 10, completion: { (ref, error) in
+//                        if let error: Error = error {
+//                            print(error)
+//                            return
+//                        }
+//                    })
+//                    
+//                })
+//            })
+//        
+//            do {
+//                
+//                let options: SaladaOptions = SaladaOptions()
+//                options.limit = 10
+//                options.ascending = false
+//                
+//                self.datasource = Salada(parentKey: ref!.key, referenceKey: "users", options: options, block: { [weak self](changes) in
+//                    guard let tableView: UITableView = self?.tableView else { return }
+//                    
+//                    switch changes {
+//                    case .initial:
+//                        tableView.reloadData()
+//                    case .update(let deletions, let insertions, let modifications):
+//                        tableView.beginUpdates()
+//                        tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+//                        tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+//                        tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+//                        tableView.endUpdates()
+//                    case .error(let error):
+//                        print(error)
+//                    }
+//                })
+//                
+//            }
+//        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
