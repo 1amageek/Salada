@@ -7,14 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		123C74891DB8557F0079CF4A /* SaladaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE3D1DB5CA21003A3104 /* SaladaTests.swift */; };
-		1275E82A1DB5CEE0004F74AC /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1275E8291DB5CEE0004F74AC /* Object.swift */; };
 		12A4FE341DB5C987003A3104 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12A4FE311DB5C987003A3104 /* GoogleService-Info.plist */; };
 		12A4FE351DB5C987003A3104 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE321DB5C987003A3104 /* Group.swift */; };
 		12A4FE361DB5C987003A3104 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE331DB5C987003A3104 /* User.swift */; };
-		12A4FE401DB5CA21003A3104 /* Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 122315381D645A7A003864BD /* Salada.framework */; };
-		12A4FE461DB5CABA003A3104 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12A4FE311DB5C987003A3104 /* GoogleService-Info.plist */; };
-		12A4FE471DB5CABF003A3104 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 128C829A1D855B4E001321B9 /* Salada.swift */; };
 		12CB1A5A1D95184300E69000 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CB1A591D95184300E69000 /* AppDelegate.swift */; };
 		12CB1A5C1D95184300E69000 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CB1A5B1D95184300E69000 /* ViewController.swift */; };
 		12CB1A5F1D95184300E69000 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A5D1D95184300E69000 /* Main.storyboard */; };
@@ -22,26 +17,8 @@
 		12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A621D95184300E69000 /* LaunchScreen.storyboard */; };
 		12CB1A881D95193900E69000 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 128C829A1D855B4E001321B9 /* Salada.swift */; };
 		3A727F340C83AD670D531A0A /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; };
-		993565D2BB0F4BEB6FE46FC9 /* Pods_SaladaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */; };
 		C35C4D47E9AF5DFEAD3BE386 /* Pods_SaladBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		123C748A1DB8586E0079CF4A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 122314E61D618B22003864BD /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 12CB1A561D95184300E69000;
-			remoteInfo = SaladBar;
-		};
-		12A4FE411DB5CA21003A3104 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 122314E61D618B22003864BD /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 122315371D645A7A003864BD;
-			remoteInfo = Salada;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -52,7 +29,6 @@
 		12A4FE311DB5C987003A3104 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		12A4FE321DB5C987003A3104 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		12A4FE331DB5C987003A3104 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		12A4FE3B1DB5CA21003A3104 /* SaladaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaladaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		12A4FE3D1DB5CA21003A3104 /* SaladaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaladaTests.swift; sourceTree = "<group>"; };
 		12A4FE3F1DB5CA21003A3104 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12CB1A571D95184300E69000 /* SaladBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaladBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,15 +61,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		12A4FE381DB5CA21003A3104 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				12A4FE401DB5CA21003A3104 /* Salada.framework in Frameworks */,
-				993565D2BB0F4BEB6FE46FC9 /* Pods_SaladaTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		12CB1A541D95184300E69000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -122,7 +89,6 @@
 			children = (
 				122315381D645A7A003864BD /* Salada.framework */,
 				12CB1A571D95184300E69000 /* SaladBar.app */,
-				12A4FE3B1DB5CA21003A3104 /* SaladaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -222,28 +188,6 @@
 			productReference = 122315381D645A7A003864BD /* Salada.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		12A4FE3A1DB5CA21003A3104 /* SaladaTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 12A4FE431DB5CA21003A3104 /* Build configuration list for PBXNativeTarget "SaladaTests" */;
-			buildPhases = (
-				D4019132E5A6BE4223C27233 /* [CP] Check Pods Manifest.lock */,
-				12A4FE371DB5CA21003A3104 /* Sources */,
-				12A4FE381DB5CA21003A3104 /* Frameworks */,
-				12A4FE391DB5CA21003A3104 /* Resources */,
-				C9DF14B426C061A4475FD728 /* [CP] Embed Pods Frameworks */,
-				45A110FFE3030E7DC767DC13 /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				12A4FE421DB5CA21003A3104 /* PBXTargetDependency */,
-				123C748B1DB8586E0079CF4A /* PBXTargetDependency */,
-			);
-			name = SaladaTests;
-			productName = SaladaTests;
-			productReference = 12A4FE3B1DB5CA21003A3104 /* SaladaTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		12CB1A561D95184300E69000 /* SaladBar */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 12CB1A821D95184300E69000 /* Build configuration list for PBXNativeTarget "SaladBar" */;
@@ -278,11 +222,6 @@
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 0800;
 					};
-					12A4FE3A1DB5CA21003A3104 = {
-						CreatedOnToolsVersion = 8.1;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 12CB1A561D95184300E69000;
-					};
 					12CB1A561D95184300E69000 = {
 						CreatedOnToolsVersion = 8.0;
 						LastSwiftMigration = 0810;
@@ -305,7 +244,6 @@
 			targets = (
 				122315371D645A7A003864BD /* Salada */,
 				12CB1A561D95184300E69000 /* SaladBar */,
-				12A4FE3A1DB5CA21003A3104 /* SaladaTests */,
 			);
 		};
 /* End PBXProject section */
@@ -315,14 +253,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		12A4FE391DB5CA21003A3104 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				12A4FE461DB5CABA003A3104 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +297,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		0E813B8885CA5123AB9EAF62 /* [CP] Copy Pods Resources */ = {
@@ -385,21 +315,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SaladBar/Pods-SaladBar-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		45A110FFE3030E7DC767DC13 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		71A2FB42C9CCDAE2FF1BA326 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -412,7 +327,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		75820A7BB1ECCD41DFA14D78 /* [CP] Embed Pods Frameworks */ = {
@@ -430,36 +345,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SaladBar/Pods-SaladBar-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C9DF14B426C061A4475FD728 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D4019132E5A6BE4223C27233 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -467,16 +352,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		12A4FE371DB5CA21003A3104 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1275E82A1DB5CEE0004F74AC /* Object.swift in Sources */,
-				123C74891DB8557F0079CF4A /* SaladaTests.swift in Sources */,
-				12A4FE471DB5CABF003A3104 /* Salada.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,19 +368,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		123C748B1DB8586E0079CF4A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 12CB1A561D95184300E69000 /* SaladBar */;
-			targetProxy = 123C748A1DB8586E0079CF4A /* PBXContainerItemProxy */;
-		};
-		12A4FE421DB5CA21003A3104 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 122315371D645A7A003864BD /* Salada */;
-			targetProxy = 12A4FE411DB5CA21003A3104 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		12CB1A5D1D95184300E69000 /* Main.storyboard */ = {
@@ -628,6 +490,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Salada/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Salada;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -653,6 +516,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Salada/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Salada;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -661,41 +525,6 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		12A4FE441DB5CA21003A3104 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 358EA389C352FB0DBF611EBD /* Pods-SaladaTests.debug.xcconfig */;
-			buildSettings = {
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				DEVELOPMENT_TEAM = 88ACA86N96;
-				INFOPLIST_FILE = SaladaTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.SaladaTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaladBar.app/SaladBar";
-			};
-			name = Debug;
-		};
-		12A4FE451DB5CA21003A3104 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 788D92D6A77F55576E11BEF0 /* Pods-SaladaTests.release.xcconfig */;
-			buildSettings = {
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				DEVELOPMENT_TEAM = 88ACA86N96;
-				INFOPLIST_FILE = SaladaTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.SaladaTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaladBar.app/SaladBar";
 			};
 			name = Release;
 		};
@@ -756,15 +585,6 @@
 			buildConfigurations = (
 				122315421D645A7A003864BD /* Debug */,
 				122315431D645A7A003864BD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		12A4FE431DB5CA21003A3104 /* Build configuration list for PBXNativeTarget "SaladaTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				12A4FE441DB5CA21003A3104 /* Debug */,
-				12A4FE451DB5CA21003A3104 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

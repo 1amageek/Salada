@@ -106,6 +106,24 @@ public extension Tasting where Tsp == Self, Tsp: Referenceable {
         })
     }
     
+    public static func observeSingle(child key: String, equal value: String, eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void) {
+        self.databaseRef.queryOrdered(byChild: key).queryEqual(toValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Tsp] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
+                            children.append(tsp)
+                        }
+                    }
+                })
+                block(children)
+            } else {
+                block([])
+            }
+        })
+    }
+    
     /**
      A function that gets all data from DB whenever DB has been changed.
      */
@@ -862,7 +880,12 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     
     deinit {
         self.reference.removeAllObservers()
+        if let handle: UInt = self.addedHandle {
+            self.addReference?.removeObserver(withHandle: handle)
+        }
     }
+    
+    private var addReference: FIRDatabaseQuery?
     
     fileprivate var addedHandle: UInt?
     fileprivate var changedHandle: UInt?
@@ -900,6 +923,7 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             if let fiarstKey: String = strongSelf.pool.first {
                 addReference = addReference.queryOrderedByKey().queryStarting(atValue: fiarstKey)
             }
+            strongSelf.addReference = addReference
             strongSelf.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
                 objc_sync_enter(self)
                 let key: String = snapshot.key
