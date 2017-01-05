@@ -19,10 +19,21 @@ extension Salada {
 
         public typealias Element = String
 
+        override init() {
+            super.init()
+        }
+
+        public convenience init<Source : Sequence>(_ sequence: Source) where Source.Iterator.Element == Element {
+            self.init()
+            _Self = Array(sequence)
+        }
+
         required convenience public init(arrayLiteral elements: Relation.Element...) {
             self.init()
             _Self = elements
         }
+
+        public var saved: Bool = false
 
         public var startIndex: Int {
             return _Self.startIndex
@@ -63,15 +74,31 @@ extension Salada {
         // MARK: -
 
         public func insert(_ newMember: Element) {
+            if saved {
 
+            } else {
+                if !_Self.contains(newMember) {
+                    _Self.append(newMember)
+                }
+            }
         }
 
         public func remove(_ member: Element) {
-            
+            if saved {
+
+            } else {
+                if let index: Int = self.index(of: member) {
+                    _Self.remove(at: index)
+                }
+            }
         }
         
         public func removeAll() {
-            
+            if saved {
+
+            } else {
+                _Self = []
+            }
         }
         
         // MARK: -
