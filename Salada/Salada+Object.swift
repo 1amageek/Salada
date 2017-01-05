@@ -44,82 +44,175 @@ extension Salada {
             case date(String, TimeInterval, Date)
             case url(String, String, URL)
             case array(String, [Any])
-            case relation(String, [String: Bool], Set<String>)
+            case set(String, [String: Bool], Set<String>)
+            case relation(String, [String: Bool], Relation)
             case file(String, File)
             case object(String, Any)
             case null
 
-            static func from(key: String, value: Any) -> ValueType {
+            init(key: String, value: Any) {
                 switch value.self {
-                case is String:         if let value: String        = value as? String      { return .string(key, value)  }
-                case is URL:            if let value: URL           = value as? URL         { return .url(key, value.absoluteString, value) }
-                case is Date:           if let value: Date          = value as? Date        { return .date(key, value.timeIntervalSince1970, value)}
-                case is Int:            if let value: Int           = value as? Int         { return .int(key, Int(value)) }
-                case is Double:         if let value: Double        = value as? Double      { return .double(key, Double(value)) }
-                case is Float:          if let value: Float         = value as? Float       { return .float(key, Float(value)) }
-                case is Bool:           if let value: Bool          = value as? Bool        { return .bool(key, Bool(value)) }
-                case is [String]:       if let value: [String]      = value as? [String], !value.isEmpty { return .array(key, value) }
-                case is Set<String>:    if let value: Set<String>   = value as? Set<String>, !value.isEmpty { return .relation(key, value.toKeys(), value) }
-                case is File:           if let value: File          = value as? File        { return .file(key, value) }
-                case is [String: Any]:  if let value: [String: Any] = value as? [String: Any] { return .object(key, value)}
-                default: break
+                case is String:         if let value: String        = value as? String      { self = .string(key, value); return }
+                case is URL:            if let value: URL           = value as? URL         { self = .url(key, value.absoluteString, value); return }
+                case is Date:           if let value: Date          = value as? Date        { self = .date(key, value.timeIntervalSince1970, value); return }
+                case is Int:            if let value: Int           = value as? Int         { self = .int(key, Int(value)); return }
+                case is Double:         if let value: Double        = value as? Double      { self = .double(key, Double(value)); return }
+                case is Float:          if let value: Float         = value as? Float       { self = .float(key, Float(value)); return }
+                case is Bool:           if let value: Bool          = value as? Bool        { self = .bool(key, Bool(value)); return }
+                case is [String]:       if let value: [String]      = value as? [String], !value.isEmpty { self = .array(key, value) }
+                case is Set<String>:    if let value: Set<String>   = value as? Set<String>, !value.isEmpty { self = .set(key, value.toKeys(), value); return }
+                case is Relation:       if let value: Relation      = value as? Relation    { self = .relation(key, value.toKeys(), value); return }
+                case is File:           if let value: File          = value as? File        { self = .file(key, value); return }
+                case is [String: Any]:  if let value: [String: Any] = value as? [String: Any] { self = .object(key, value); return }
+                default: self = .null
                 }
-                return .null
+                self = .null
             }
 
-            static func from(key: String, mirror: Mirror, with snapshot: [String: Any]) -> ValueType {
+            init(key: String, mirror: Mirror, snapshot: [AnyHashable: Any]) {
                 let subjectType: Any.Type = mirror.subjectType
                 if subjectType == String.self || subjectType == String?.self {
                     if let value: String = snapshot[key] as? String {
-                        return .string(key, value)
+                        self = .string(key, value)
+                        return
                     }
                 } else if subjectType == URL.self || subjectType == URL?.self {
                     if
                         let value: String = snapshot[key] as? String,
                         let url: URL = URL(string: value)  {
-                        return .url(key, value, url)
+                        self = .url(key, value, url)
+                        return
                     }
                 } else if subjectType == Date.self || subjectType == Date?.self {
                     if let value: Double = snapshot[key] as? Double {
                         let date: Date = Date(timeIntervalSince1970: TimeInterval(value))
-                        return .date(key, value, date)
+                        self = .date(key, value, date)
+                        return
                     }
                 } else if subjectType == Double.self || subjectType == Double?.self {
                     if let value: Double = snapshot[key] as? Double {
-                        return .double(key, Double(value))
+                        self = .double(key, Double(value))
+                        return
                     }
                 } else if subjectType == Int.self || subjectType == Int?.self {
                     if let value: Int = snapshot[key] as? Int {
-                        return .int(key, Int(value))
+                        self = .int(key, Int(value))
+                        return
                     }
                 } else if subjectType == Float.self || subjectType == Float?.self {
                     if let value: Float = snapshot[key] as? Float {
-                        return .float(key, Float(value))
+                        self = .float(key, Float(value))
+                        return
                     }
                 } else if subjectType == Bool.self || subjectType == Bool?.self {
                     if let value: Bool = snapshot[key] as? Bool {
-                        return .bool(key, Bool(value))
+                        self = .bool(key, Bool(value))
+                        return
                     }
                 } else if subjectType == [String].self || subjectType == [String]?.self {
                     if let value: [String] = snapshot[key] as? [String], !value.isEmpty {
-                        return .array(key, value)
+                        self = .array(key, value)
+                        return
                     }
                 } else if subjectType == Set<String>.self || subjectType == Set<String>?.self {
                     if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
-                        return .relation(key, value, Set(value.keys))
+                        self = .set(key, value, Set<String>(value.keys))
+                        return
+                    }
+                } else if subjectType == Relation.self || subjectType == Relation?.self {
+                    if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
+                        self = .relation(key, value, Relation(value.keys))
+                        return
                     }
                 } else if subjectType == [String: Any].self || subjectType == [String: Any]?.self {
                     if let value: [String: Any] = snapshot[key] as? [String: Any] {
-                        return .object(key, value)
+                        self = .object(key, value)
+                        return
                     }
                 } else if subjectType == File.self || subjectType == File?.self {
                     if let value: String = snapshot[key] as? String {
                         let file: File = File(name: value)
-                        return .file(key, file)
+                        self = .file(key, file)
+                        return
                     }
+                } else {
+                    self = .null
                 }
-                return .null
+                self = .null
             }
+
+//            static func from(key: String, value: Any) -> ValueType {
+//                switch value.self {
+//                case is String:         if let value: String        = value as? String      { return .string(key, value)  }
+//                case is URL:            if let value: URL           = value as? URL         { return .url(key, value.absoluteString, value) }
+//                case is Date:           if let value: Date          = value as? Date        { return .date(key, value.timeIntervalSince1970, value)}
+//                case is Int:            if let value: Int           = value as? Int         { return .int(key, Int(value)) }
+//                case is Double:         if let value: Double        = value as? Double      { return .double(key, Double(value)) }
+//                case is Float:          if let value: Float         = value as? Float       { return .float(key, Float(value)) }
+//                case is Bool:           if let value: Bool          = value as? Bool        { return .bool(key, Bool(value)) }
+//                case is [String]:       if let value: [String]      = value as? [String], !value.isEmpty { return .array(key, value) }
+//                //case is Set<String>:    if let value: Set<String>   = value as? Set<String>, !value.isEmpty { return .relation(key, value.toKeys(), value) }
+//                case is Relation:       if let value: Relation      = value as? Relation    { return .relation(key, value.toKeys(), value) }
+//                case is File:           if let value: File          = value as? File        { return .file(key, value) }
+//                case is [String: Any]:  if let value: [String: Any] = value as? [String: Any] { return .object(key, value)}
+//                default: break
+//                }
+//                return .null
+//            }
+//
+//            static func from(key: String, mirror: Mirror, with snapshot: [String: Any]) -> ValueType {
+//                let subjectType: Any.Type = mirror.subjectType
+//                if subjectType == String.self || subjectType == String?.self {
+//                    if let value: String = snapshot[key] as? String {
+//                        return .string(key, value)
+//                    }
+//                } else if subjectType == URL.self || subjectType == URL?.self {
+//                    if
+//                        let value: String = snapshot[key] as? String,
+//                        let url: URL = URL(string: value)  {
+//                        return .url(key, value, url)
+//                    }
+//                } else if subjectType == Date.self || subjectType == Date?.self {
+//                    if let value: Double = snapshot[key] as? Double {
+//                        let date: Date = Date(timeIntervalSince1970: TimeInterval(value))
+//                        return .date(key, value, date)
+//                    }
+//                } else if subjectType == Double.self || subjectType == Double?.self {
+//                    if let value: Double = snapshot[key] as? Double {
+//                        return .double(key, Double(value))
+//                    }
+//                } else if subjectType == Int.self || subjectType == Int?.self {
+//                    if let value: Int = snapshot[key] as? Int {
+//                        return .int(key, Int(value))
+//                    }
+//                } else if subjectType == Float.self || subjectType == Float?.self {
+//                    if let value: Float = snapshot[key] as? Float {
+//                        return .float(key, Float(value))
+//                    }
+//                } else if subjectType == Bool.self || subjectType == Bool?.self {
+//                    if let value: Bool = snapshot[key] as? Bool {
+//                        return .bool(key, Bool(value))
+//                    }
+//                } else if subjectType == [String].self || subjectType == [String]?.self {
+//                    if let value: [String] = snapshot[key] as? [String], !value.isEmpty {
+//                        return .array(key, value)
+//                    }
+//                } else if subjectType == Set<String>.self || subjectType == Set<String>?.self {
+//                    if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
+//                        return .relation(key, value, Set(value.keys))
+//                    }
+//                } else if subjectType == [String: Any].self || subjectType == [String: Any]?.self {
+//                    if let value: [String: Any] = snapshot[key] as? [String: Any] {
+//                        return .object(key, value)
+//                    }
+//                } else if subjectType == File.self || subjectType == File?.self {
+//                    if let value: String = snapshot[key] as? String {
+//                        let file: File = File(name: value)
+//                        return .file(key, file)
+//                    }
+//                }
+//                return .null
+//            }
         }
 
         // MARK: Referenceable
@@ -179,7 +272,7 @@ extension Salada {
                                     return
                                 }
                                 let mirror: Mirror = Mirror(reflecting: value)
-                                switch ValueType.from(key: key, mirror: mirror, with: snapshot) {
+                                switch ValueType(key: key, mirror: mirror, snapshot: snapshot) {
                                 case .string(let key, let value): self.setValue(value, forKey: key)
                                 case .int(let key, let value): self.setValue(value, forKey: key)
                                 case .float(let key, let value): self.setValue(value, forKey: key)
@@ -188,6 +281,7 @@ extension Salada {
                                 case .url(let key, _, let value): self.setValue(value, forKey: key)
                                 case .date(let key, _, let value): self.setValue(value, forKey: key)
                                 case .array(let key, let value): self.setValue(value, forKey: key)
+                                case .set(let key, _, let value): self.setValue(value, forKey: key)
                                 case .relation(let key, _, let value): self.setValue(value, forKey: key)
                                 case .file(let key, let file):
                                     file.parent = self
@@ -245,7 +339,7 @@ extension Salada {
 
         fileprivate var hasObserve: Bool = false
 
-        public var value: [String: Any] {
+        public var value: [AnyHashable: Any] {
             let mirror = Mirror(reflecting: self)
             var object: [String: Any] = [:]
             mirror.children.forEach { (key, value) in
@@ -256,17 +350,18 @@ extension Salada {
                             return
                         }
 
-                        switch ValueType.from(key: key, value: value) {
-                        case .string(let key, let value): object[key] = value
-                        case .double(let key, let value): object[key] = value
-                        case .int(let key, let value): object[key] = value
-                        case .float(let key, let value): object[key] = value
-                        case .bool(let key, let value): object[key] = value
-                        case .url(let key, let value, _): object[key] = value
-                        case .date(let key, let value, _): object[key] = value
-                        case .array(let key, let value): object[key] = value
-                        case .relation(let key, let value, _): object[key] = value
-                        case .file(let key, let value):
+                        switch ValueType(key: key, value: value) {
+                        case .string    (let key, let value):       object[key] = value
+                        case .double    (let key, let value):       object[key] = value
+                        case .int       (let key, let value):       object[key] = value
+                        case .float     (let key, let value):       object[key] = value
+                        case .bool      (let key, let value):       object[key] = value
+                        case .url       (let key, let value, _):    object[key] = value
+                        case .date      (let key, let value, _):    object[key] = value
+                        case .array     (let key, let value):       object[key] = value
+                        case .set       (let key, let value, _):    object[key] = value
+                        case .relation  (let key, let value, _):    object[key] = value
+                        case .file      (let key, let value):
                             value.parent = self
                             value.keyPath = key
                         case .object(let key, let value): object[key] = value
@@ -305,7 +400,7 @@ extension Salada {
 
             if self.id == self.tmpID || self.id == self._id {
 
-                var value: [String: Any] = self.value
+                var value: [AnyHashable: Any] = self.value
 
                 let timestamp: AnyObject = FIRServerValue.timestamp() as AnyObject
 
@@ -540,7 +635,15 @@ extension Salada {
         // MARK: -
 
         override open var description: String {
-            return "Salada.Object"
+            let mirror: Mirror = Mirror(reflecting: self)
+            let values: String = mirror.children.reduce("") { (result, children) -> String in
+                guard let label: String = children.0 else {
+                    return result
+                }
+                return result + "  \(label): \(children.1)\n"
+            }
+            let _self: String = String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!
+            return "\(_self) {\n\(values)}"
         }
 
     }

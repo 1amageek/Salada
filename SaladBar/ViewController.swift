@@ -154,6 +154,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
         self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+            print(user!)
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
             cell.setNeedsLayout()
