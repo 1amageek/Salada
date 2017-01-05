@@ -536,6 +536,13 @@ extension Salada {
                 }
             }
         }
+
+        // MARK: -
+
+        override open var description: String {
+            return "Salada.Object"
+        }
+
     }
     
 }

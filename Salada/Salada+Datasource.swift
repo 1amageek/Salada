@@ -19,26 +19,24 @@ public enum SaladaCollectionChange {
 
     case error(Error)
 
-    static func fromObject(change: SaladaChange?, error: Error?) -> SaladaCollectionChange {
+    init(change: SaladaChange?, error: Error?) {
         if let error: Error = error {
-            return .error(error)
+            self = .error(error)
+            return
         }
         if let change: SaladaChange = change {
-            return .update(change)
+            self = .update(change)
+            return
         }
-        return .initial
+        self = .initial
     }
+
 }
 
 open class SaladaOptions {
     var limit: UInt = 30
     var ascending: Bool = false
 }
-
-//public struct SaladaObject {
-//    let key: String
-//    var value: [String: Any]?
-//}
 
 /// Datasource class.
 /// Observe at a Firebase Database location.
@@ -98,7 +96,7 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Tastin
 
         prev(at: nil, toLast: self.limit) { [weak self] (change, error) in
 
-            block(SaladaCollectionChange.fromObject(change: nil, error: error))
+            block(SaladaCollectionChange(change: nil, error: error))
 
             guard let strongSelf = self else { return }
 
@@ -115,21 +113,21 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Tastin
                     strongSelf.pool.append(key)
                     strongSelf.pool = strongSelf.sortedPool
                     if let i: Int = strongSelf.pool.index(of: key) {
-                        block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                        block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                     }
                 }
                 objc_sync_exit(self)
                 }, withCancel: { (error) in
-                    block(SaladaCollectionChange.fromObject(change: nil, error: error))
+                    block(SaladaCollectionChange(change: nil, error: error))
             })
 
             // change
             strongSelf.changedHandle = strongSelf.reference.observe(.childChanged, with: { (snapshot) in
                 if let i: Int = strongSelf.pool.index(of: snapshot.key) {
-                    block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                    block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                 }
             }, withCancel: { (error) in
-                block(SaladaCollectionChange.fromObject(change: nil, error: error))
+                block(SaladaCollectionChange(change: nil, error: error))
             })
 
             // remove
@@ -138,11 +136,11 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Tastin
                 if let i: Int = strongSelf.pool.index(of: snapshot.key) {
                     strongSelf.removeObserver(at: i)
                     strongSelf.pool.remove(at: i)
-                    block(SaladaCollectionChange.fromObject(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+                    block(SaladaCollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
                 objc_sync_exit(self)
                 }, withCancel: { (error) in
-                    block(SaladaCollectionChange.fromObject(change: nil, error: error))
+                    block(SaladaCollectionChange(change: nil, error: error))
             })
 
         }
@@ -176,7 +174,7 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Tastin
     public func prev() {
         self.prev(at: self.lastKey, toLast: self.limit) { [weak self](change, error) in
             guard let strongSelf = self else { return }
-            strongSelf.changedBlock(SaladaCollectionChange.fromObject(change: change, error: error))
+            strongSelf.changedBlock(SaladaCollectionChange(change: change, error: error))
         }
     }
 
