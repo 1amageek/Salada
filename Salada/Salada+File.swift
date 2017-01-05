@@ -116,6 +116,12 @@ extension Salada {
         deinit {
             self.parent = nil
         }
-        
+
+        // MARK: -
+
+        override open var description: String {
+            return "Salada.File"
+        }
+
     }
 }
