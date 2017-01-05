@@ -141,78 +141,6 @@ extension Salada {
                 self = .null
             }
 
-//            static func from(key: String, value: Any) -> ValueType {
-//                switch value.self {
-//                case is String:         if let value: String        = value as? String      { return .string(key, value)  }
-//                case is URL:            if let value: URL           = value as? URL         { return .url(key, value.absoluteString, value) }
-//                case is Date:           if let value: Date          = value as? Date        { return .date(key, value.timeIntervalSince1970, value)}
-//                case is Int:            if let value: Int           = value as? Int         { return .int(key, Int(value)) }
-//                case is Double:         if let value: Double        = value as? Double      { return .double(key, Double(value)) }
-//                case is Float:          if let value: Float         = value as? Float       { return .float(key, Float(value)) }
-//                case is Bool:           if let value: Bool          = value as? Bool        { return .bool(key, Bool(value)) }
-//                case is [String]:       if let value: [String]      = value as? [String], !value.isEmpty { return .array(key, value) }
-//                //case is Set<String>:    if let value: Set<String>   = value as? Set<String>, !value.isEmpty { return .relation(key, value.toKeys(), value) }
-//                case is Relation:       if let value: Relation      = value as? Relation    { return .relation(key, value.toKeys(), value) }
-//                case is File:           if let value: File          = value as? File        { return .file(key, value) }
-//                case is [String: Any]:  if let value: [String: Any] = value as? [String: Any] { return .object(key, value)}
-//                default: break
-//                }
-//                return .null
-//            }
-//
-//            static func from(key: String, mirror: Mirror, with snapshot: [String: Any]) -> ValueType {
-//                let subjectType: Any.Type = mirror.subjectType
-//                if subjectType == String.self || subjectType == String?.self {
-//                    if let value: String = snapshot[key] as? String {
-//                        return .string(key, value)
-//                    }
-//                } else if subjectType == URL.self || subjectType == URL?.self {
-//                    if
-//                        let value: String = snapshot[key] as? String,
-//                        let url: URL = URL(string: value)  {
-//                        return .url(key, value, url)
-//                    }
-//                } else if subjectType == Date.self || subjectType == Date?.self {
-//                    if let value: Double = snapshot[key] as? Double {
-//                        let date: Date = Date(timeIntervalSince1970: TimeInterval(value))
-//                        return .date(key, value, date)
-//                    }
-//                } else if subjectType == Double.self || subjectType == Double?.self {
-//                    if let value: Double = snapshot[key] as? Double {
-//                        return .double(key, Double(value))
-//                    }
-//                } else if subjectType == Int.self || subjectType == Int?.self {
-//                    if let value: Int = snapshot[key] as? Int {
-//                        return .int(key, Int(value))
-//                    }
-//                } else if subjectType == Float.self || subjectType == Float?.self {
-//                    if let value: Float = snapshot[key] as? Float {
-//                        return .float(key, Float(value))
-//                    }
-//                } else if subjectType == Bool.self || subjectType == Bool?.self {
-//                    if let value: Bool = snapshot[key] as? Bool {
-//                        return .bool(key, Bool(value))
-//                    }
-//                } else if subjectType == [String].self || subjectType == [String]?.self {
-//                    if let value: [String] = snapshot[key] as? [String], !value.isEmpty {
-//                        return .array(key, value)
-//                    }
-//                } else if subjectType == Set<String>.self || subjectType == Set<String>?.self {
-//                    if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
-//                        return .relation(key, value, Set(value.keys))
-//                    }
-//                } else if subjectType == [String: Any].self || subjectType == [String: Any]?.self {
-//                    if let value: [String: Any] = snapshot[key] as? [String: Any] {
-//                        return .object(key, value)
-//                    }
-//                } else if subjectType == File.self || subjectType == File?.self {
-//                    if let value: String = snapshot[key] as? String {
-//                        let file: File = File(name: value)
-//                        return .file(key, file)
-//                    }
-//                }
-//                return .null
-//            }
         }
 
         // MARK: Referenceable
@@ -545,6 +473,8 @@ extension Salada {
             if keys.contains(keyPath) {
 
                 if let value: Any = object.value(forKey: keyPath) as Any? {
+
+                    // File
                     if let _: File = value as? File {
                         if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
                             let new: File = change[.newKey] as! File
@@ -563,8 +493,11 @@ extension Salada {
                                 _ = new.save(keyPath)
                             }
                         }
-                    } else if let _: Set<String> = value as? Set<String> {
+                        return
+                    }
 
+                    // Set
+                    if let _: Set<String> = value as? Set<String> {
                         if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
 
                             let new: Set<String> = change[.newKey] as! Set<String>
@@ -581,7 +514,33 @@ extension Salada {
                             })
 
                         }
-                    } else if let values: [String] = value as? [String] {
+                        return
+                    }
+
+                    // Relation
+                    // TODO
+                    if let _: Relation = value as? Relation {
+                        if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
+
+                            let new: Relation = change[.newKey] as! Relation
+                            let old: Relation = change[.oldKey] as! Relation
+
+//                            // Added
+//                            new.subtracting(old).forEach({ (id) in
+//                                updateValue(keyPath, child: id, value: true)
+//                            })
+//
+//                            // Remove
+//                            old.subtracting(new).forEach({ (id) in
+//                                updateValue(keyPath, child: id, value: nil)
+//                            })
+
+                        }
+                        return
+                    }
+
+
+                    if let values: [String] = value as? [String] {
                         if values.isEmpty { return }
                         updateValue(keyPath, child: nil, value: value)
                     } else if let value: String = value as? String {

@@ -35,6 +35,8 @@ extension Salada {
 
         public var saved: Bool = false
 
+        public weak var owner: Salada.Object?
+
         public var startIndex: Int {
             return _Self.startIndex
         }
@@ -75,7 +77,7 @@ extension Salada {
 
         public func insert(_ newMember: Element) {
             if saved {
-
+                
             } else {
                 if !_Self.contains(newMember) {
                     _Self.append(newMember)
