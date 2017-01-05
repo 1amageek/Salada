@@ -28,7 +28,6 @@
 
 /* Begin PBXFileReference section */
 		0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.release.xcconfig"; sourceTree = "<group>"; };
-		120FB4511E1DE81D00766021 /* SaladaBowl.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = SaladaBowl.playground; sourceTree = "<group>"; };
 		120FB4521E1E1AA400766021 /* Referenceable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Referenceable.swift; sourceTree = "<group>"; };
 		120FB4551E1E1B4A00766021 /* Tasting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tasting.swift; sourceTree = "<group>"; };
 		122315381D645A7A003864BD /* Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,7 +135,6 @@
 		12CB1A581D95184300E69000 /* SaladBar */ = {
 			isa = PBXGroup;
 			children = (
-				120FB4511E1DE81D00766021 /* SaladaBowl.playground */,
 				12CB1A591D95184300E69000 /* AppDelegate.swift */,
 				12CB1A5B1D95184300E69000 /* ViewController.swift */,
 				12A4FE311DB5C987003A3104 /* GoogleService-Info.plist */,

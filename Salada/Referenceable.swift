@@ -22,7 +22,7 @@ public protocol Referenceable: NSObjectProtocol {
     var id: String { get }
     var snapshot: FIRDataSnapshot? { get }
     var createdAt: Date { get }
-    var value: [String: Any] { get }
+    var value: [AnyHashable: Any] { get }
     var ignore: [String] { get }
 
     init?(snapshot: FIRDataSnapshot)
