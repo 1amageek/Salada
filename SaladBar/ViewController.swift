@@ -29,7 +29,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 let user: User = User()
                 let image: UIImage = UIImage(named: "salada")!
                 let data: Data = UIImagePNGRepresentation(image)!
-                let thumbnail: File = File(name: "salada.png", data: data)
+                let thumbnail: Salada.File = Salada.File(name: "salada.png", data: data)
                 thumbnail.data = data
                 user.thumbnail = thumbnail
                 user.tempName = "Test1_name"
@@ -61,7 +61,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return view
     }()
     
-    var datasource: Salada<Group, User>?
+    var datasource: Datasource<Group, User>?
     
     override func loadView() {
         super.loadView()
@@ -73,26 +73,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        
-//        FIRAuth.auth()?.signInAnonymously(completion: { (user, erro) in
-//            
-//        })
-        
-        User.observeSingle(child: "groups", contains: "-KYIEXGoGZO-CWzrT2yU", eventType: .value, block: { users in
-            print(users)
-            users.forEach({ (user) in
-                print(user.name)
-            })
-        })
-        
-        User.observeSingle(child: "name", equal: "0", eventType: .value, block: { users in
-            print("!!!", users)
-            users.forEach({ (user) in
-                print(user.name)
-            })
-        })
-        
-        
+
+        self.setupDatasource(key: "-KZW4lhCwksodJ3J6g-F")
 //        let group: Group = Group()
 //        group.name = "iOS Development Team"
 //        group.save { (ref, error) in
@@ -133,38 +115,37 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //                    
 //                })
 //            })
-//        
-//            do {
-//                
-//                let options: SaladaOptions = SaladaOptions()
-//                options.limit = 10
-//                options.ascending = false
-//                
-//                self.datasource = Salada(parentKey: ref!.key, referenceKey: "users", options: options, block: { [weak self](changes) in
-//                    guard let tableView: UITableView = self?.tableView else { return }
-//                    
-//                    switch changes {
-//                    case .initial:
-//                        tableView.reloadData()
-//                    case .update(let deletions, let insertions, let modifications):
-//                        tableView.beginUpdates()
-//                        tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-//                        tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-//                        tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-//                        tableView.endUpdates()
-//                    case .error(let error):
-//                        print(error)
-//                    }
-//                })
-//                
-//            }
+//
 //        }
     }
-    
+
+    func setupDatasource(key: String) {
+        let options: SaladaOptions = SaladaOptions()
+        options.limit = 10
+        options.ascending = false
+
+        self.datasource = Datasource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
+            guard let tableView: UITableView = self?.tableView else { return }
+
+            switch changes {
+            case .initial:
+                tableView.reloadData()
+            case .update(let deletions, let insertions, let modifications):
+                tableView.beginUpdates()
+                tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+                tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+                tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+                tableView.endUpdates()
+            case .error(let error):
+                print(error)
+            }
+        })
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.datasource?.count ?? 0
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
         configure(cell, atIndexPath: indexPath)
@@ -175,6 +156,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.datasource?.observeObject(at: indexPath.item, block: { (user) in
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
+            cell.setNeedsLayout()
         })
     }
     

@@ -14,8 +14,9 @@ import CoreLocation
     case second
 }
 
-class User: Ingredient {
-    typealias Tsp = User
+class User: Salada.Object {
+    
+    typealias Element = User
     
     override class var _version: String {
         return "v1"
@@ -29,8 +30,8 @@ class User: Ingredient {
     dynamic var location: CLLocation?
     dynamic var url: URL?
     dynamic var birth: Date?
-    dynamic var thumbnail: File?
-    dynamic var cover: File?
+    dynamic var thumbnail: Salada.File?
+    dynamic var cover: Salada.File?
     dynamic var type: UserType = .first
     
     var tempName: String? 
