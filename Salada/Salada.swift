@@ -16,7 +16,7 @@ import FirebaseStorage
 /**
  Protocol that holds a reference Firebase
  */
-public protocol Referenceable: NSObjectProtocol {
+public protocol Referenceable: NSObjectProtocol, Hashable {
     static var database: FIRDatabaseReference { get }
     static var databaseRef: FIRDatabaseReference { get }
     static var storage: FIRStorageReference { get }
@@ -39,142 +39,6 @@ public extension Referenceable {
     static var storageRef: FIRStorageReference { return self.storage.child(self._path) }
 }
 
-/**
- Protocol to retrieve the data from Firebase
- */
-public protocol Tasting {
-    associatedtype Tsp: Referenceable
-    static func observeSingle(_ eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void)
-    static func observeSingle(_ id: String, eventType: FIRDataEventType, block: @escaping (Tsp?) -> Void)
-    static func observe(_ eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void) -> UInt
-    static func observe(_ id: String, eventType: FIRDataEventType, block: @escaping (Tsp?) -> Void) -> UInt
-}
-
-public extension Tasting where Tsp == Self, Tsp: Referenceable {
-    
-    /**
-     A function that gets all data from DB whose name is model.
-     */
-    public static func observeSingle(_ eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void) {
-        self.databaseRef.observeSingleEvent(of: eventType, with: { (snapshot) in
-            if snapshot.exists() {
-                var children: [Tsp] = []
-                snapshot.children.forEach({ (snapshot) in
-                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
-                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
-                            children.append(tsp)
-                        }
-                    }
-                })
-                block(children)
-            } else {
-                block([])
-            }
-        })
-    }
-    
-    /**
-     A function that gets data of ID within the variable form DB selected.
-     */
-    public static func observeSingle(_ id: String, eventType: FIRDataEventType, block: @escaping (Tsp?) -> Void) {
-        self.databaseRef.child(id).observeSingleEvent(of: eventType, with: { (snapshot) in
-            if snapshot.exists() {
-                if let tsp: Tsp = Tsp(snapshot: snapshot) {
-                    block(tsp)
-                }
-            } else {
-                block(nil)
-            }
-        })
-    }
-    
-    public static func observeSingle(child key: String, contains value: String, eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void) {
-        self.databaseRef.queryOrdered(byChild: key).queryStarting(atValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
-            if snapshot.exists() {
-                var children: [Tsp] = []
-                snapshot.children.forEach({ (snapshot) in
-                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
-                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
-                            children.append(tsp)
-                        }
-                    }
-                })
-                block(children)
-            } else {
-                block([])
-            }
-        })
-    }
-    
-    public static func observeSingle(child key: String, equal value: String, eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void) {
-        self.databaseRef.queryOrdered(byChild: key).queryEqual(toValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
-            if snapshot.exists() {
-                var children: [Tsp] = []
-                snapshot.children.forEach({ (snapshot) in
-                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
-                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
-                            children.append(tsp)
-                        }
-                    }
-                })
-                block(children)
-            } else {
-                block([])
-            }
-        })
-    }
-    
-    /**
-     A function that gets all data from DB whenever DB has been changed.
-     */
-    public static func observe(_ eventType: FIRDataEventType, block: @escaping ([Tsp]) -> Void) -> UInt {
-        return self.databaseRef.observe(eventType, with: { (snapshot) in
-            if snapshot.exists() {
-                var children: [Tsp] = []
-                snapshot.children.forEach({ (snapshot) in
-                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
-                        if let tsp: Tsp = Tsp(snapshot: snapshot) {
-                            children.append(tsp)
-                        }
-                    }
-                })
-            } else {
-                block([])
-            }
-        })
-    }
-    
-    /**
-     A function that gets data of ID within the variable from DB whenever data of the ID has been changed.
-     */
-    public static func observe(_ id: String, eventType: FIRDataEventType, block: @escaping (Tsp?) -> Void) -> UInt {
-        return self.databaseRef.child(id).observe(eventType, with: { (snapshot) in
-            if snapshot.exists() {
-                if let tsp: Tsp = Tsp(snapshot: snapshot) {
-                    block(tsp)
-                }
-            } else {
-                block(nil)
-            }
-        })
-    }
-    
-    /**
-     Remove the observer.
-     */
-    public static func removeObserver(with handle: UInt) {
-        self.databaseRef.removeObserver(withHandle: handle)
-    }
-    
-    /**
-     Remove the observer.
-     */
-    public static func removeObserver(_ id: String, with handle: UInt) {
-        self.databaseRef.child(id).removeObserver(withHandle: handle)
-    }
-    
-}
-
 public typealias File = Ingredient.File
 
 /**
@@ -186,7 +50,7 @@ public typealias File = Ingredient.File
  1. Declaration the Tsp
  1. Class other than the Foundation description 'decode, 'encode'
  */
-public class Ingredient: NSObject, Referenceable, Tasting {
+public class Ingredient: NSObject, Referenceable {
     
     public typealias Tsp = Ingredient
     
@@ -335,8 +199,8 @@ public class Ingredient: NSObject, Referenceable, Tasting {
             if let snapshot: FIRDataSnapshot = snapshot {
                 self.hasObserve = true
                 guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
-                self.serverCreatedAtTimestamp = value["_createdAt"] as? Double
-                self.serverUpdatedAtTimestamp = value["_updatedAt"] as? Double
+                self.serverCreatedAtTimestamp = snapshot["_createdAt"] as? Double
+                self.serverUpdatedAtTimestamp = snapshot["_updatedAt"] as? Double
                 Mirror(reflecting: self).children.forEach { (key, value) in
                     if let key: String = key {
                         if !self.ignore.contains(key) {
@@ -445,7 +309,17 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         return object
     }
     
-    // MARK: - Encode, Decode
+    subscript(property: String) -> Any? {
+        let mirror = Mirror(reflecting: self)
+        for (key, value) in mirror.children {
+            if key == property {
+                return value
+            }
+        }
+        return nil
+    }
+    
+    // MARK: Encode, Decode
     
     /// Model -> Firebase
     public func encode(_ key: String, value: Any?) -> Any? {
@@ -457,7 +331,7 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         return nil
     }
     
-    // MARK: - Save
+    // MARK: Save
     
     public func save() {
         self.save(nil)
@@ -591,11 +465,134 @@ public class Ingredient: NSObject, Referenceable, Tasting {
         
     }
     
-    // MARK: - Delete
+    // MARK: Delete
     
     open func remove() {
         let id: String = self.id
         type(of: self).databaseRef.child(id).removeValue()
+    }
+    
+    // MARK: Tasting
+    
+    /**
+     A function that gets all data from DB whose name is model.
+     */
+    public static func observeSingle(_ eventType: FIRDataEventType, block: @escaping ([Ingredient]) -> Void) {
+        self.databaseRef.observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Ingredient] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let tsp: Ingredient = self.init(snapshot: snapshot) {
+                            children.append(tsp)
+                        }
+                    }
+                })
+                block(children)
+            } else {
+                block([])
+            }
+        })
+    }
+    
+    /**
+     A function that gets data of ID within the variable form DB selected.
+     */
+    public static func observeSingle(_ id: String, eventType: FIRDataEventType, block: @escaping (Ingredient?) -> Void) {
+        self.databaseRef.child(id).observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                if let tsp: Ingredient = self.init(snapshot: snapshot) {
+                    block(tsp)
+                }
+            } else {
+                block(nil)
+            }
+        })
+    }
+    
+    public static func observeSingle(child key: String, contains value: String, eventType: FIRDataEventType, block: @escaping ([Ingredient]) -> Void) {
+        self.databaseRef.queryOrdered(byChild: key).queryStarting(atValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Ingredient] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let tsp: Ingredient = self.init(snapshot: snapshot) {
+                            children.append(tsp)
+                        }
+                    }
+                })
+                block(children)
+            } else {
+                block([])
+            }
+        })
+    }
+    
+    public static func observeSingle(child key: String, equal value: String, eventType: FIRDataEventType, block: @escaping ([Ingredient]) -> Void) {
+        self.databaseRef.queryOrdered(byChild: key).queryEqual(toValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Ingredient] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let tsp: Ingredient = self.init(snapshot: snapshot) {
+                            children.append(tsp)
+                        }
+                    }
+                })
+                block(children)
+            } else {
+                block([])
+            }
+        })
+    }
+    
+    /**
+     A function that gets all data from DB whenever DB has been changed.
+     */
+    public static func observe(_ eventType: FIRDataEventType, block: @escaping ([Ingredient]) -> Void) -> UInt {
+        return self.databaseRef.observe(eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Ingredient] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let tsp: Ingredient = self.init(snapshot: snapshot) {
+                            children.append(tsp)
+                        }
+                    }
+                })
+            } else {
+                block([])
+            }
+        })
+    }
+    
+    /**
+     A function that gets data of ID within the variable from DB whenever data of the ID has been changed.
+     */
+    public static func observe(_ id: String, eventType: FIRDataEventType, block: @escaping (Ingredient?) -> Void) -> UInt {
+        return self.databaseRef.child(id).observe(eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                if let tsp: Ingredient = self.init(snapshot: snapshot) {
+                    block(tsp)
+                }
+            } else {
+                block(nil)
+            }
+        })
+    }
+    
+    /**
+     Remove the observer.
+     */
+    public static func removeObserver(with handle: UInt) {
+        self.databaseRef.removeObserver(withHandle: handle)
+    }
+    
+    /**
+     Remove the observer.
+     */
+    public static func removeObserver(_ id: String, with handle: UInt) {
+        self.databaseRef.child(id).removeObserver(withHandle: handle)
     }
     
     // MARK: - KVO
@@ -701,6 +698,18 @@ public class Ingredient: NSObject, Referenceable, Tasting {
                 }
             }
         }
+    }
+    
+    override open var description: String {
+        let mirror: Mirror = Mirror(reflecting: self)
+        let values: String = mirror.children.reduce("") { (result, children) -> String in
+            guard let label: String = children.0 else {
+                return result
+            }
+            return result + "  \(label): \(children.1)\n"
+        }
+        let _self: String = String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!
+        return "\(_self) {\n\(values)}"
     }
     
     // MARK: -
@@ -849,22 +858,33 @@ public enum SaladaCollectionChange {
 open class SaladaOptions {
     var limit: UInt = 30
     var ascending: Bool = false
-}
-
-public struct SaladaObject {
-    let key: String
-    var value: [String: Any]?
+    var isFetchEnabled: Bool = false
+    var sortKey: String?
 }
 
 /// Datasource class.
 /// Observe at a Firebase Database location.
-open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, Child: Referenceable, Child: Tasting {
+open class Salada<Parent, Child> where Parent: Referenceable, Parent: Ingredient, Child: Referenceable, Child: Ingredient {
     
     /// DatabaseReference
     
     public var databaseRef: FIRDatabaseReference { return FIRDatabase.database().reference() }
     
-    public var count: Int { return pool.count }
+    public var count: Int {
+        return self.isFetchEnabled ? self._fetchedObjects.count : pool.count
+    }
+    
+    internal var pool: [String] = []
+    
+    public var objects: [String] {
+        return self.pool
+    }
+    
+    internal var _fetchedObjects: [Child] = []
+    
+    public var fetchedObjects: [Child] {
+        return self._fetchedObjects
+    }
     
     fileprivate(set) var parentRef: FIRDatabaseReference
     
@@ -877,6 +897,10 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     fileprivate(set) var limit: UInt = 30
     
     fileprivate(set) var ascending: Bool = false
+    
+    fileprivate(set) var isFetchEnabled: Bool = false
+    
+    fileprivate(set) var sortKey: String = "id"
     
     deinit {
         self.reference.removeAllObservers()
@@ -891,8 +915,6 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     fileprivate var changedHandle: UInt?
     fileprivate var removedHandle: UInt?
     
-    internal var pool: [String] = []
-    
     private var changedBlock: (SaladaCollectionChange) -> Void
     
     public init(parentKey: String, referenceKey: String, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
@@ -900,6 +922,10 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         if let options: SaladaOptions = options {
             self.limit = options.limit
             self.ascending = options.ascending
+            self.isFetchEnabled = options.isFetchEnabled
+            if let sortKey: String = options.sortKey {
+                self.sortKey = sortKey
+            }
         }
         
         self.parentKey = parentKey
@@ -912,7 +938,9 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         
         self.changedBlock = block
         
-        prev(at: nil, toLast: self.limit) { [weak self] (change, error) in
+        let isFetchEnabled: Bool = self.isFetchEnabled
+        
+        prev(at: nil, toLast: self.limit, fetched: isFetchEnabled) { [weak self] (change, error) in
             
             block(SaladaCollectionChange.fromObject(change: nil, error: error))
             
@@ -930,8 +958,22 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
                 if !strongSelf.pool.contains(key) {
                     strongSelf.pool.append(key)
                     strongSelf.pool = strongSelf.sortedPool
-                    if let i: Int = strongSelf.pool.index(of: key) {
-                        block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                    if isFetchEnabled {
+                        Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
+                            if snapshot.exists() {
+                                if let tsp: Child = Child(snapshot: snapshot) {
+                                    strongSelf._fetchedObjects.append(tsp)
+                                    strongSelf._fetchedObjects = strongSelf.sortedFetchedObjects
+                                    if let i: Int = strongSelf._fetchedObjects.index(of: tsp) {
+                                        block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                                    }
+                                }
+                            }
+                        })
+                    } else {                        
+                        if let i: Int = strongSelf.pool.index(of: key) {
+                            block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                        }
                     }
                 }
                 objc_sync_exit(self)
@@ -941,9 +983,33 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             
             // change
             strongSelf.changedHandle = strongSelf.reference.observe(.childChanged, with: { (snapshot) in
-                if let i: Int = strongSelf.pool.index(of: snapshot.key) {
-                    block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                let key: String = snapshot.key
+                if isFetchEnabled {
+                    Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
+                        if snapshot.exists() {
+                            if let tsp: Child = Child(snapshot: snapshot) {
+                                if let removeIndex: Int = strongSelf._fetchedObjects.index(of: tsp) {
+                                    strongSelf._fetchedObjects.remove(at: removeIndex)
+                                    strongSelf._fetchedObjects.append(tsp)
+                                    strongSelf._fetchedObjects = strongSelf.sortedFetchedObjects
+                                    if let addIndex: Int = strongSelf._fetchedObjects.index(of: tsp) {
+                                        
+                                        if removeIndex == addIndex {
+                                            block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [], modifications: [addIndex]), error: nil))
+                                        } else {
+                                            block(SaladaCollectionChange.fromObject(change: (deletions: [removeIndex], insertions: [addIndex], modifications: []), error: nil))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    })
+                } else {
+                    if let i: Int = strongSelf.pool.index(of: snapshot.key) {
+                        block(SaladaCollectionChange.fromObject(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                    }
                 }
+                
             }, withCancel: { (error) in
                 block(SaladaCollectionChange.fromObject(change: nil, error: error))
             })
@@ -951,10 +1017,24 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
             // remove
             strongSelf.removedHandle = strongSelf.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
                 objc_sync_enter(self)
-                if let i: Int = strongSelf.pool.index(of: snapshot.key) {
-                    strongSelf.removeObserver(at: i)
-                    strongSelf.pool.remove(at: i)
-                    block(SaladaCollectionChange.fromObject(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+                let key: String = snapshot.key
+                if isFetchEnabled {
+                    if let i: Int = strongSelf.pool.index(of: key) {
+                        strongSelf.pool.remove(at: i)
+                    }
+                    if let tsp: Child = strongSelf[key] {
+                        if let i: Int = strongSelf._fetchedObjects.index(of: tsp) {
+                            strongSelf._fetchedObjects.remove(at: i)
+                            strongSelf.removeObserver(at: i)
+                            block(SaladaCollectionChange.fromObject(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+                        }
+                    }
+                } else {
+                    if let i: Int = strongSelf.pool.index(of: key) {
+                        strongSelf.removeObserver(at: i)
+                        strongSelf.pool.remove(at: i)
+                        block(SaladaCollectionChange.fromObject(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+                    }
                 }
                 objc_sync_exit(self)
                 }, withCancel: { (error) in
@@ -967,6 +1047,15 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
     
     subscript(index: Int) -> String {
         return self.pool[index]
+    }
+    
+    subscript(key: String) -> Child? {
+        for (_, object) in self._fetchedObjects.enumerated() {
+            if object.id == key {
+                return object
+            }
+        }
+        return nil
     }
     
     private var isFirst: Bool = false
@@ -986,11 +1075,20 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         return self.pool.sorted { self.ascending ? $0 < $1 : $0 > $1 }
     }
     
+    // Sorted fetchedObject
+    var sortedFetchedObjects: [Child] {
+        let sortKey: String = self.sortKey
+        let ascending: Bool = self.ascending
+        let sortDescriptor: NSSortDescriptor = NSSortDescriptor(key: sortKey, ascending: ascending)
+        let sorted: [Child] = self._fetchedObjects.sort(sortDescriptors: [sortDescriptor])
+        return sorted
+    }
+    
     /**
      It gets the oldest subsequent data of the data that are currently obtained.
      */
     public func prev() {
-        self.prev(at: self.lastKey, toLast: self.limit) { [weak self](change, error) in
+        self.prev(at: self.lastKey, toLast: self.limit, fetched: self.isFetchEnabled) { [weak self](change, error) in
             guard let strongSelf = self else { return }
             strongSelf.changedBlock(SaladaCollectionChange.fromObject(change: change, error: error))
         }
@@ -1000,9 +1098,10 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
      Load the previous data from the server.
      - parameter lastKey: It gets the data after the Key
      - parameter limit: It the limit of from after the lastKey.
+     - parameter fetch: Decide whether to fetch the object. default no.
      - parameter block: block The block that should be called. Change if successful will be returned. An error will return if it fails.
      */
-    public func prev(at lastKey: String?, toLast limit: UInt, block: ((SaladaChange?, Error?) -> Void)?) {
+    public func prev(at lastKey: String?, toLast limit: UInt, fetched: Bool = false, block: ((SaladaChange?, Error?) -> Void)?) {
         
         if isFirst {
             block?((deletions: [], insertions: [], modifications: []), nil)
@@ -1033,6 +1132,23 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
                         strongSelf.pool = strongSelf.sortedPool
                         if let i: Int = strongSelf.pool.index(of: key) {
                             changes.append(i)
+                            
+                            // fetch object
+                            if fetched {
+                                Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
+                                    if snapshot.exists() {
+                                        if let tsp: Child = Child(snapshot: snapshot) {
+                                            strongSelf._fetchedObjects.append(tsp)
+                                            strongSelf._fetchedObjects = strongSelf.sortedFetchedObjects
+                                            if let i: Int = strongSelf._fetchedObjects.index(of: tsp) {
+                                                block?((deletions: [], insertions: [i], modifications: []), nil)
+                                            }
+                                        }
+                                    } else {
+                                        block?(nil, nil)
+                                    }
+                                })
+                            }
                         }
                     }
                 }
@@ -1044,12 +1160,33 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
                         strongSelf.pool = strongSelf.sortedPool
                         if let i: Int = strongSelf.pool.index(of: key) {
                             changes.append(i)
+                            
+                            // fetch object
+                            if fetched {
+                                Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
+                                    if snapshot.exists() {
+                                        if let tsp: Child = Child(snapshot: snapshot) {
+                                            strongSelf._fetchedObjects.append(tsp)
+                                            strongSelf._fetchedObjects = strongSelf.sortedFetchedObjects
+                                            if let i: Int = strongSelf._fetchedObjects.index(of: tsp) {
+                                                block?((deletions: [], insertions: [i], modifications: []), nil)
+                                            }
+                                        }
+                                    } else {
+                                        block?(nil, nil)
+                                    }
+                                })
+                            }
                         }
                     }
                 }
             }
             objc_sync_exit(self)
-            block?((deletions: [], insertions: changes, modifications: []), nil)
+            
+            if !fetched {
+                block?((deletions: [], insertions: changes, modifications: []), nil)
+            }
+            
         }) { (error) in
             block?(nil, error)
         }
@@ -1099,26 +1236,31 @@ open class Salada<Parent, Child> where Parent: Referenceable, Parent: Tasting, C
         }
     }
     
-}
-
-extension Salada where Child.Tsp == Child {
+    public func object(at index: Int) -> Child {
+        return self._fetchedObjects[index]
+    }
     
     /**
      Get an object from a data source
      - parameter index: Order of the data source
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      */
-    public func object(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
-        let key: String = self.pool[index]
-        Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.exists() {
-                if let tsp: Child.Tsp = Child.Tsp(snapshot: snapshot) {
-                    block(tsp)
+    public func object(at index: Int, block: @escaping (Child?) -> Void) {
+        if self.isFetchEnabled {
+            let tsp: Child = self._fetchedObjects[index]
+            block(tsp)
+        } else {
+            let key: String = self.pool[index]
+            Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
+                if snapshot.exists() {
+                    if let tsp: Child = Child(snapshot: snapshot) {
+                        block(tsp)
+                    }
+                } else {
+                    block(nil)
                 }
-            } else {
-                block(nil)
-            }
-        })
+            })
+        }
     }
     
     /**
@@ -1128,18 +1270,35 @@ extension Salada where Child.Tsp == Child {
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      - see removeObserver
      */
-    public func observeObject(at index: Int, block: @escaping (Child.Tsp?) -> Void) {
-        let key: String = self.pool[index]
-        Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
-            if snapshot.exists() {
-                if let tsp: Child.Tsp = Child.Tsp(snapshot: snapshot) {
-                    block(tsp)
+    public func observeObject(at index: Int, block: @escaping (Child?) -> Void) {
+        if self.isFetchEnabled {
+            let tsp: Child = self._fetchedObjects[index]
+            block(tsp)
+            let key: String = tsp.id
+            Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
+                if snapshot.exists() {
+                    if let tsp: Child = Child(snapshot: snapshot) {
+                        block(tsp)
+                    }
+                } else {
+                    block(nil)
                 }
-            } else {
+            }) { (error) in
                 block(nil)
             }
-        }) { (error) in
-            block(nil)
+        } else {
+            let key: String = self.pool[index]
+            Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
+                if snapshot.exists() {
+                    if let tsp: Child = Child(snapshot: snapshot) {
+                        block(tsp)
+                    }
+                } else {
+                    block(nil)
+                }
+            }) { (error) in
+                block(nil)
+            }
         }
     }
     
@@ -1158,12 +1317,11 @@ extension Collection where Iterator.Element == String {
     }
 }
 
-extension Sequence where Iterator.Element: Any {
-    /// Return an `Array` containing the sorted elements of `source`
-    /// using criteria stored in a NSSortDescriptors array.
+extension Sequence where Iterator.Element: Ingredient {
     
     public func sort(sortDescriptors theSortDescs: [NSSortDescriptor]) -> [Self.Iterator.Element] {
-        return sorted {
+        let objs = self.flatMap { return $0 }
+        return objs.sorted {
             for sortDesc in theSortDescs {
                 switch sortDesc.compare($0, to: $1) {
                 case .orderedAscending: return true
@@ -1174,4 +1332,5 @@ extension Sequence where Iterator.Element: Any {
             return false
         }
     }
+    
 }

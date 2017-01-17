@@ -24,7 +24,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             Group.observeSingle(id, eventType: .value, block: { (group) in
                 
-                guard let group: Group = group else { return }
+                guard let group: Group = group as? Group else { return }
                 
                 let user: User = User()
                 let image: UIImage = UIImage(named: "salada")!
@@ -74,25 +74,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         
-//        FIRAuth.auth()?.signInAnonymously(completion: { (user, erro) in
-//            
-//        })
-        
-        User.observeSingle(child: "groups", contains: "-KYIEXGoGZO-CWzrT2yU", eventType: .value, block: { users in
-            print(users)
-            users.forEach({ (user) in
-                print(user.name)
-            })
-        })
-        
-        User.observeSingle(child: "name", equal: "0", eventType: .value, block: { users in
-            print("!!!", users)
-            users.forEach({ (user) in
-                print(user.name)
-            })
-        })
-        
-        
 //        let group: Group = Group()
 //        group.name = "iOS Development Team"
 //        group.save { (ref, error) in
@@ -109,7 +90,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 ////                user.thumbnail = thumbnail
 ////                user.cover = cover
 //                user.tempName = "Test1_name"
-//                user.name = "\(index)"
+//                user.name = "Name: \(index)"
 //                user.gender = "man"
 //                user.age = index
 //                user.url = URL(string: "https://www.google.co.jp/")
@@ -133,31 +114,33 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //                    
 //                })
 //            })
-//        
-//            do {
-//                
-//                let options: SaladaOptions = SaladaOptions()
-//                options.limit = 10
-//                options.ascending = false
-//                
-//                self.datasource = Salada(parentKey: ref!.key, referenceKey: "users", options: options, block: { [weak self](changes) in
-//                    guard let tableView: UITableView = self?.tableView else { return }
-//                    
-//                    switch changes {
-//                    case .initial:
-//                        tableView.reloadData()
-//                    case .update(let deletions, let insertions, let modifications):
-//                        tableView.beginUpdates()
-//                        tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-//                        tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-//                        tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-//                        tableView.endUpdates()
-//                    case .error(let error):
-//                        print(error)
-//                    }
-//                })
-//                
-//            }
+
+            do {
+                
+                let options: SaladaOptions = SaladaOptions()
+                options.limit = 10
+                options.ascending = true
+                options.isFetchEnabled = true
+                options.sortKey = "name"
+                
+                self.datasource = Salada(parentKey: "-Kae0h8UHtpSHrPNAyCk", referenceKey: "users", options: options, block: { [weak self](changes) in
+                    guard let tableView: UITableView = self?.tableView else { return }
+                    
+                    switch changes {
+                    case .initial:
+                        tableView.reloadData()
+                    case .update(let deletions, let insertions, let modifications):
+                        tableView.beginUpdates()
+                        tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+                        tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+                        tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+                        tableView.endUpdates()
+                    case .error(let error):
+                        print(error)
+                    }
+                })
+                
+            }
 //        }
     }
     
@@ -173,6 +156,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
         self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+            //print(user)
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
         })
