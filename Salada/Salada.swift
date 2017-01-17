@@ -510,24 +510,9 @@ public class Ingredient: NSObject, Referenceable {
         })
     }
     
-    public static func observeSingle(child key: String, contains value: String, eventType: FIRDataEventType, block: @escaping ([Ingredient]) -> Void) {
-        self.databaseRef.queryOrdered(byChild: key).queryStarting(atValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
-            if snapshot.exists() {
-                var children: [Ingredient] = []
-                snapshot.children.forEach({ (snapshot) in
-                    if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
-                        if let tsp: Ingredient = self.init(snapshot: snapshot) {
-                            children.append(tsp)
-                        }
-                    }
-                })
-                block(children)
-            } else {
-                block([])
-            }
-        })
-    }
-    
+    /**
+     A function gets what matches the data stored in childkey.
+     */
     public static func observeSingle(child key: String, equal value: String, eventType: FIRDataEventType, block: @escaping ([Ingredient]) -> Void) {
         self.databaseRef.queryOrdered(byChild: key).queryEqual(toValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
             if snapshot.exists() {
