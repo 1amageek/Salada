@@ -190,8 +190,8 @@ extension Salada {
                 if let snapshot: FIRDataSnapshot = snapshot {
                     self.hasObserve = true
                     guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
-                    self.serverCreatedAtTimestamp = value["_createdAt"] as? Double
-                    self.serverUpdatedAtTimestamp = value["_updatedAt"] as? Double
+                    self.serverCreatedAtTimestamp = snapshot["_createdAt"] as? Double
+                    self.serverUpdatedAtTimestamp = snapshot["_updatedAt"] as? Double
                     Mirror(reflecting: self).children.forEach { (key, value) in
                         if let key: String = key {
                             if !self.ignore.contains(key) {
