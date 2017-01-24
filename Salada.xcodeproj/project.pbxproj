@@ -19,7 +19,6 @@
 		12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A621D95184300E69000 /* LaunchScreen.storyboard */; };
 		12CB1A881D95193900E69000 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 128C829A1D855B4E001321B9 /* Salada.swift */; };
 		12F593EE1E1E246A002F2DF6 /* Salada+File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F593ED1E1E246A002F2DF6 /* Salada+File.swift */; };
-		12F593F11E1E2487002F2DF6 /* Salada+Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F593EF1E1E2484002F2DF6 /* Salada+Object.swift */; };
 		12F593F31E1E27CC002F2DF6 /* Salada+Datasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F593F21E1E27CC002F2DF6 /* Salada+Datasource.swift */; };
 		12F593F51E1E3421002F2DF6 /* Salada+Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F593F41E1E3421002F2DF6 /* Salada+Relation.swift */; };
 		3A727F340C83AD670D531A0A /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; };
@@ -49,7 +48,6 @@
 		12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12F593EA1E1E226C002F2DF6 /* Ingredient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
 		12F593ED1E1E246A002F2DF6 /* Salada+File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Salada+File.swift"; sourceTree = "<group>"; };
-		12F593EF1E1E2484002F2DF6 /* Salada+Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Salada+Object.swift"; sourceTree = "<group>"; };
 		12F593F21E1E27CC002F2DF6 /* Salada+Datasource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Salada+Datasource.swift"; sourceTree = "<group>"; };
 		12F593F41E1E3421002F2DF6 /* Salada+Relation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Salada+Relation.swift"; sourceTree = "<group>"; };
 		148106A1CEF7A4448F530DB1 /* Pods_SaladaTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -111,7 +109,6 @@
 			children = (
 				128C829A1D855B4E001321B9 /* Salada.swift */,
 				12F593ED1E1E246A002F2DF6 /* Salada+File.swift */,
-				12F593EF1E1E2484002F2DF6 /* Salada+Object.swift */,
 				12F593F21E1E27CC002F2DF6 /* Salada+Datasource.swift */,
 				12F593F41E1E3421002F2DF6 /* Salada+Relation.swift */,
 				12F593EA1E1E226C002F2DF6 /* Ingredient.swift */,
@@ -387,7 +384,6 @@
 				120FB4571E1E1B6500766021 /* Tasting.swift in Sources */,
 				12F593F51E1E3421002F2DF6 /* Salada+Relation.swift in Sources */,
 				12F593EE1E1E246A002F2DF6 /* Salada+File.swift in Sources */,
-				12F593F11E1E2487002F2DF6 /* Salada+Object.swift in Sources */,
 				12A4FE361DB5C987003A3104 /* User.swift in Sources */,
 				12A4FE351DB5C987003A3104 /* Group.swift in Sources */,
 			);
