@@ -121,9 +121,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 options.limit = 10
                 options.ascending = true
                 options.isFetchEnabled = true
-                options.sortKey = "name"
+                options.sortKey = "updatedAt"
                 
-                self.datasource = Salada(parentKey: "-Kae0h8UHtpSHrPNAyCk", referenceKey: "users", options: options, block: { [weak self](changes) in
+                self.datasource = Salada(parentKey: "-KbER5mAzjEoc1HVBjvg", referenceKey: "users", options: options, block: { [weak self](changes) in
                     guard let tableView: UITableView = self?.tableView else { return }
                     
                     switch changes {
