@@ -24,7 +24,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             Group.observeSingle(id, eventType: .value, block: { (group) in
                 
-                guard let group: Group = group else { return }
+                guard let group: Group = group as? Group else { return }
                 
                 let user: User = User()
                 let image: UIImage = UIImage(named: "salada")!
@@ -74,49 +74,51 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
 
-        self.setupDatasource(key: "-KZW4lhCwksodJ3J6g-F")
-//        let group: Group = Group()
-//        group.name = "iOS Development Team"
-//        group.save { (ref, error) in
-//                    
-//            self.groupID = ref!.key
-//            
-//            (0..<40).forEach({ (index) in
-//                let user: User = User()
-////                let image: UIImage = UIImage(named: "salada")!
-////                let data: Data = UIImagePNGRepresentation(image)!
-////                let thumbnail: File = File(name: "salada.png", data: data)
-////                let cover: File = File(name: "ssswww", data: data)
-////                thumbnail.data = data
-////                user.thumbnail = thumbnail
-////                user.cover = cover
-//                user.tempName = "Test1_name"
-//                user.name = "\(index)"
-//                user.gender = "man"
-//                user.age = index
-//                user.url = URL(string: "https://www.google.co.jp/")
-//                user.items = ["Book", "Pen"]
-//                user.groups.insert(ref!.key)
-//                user.location = CLLocation(latitude: 1, longitude: 1)
-//                user.type = .second
-//                user.birth = Date()
-//                user.save({ (ref, error) in
-//                    if let error: Error = error {
-//                        print(error)
-//                        return
-//                    }
-//                    group.users.insert(ref!.key)
-//                    user.transaction(key: "age", value: 10, completion: { (ref, error) in
-//                        if let error: Error = error {
-//                            print(error)
-//                            return
-//                        }
-//                    })
-//                    
-//                })
-//            })
-//
-//        }
+//        self.setupDatasource(key: "-Kae0h8UHtpSHrPNAyCk")
+        let group: Group = Group()
+        group.name = "iOS Development Team"
+        group.save { [weak self](ref, error) in
+                    
+            self?.groupID = ref!.key
+            
+            self?.setupDatasource(key: ref!.key)
+            
+            (0..<40).forEach({ (index) in
+                let user: User = User()
+//                let image: UIImage = UIImage(named: "salada")!
+//                let data: Data = UIImagePNGRepresentation(image)!
+//                let thumbnail: File = File(name: "salada.png", data: data)
+//                let cover: File = File(name: "ssswww", data: data)
+//                thumbnail.data = data
+//                user.thumbnail = thumbnail
+//                user.cover = cover
+                user.tempName = "Test1_name"
+                user.name = "\(index)"
+                user.gender = "man"
+                user.age = index
+                user.url = URL(string: "https://www.google.co.jp/")
+                user.items = ["Book", "Pen"]
+                user.groups.insert(ref!.key)
+                user.location = CLLocation(latitude: 1, longitude: 1)
+                user.type = .second
+                user.birth = Date()
+                user.save({ (ref, error) in
+                    if let error: Error = error {
+                        print(error)
+                        return
+                    }
+                    group.users.insert(ref!.key)
+                    user.transaction(key: "age", value: 10, completion: { (ref, error) in
+                        if let error: Error = error {
+                            print(error)
+                            return
+                        }
+                    })
+                    
+                })
+            })
+
+        }
     }
 
     func setupDatasource(key: String) {

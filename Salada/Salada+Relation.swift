@@ -13,7 +13,7 @@ extension Salada {
 
     open class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
 
-        internal var _Self: [String] = []
+        internal var _Self: [String] = [] 
 
         public typealias Index = Int
 
@@ -36,6 +36,8 @@ extension Salada {
         public var saved: Bool = false
 
         public weak var owner: Salada.Object?
+        
+        public var keyPath: String?
 
         public var startIndex: Int {
             return _Self.startIndex
@@ -76,6 +78,8 @@ extension Salada {
         // MARK: -
 
         public func insert(_ newMember: Element) {
+            
+
             if saved {
                 
             } else {
