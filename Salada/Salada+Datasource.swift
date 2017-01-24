@@ -40,7 +40,7 @@ open class SaladaOptions {
 
 /// Datasource class.
 /// Observe at a Firebase Database location.
-open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Tasting, Child: Referenceable, Child: Tasting {
+open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada.Object, Child: Referenceable, Child: Salada.Object {
 
     /// DatabaseReference
 
@@ -280,21 +280,17 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Tastin
             Child.databaseRef.child(key).removeAllObservers()
         }
     }
-
-}
-
-extension Datasource where Child.Element == Child {
-
+    
     /**
      Get an object from a data source
      - parameter index: Order of the data source
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      */
-    public func object(at index: Int, block: @escaping (Child.Element?) -> Void) {
+    public func object(at index: Int, block: @escaping (Child?) -> Void) {
         let key: String = self.pool[index]
         Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
             if snapshot.exists() {
-                if let tsp: Child.Element = Child.Element(snapshot: snapshot) {
+                if let tsp: Child = Child(snapshot: snapshot) {
                     block(tsp)
                 }
             } else {
@@ -302,7 +298,7 @@ extension Datasource where Child.Element == Child {
             }
         })
     }
-
+    
     /**
      Get an object from a data source and observe object changess
      It is need `removeObserver`
@@ -310,11 +306,11 @@ extension Datasource where Child.Element == Child {
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      - see removeObserver
      */
-    public func observeObject(at index: Int, block: @escaping (Child.Element?) -> Void) {
+    public func observeObject(at index: Int, block: @escaping (Child?) -> Void) {
         let key: String = self.pool[index]
         Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
             if snapshot.exists() {
-                if let tsp: Child.Element = Child.Element(snapshot: snapshot) {
+                if let tsp: Child = Child(snapshot: snapshot) {
                     block(tsp)
                 }
             } else {
