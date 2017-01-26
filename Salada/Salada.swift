@@ -252,7 +252,7 @@ public class Salada {
          The date when this object was updated
          */
         public var updatedAt: Date {
-            if let serverTimestamp: Double = self.serverCreatedAtTimestamp {
+            if let serverTimestamp: Double = self.serverUpdatedAtTimestamp {
                 let timestamp: TimeInterval = TimeInterval(serverTimestamp / 1000)
                 return Date(timeIntervalSince1970: timestamp)
             }
