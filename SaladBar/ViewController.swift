@@ -74,7 +74,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
 
-//        self.setupDatasource(key: "-Kae0h8UHtpSHrPNAyCk")
+        //self.setupDatasource(key: "-KbUZk48FcngVgCYjfi1")
         let group: Group = Group()
         group.name = "iOS Development Team"
         group.save { [weak self](ref, error) in
@@ -83,7 +83,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             self?.setupDatasource(key: ref!.key)
             
-            (0..<40).forEach({ (index) in
+            (0..<2).forEach({ (index) in
                 let user: User = User()
 //                let image: UIImage = UIImage(named: "salada")!
 //                let data: Data = UIImagePNGRepresentation(image)!
@@ -108,12 +108,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                         return
                     }
                     group.users.insert(ref!.key)
-                    user.transaction(key: "age", value: 10, completion: { (ref, error) in
-                        if let error: Error = error {
-                            print(error)
-                            return
-                        }
-                    })
                     
                 })
             })

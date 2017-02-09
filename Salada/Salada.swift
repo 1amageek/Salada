@@ -53,6 +53,7 @@ public class Salada {
             case null
 
             init(key: String, value: Any) {
+                print(key, value)
                 switch value.self {
                 case is String:         if let value: String        = value as? String      { self = .string(key, value); return }
                 case is URL:            if let value: URL           = value as? URL         { self = .url(key, value.absoluteString, value); return }
@@ -72,7 +73,8 @@ public class Salada {
             }
 
             init(key: String, mirror: Mirror, snapshot: [AnyHashable: Any]) {
-                let subjectType: Any.Type = mirror.subjectType                            
+                let subjectType: Any.Type = mirror.subjectType
+                print(subjectType)
                 if subjectType == String.self || subjectType == String?.self {
                     if let value: String = snapshot[key] as? String {
                         self = .string(key, value)
@@ -124,8 +126,10 @@ public class Salada {
                 } else if subjectType == Relation.self || subjectType == Relation?.self {
                     if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
                         self = .relation(key, value, Relation(value.keys))
-                        return
+                    } else {
+                        self = .relation(key, [:], Relation())
                     }
+                    return
                 } else if subjectType == [String: Any].self || subjectType == [String: Any]?.self {
                     if let value: [String: Any] = snapshot[key] as? [String: Any] {
                         self = .object(key, value)
@@ -196,7 +200,6 @@ public class Salada {
                     self.serverUpdatedAtTimestamp = snapshot["_updatedAt"] as? Double
                     Mirror(reflecting: self).children.forEach { (key, value) in
                         if let key: String = key {
-                            debugPrint(key, value)
                             if !self.ignore.contains(key) {
                                 if let _: Any = self.decode(key, value: snapshot[key]) {
                                     self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
@@ -540,7 +543,8 @@ public class Salada {
 //                            old.subtracting(new).forEach({ (id) in
 //                                updateValue(keyPath, child: id, value: nil)
 //                            })
-
+                            print(new)
+                            print(old)
                         }
                         return
                     }
@@ -714,6 +718,18 @@ public class Salada {
             }
             let _self: String = String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!
             return "\(_self) {\n\(values)}"
+        }
+        
+        public override func willChange(_ changeKind: NSKeyValueChange, valuesAt indexes: IndexSet, forKey key: String) {
+            super.willChange(changeKind, valuesAt: indexes, forKey: key)
+            print(changeKind, indexes, key)
+        }
+        
+        public override func didChange(_ changeKind: NSKeyValueChange, valuesAt indexes: IndexSet, forKey key: String) {
+            print("changeKind", changeKind, indexes, key, self.value(forKeyPath: key))
+            
+            super.didChange(changeKind, valuesAt: IndexSet(), forKey: key)
+            
         }
 
     }
