@@ -238,6 +238,7 @@ public class Salada {
 
         fileprivate func _setSnapshot(_ snapshot: FIRDataSnapshot) {
             self.snapshot = snapshot
+            type(of: self).databaseRef.child(self.id).keepSynced(true)
         }
 
         /**
