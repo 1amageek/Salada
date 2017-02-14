@@ -599,7 +599,7 @@ public class Salada {
                     var children: [Object] = []
                     snapshot.children.forEach({ (snapshot) in
                         if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
-                            if let tsp: Object = Object(snapshot: snapshot) {
+                            if let tsp: Object = self.init(snapshot: snapshot) {
                                 children.append(tsp)
                             }
                         }
@@ -617,7 +617,7 @@ public class Salada {
         public class func observeSingle(_ id: String, eventType: FIRDataEventType, block: @escaping (Object?) -> Void) {
             self.databaseRef.child(id).observeSingleEvent(of: eventType, with: { (snapshot) in
                 if snapshot.exists() {
-                    if let tsp: Object = Object(snapshot: snapshot) {
+                    if let tsp: Object = self.init(snapshot: snapshot) {
                         block(tsp)
                     }
                 } else {
@@ -632,7 +632,7 @@ public class Salada {
                     var children: [Object] = []
                     snapshot.children.forEach({ (snapshot) in
                         if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
-                            if let tsp: Object = Object(snapshot: snapshot) {
+                            if let tsp: Object = self.init(snapshot: snapshot) {
                                 children.append(tsp)
                             }
                         }
@@ -653,7 +653,7 @@ public class Salada {
                     var children: [Object] = []
                     snapshot.children.forEach({ (snapshot) in
                         if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
-                            if let tsp: Object = Object(snapshot: snapshot) {
+                            if let tsp: Object = self.init(snapshot: snapshot) {
                                 children.append(tsp)
                             }
                         }
@@ -670,7 +670,7 @@ public class Salada {
         public class func observe(_ id: String, eventType: FIRDataEventType, block: @escaping (Object?) -> Void) -> UInt {
             return self.databaseRef.child(id).observe(eventType, with: { (snapshot) in
                 if snapshot.exists() {
-                    if let tsp: Object = Object(snapshot: snapshot) {
+                    if let tsp: Object = self.init(snapshot: snapshot) {
                         block(tsp)
                     }
                 } else {
