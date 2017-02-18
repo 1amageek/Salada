@@ -48,9 +48,13 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
     
     public var count: Int { return pool.count }
     
-    fileprivate(set) var parentRef: FIRDatabaseReference
+    public var parentRef: FIRDatabaseReference {
+        return Parent.databaseRef.child(parentKey)
+    }
     
-    fileprivate(set) var reference: FIRDatabaseReference
+    public var reference: FIRDatabaseReference {
+        return Parent.databaseRef.child(parentKey).child(referenceKey)
+    }
     
     fileprivate(set) var parentKey: String
     
@@ -87,10 +91,6 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
         self.parentKey = parentKey
         
         self.referenceKey = referenceKey
-        
-        self.parentRef = Parent.databaseRef.child(parentKey)
-        
-        self.reference = self.parentRef.child(referenceKey)
         
         self.changedBlock = block
         
