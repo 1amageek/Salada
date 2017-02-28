@@ -31,7 +31,7 @@ extension Salada {
         open var metadata: FIRStorageMetadata?
 
         /// Parent to hold the location where you want to save
-        open weak var parent: Object?
+        open var parent: Object?
 
         /// Property name to save
         open var keyPath: String?

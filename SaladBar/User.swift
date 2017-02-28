@@ -33,6 +33,7 @@ class User: Salada.Object {
     dynamic var thumbnail: Salada.File?
     dynamic var cover: Salada.File?
     dynamic var type: UserType = .first
+    dynamic var testItems: Set<String> = []
     
     var tempName: String? 
     
