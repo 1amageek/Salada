@@ -23,6 +23,9 @@ extension Salada {
 
         /// Save data
         open var data: Data?
+        
+        /// Save URL
+        open var url: URL?
 
         /// File name
         open var name: String
@@ -58,6 +61,12 @@ extension Salada {
             self.init(name: name)
             self.data = data
         }
+        
+        public convenience init(url: URL) {
+            let name: String = "\(Int(Date().timeIntervalSince1970 * 1000))"
+            self.init(name: name)
+            self.url = url
+        }
 
         // MARK: - Save
 
@@ -82,6 +91,24 @@ extension Salada {
                         completion?(metadata, error as Error?)
                     })
                 }
+                parent.uploadTasks[keyPath] = self.uploadTask
+                return self.uploadTask
+            } else if let url: URL = self.url, let parent: Object = self.parent {
+                // If parent have uploadTask cancel
+                parent.uploadTasks[keyPath]?.cancel()
+                self.downloadTask?.cancel()
+                self.uploadTask = self.ref?.putFile(url, metadata: self.metadata, completion: { (metadata, error) in
+                    self.metadata = metadata
+                    if let error: Error = error as Error? {
+                        completion?(metadata, error)
+                        return
+                    }
+                    type(of: parent).databaseRef.child(parent.id).child(keyPath).setValue(self.name, withCompletionBlock: { (error, ref) in
+                        parent.uploadTasks.removeValue(forKey: keyPath)
+                        self.uploadTask = nil
+                        completion?(metadata, error as Error?)
+                    })
+                })
                 parent.uploadTasks[keyPath] = self.uploadTask
                 return self.uploadTask
             } else {
