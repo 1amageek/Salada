@@ -362,7 +362,7 @@ public class Salada {
                             data.value = value
                             return .success(withValue: data)
                         }
-                        return .success(withValue: data)                        
+                        return .success(withValue: data)
                     }, andCompletionBlock: { (error, committed, snapshot) in
                         
                         type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
