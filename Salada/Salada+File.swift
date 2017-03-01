@@ -73,12 +73,9 @@ extension Salada {
         public func save(_ keyPath: String) -> FIRStorageUploadTask? {
             return self.save(keyPath, completion: nil)
         }
-
+        
         public func save(_ keyPath: String, completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
             if let data: Data = self.data, let parent: Object = self.parent {
-                // If parent have uploadTask cancel
-                parent.uploadTasks[keyPath]?.cancel()
-                self.downloadTask?.cancel()
                 self.uploadTask = self.ref?.put(data, metadata: self.metadata) { (metadata, error) in
                     self.metadata = metadata
                     if let error: Error = error as Error? {
@@ -86,17 +83,12 @@ extension Salada {
                         return
                     }
                     type(of: parent).databaseRef.child(parent.id).child(keyPath).setValue(self.name, withCompletionBlock: { (error, ref) in
-                        parent.uploadTasks.removeValue(forKey: keyPath)
                         self.uploadTask = nil
                         completion?(metadata, error as Error?)
                     })
                 }
-                parent.uploadTasks[keyPath] = self.uploadTask
                 return self.uploadTask
             } else if let url: URL = self.url, let parent: Object = self.parent {
-                // If parent have uploadTask cancel
-                parent.uploadTasks[keyPath]?.cancel()
-                self.downloadTask?.cancel()
                 self.uploadTask = self.ref?.putFile(url, metadata: self.metadata, completion: { (metadata, error) in
                     self.metadata = metadata
                     if let error: Error = error as Error? {
@@ -104,12 +96,10 @@ extension Salada {
                         return
                     }
                     type(of: parent).databaseRef.child(parent.id).child(keyPath).setValue(self.name, withCompletionBlock: { (error, ref) in
-                        parent.uploadTasks.removeValue(forKey: keyPath)
                         self.uploadTask = nil
                         completion?(metadata, error as Error?)
                     })
                 })
-                parent.uploadTasks[keyPath] = self.uploadTask
                 return self.uploadTask
             } else {
                 let error: ObjectError = ObjectError(kind: .invalidFile, description: "It requires data when you save the file")
