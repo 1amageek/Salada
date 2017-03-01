@@ -61,13 +61,45 @@
                                             <segue destination="YoT-0L-egd" kind="show" id="Sai-5B-7Te"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="zSf-pL-Ret">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="w69-fl-sH7" style="IBUITableViewCellStyleDefault" id="zSf-pL-Ret">
                                         <rect key="frame" x="0.0" y="88" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zSf-pL-Ret" id="ZN2-vN-xDs">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="File" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="w69-fl-sH7">
+                                                    <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="akd-lw-wYu" kind="show" id="gDe-2X-EKL"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="8Hj-iy-3Ch" style="IBUITableViewCellStyleDefault" id="79u-Ba-E2w">
+                                        <rect key="frame" x="0.0" y="132" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="79u-Ba-E2w" id="HqB-0s-w1I">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Salada.File" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="8Hj-iy-3Ch">
+                                                    <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="7sR-gI-aKd" kind="show" id="hQx-HD-lxL"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -158,6 +190,72 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sm9-gw-fOe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1356" y="1023.2383808095952"/>
+        </scene>
+        <!--File Test View Controller-->
+        <scene sceneID="Pzj-Dl-NXh">
+            <objects>
+                <viewController id="akd-lw-wYu" customClass="FileTestViewController" customModule="SaladBar" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7Yh-cl-ZzI"/>
+                        <viewControllerLayoutGuide type="bottom" id="KGS-ju-e23"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fKw-Wj-17D">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="aKt-4o-PA8"/>
+                        <barButtonItem title="Start" id="53o-pQ-7BT">
+                            <connections>
+                                <action selector="start:" destination="akd-lw-wYu" id="cQ8-e3-G7L"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="8oh-Ld-zg2"/>
+                        <barButtonItem title="Resume" id="EXF-uH-hCv">
+                            <connections>
+                                <action selector="resume:" destination="akd-lw-wYu" id="KOY-R7-czp"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="iX6-A3-L5q"/>
+                        <barButtonItem title="Stop" id="76d-x4-aOz">
+                            <connections>
+                                <action selector="stop:" destination="akd-lw-wYu" id="eNK-rG-ZDf"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="u5z-4l-wQJ"/>
+                    </toolbarItems>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kR7-Nf-Yc2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1356" y="1719"/>
+        </scene>
+        <!--Salada File Test View Controller-->
+        <scene sceneID="6QG-cP-Pcn">
+            <objects>
+                <viewController id="7sR-gI-aKd" customClass="SaladaFileTestViewController" customModule="SaladBar" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="H8A-vY-bEl"/>
+                        <viewControllerLayoutGuide type="bottom" id="0JC-h8-DXe"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jHt-PL-mQT">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Bnb-K9-fZv"/>
+                        <barButtonItem title="Start" id="F4c-iY-q6N">
+                            <connections>
+                                <action selector="start:" destination="7sR-gI-aKd" id="pec-pC-VkL"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="lkS-aw-E1D"/>
+                    </toolbarItems>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IFA-bV-i0z" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1356" y="2412"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="lpi-1D-JyG">

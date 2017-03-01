@@ -12,4 +12,5 @@ class Item: Salada.Object {
     typealias Element = Item
     dynamic var index: Int = 0
     dynamic var userID: String?
+    dynamic var file: Salada.File?
 }

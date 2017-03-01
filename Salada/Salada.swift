@@ -324,15 +324,17 @@ public class Salada {
         
         // MARK: - Save
         
-        public func save() {
-            self.save(nil)
+        @discardableResult
+        public func save() -> [String: FIRStorageUploadTask] {
+            return self.save(nil)
         }
         
         /**
          Save the new Object to Firebase. Save will fail in the off-line.
          - parameter completion: If successful reference will return. An error will return if it fails.
          */
-        public func save(_ completion: ((FIRDatabaseReference?, Error?) -> Void)?) {
+        @discardableResult
+        public func save(_ completion: ((FIRDatabaseReference?, Error?) -> Void)?) -> [String: FIRStorageUploadTask] {
             
             if self.id == self.tmpID || self.id == self._id {
                 
@@ -350,33 +352,45 @@ public class Salada {
                     ref = type(of: self).databaseRef.childByAutoId()
                 }
                 
-                ref.runTransactionBlock({ (data) -> FIRTransactionResult in
-                    
-                    if data.value != nil {
-                        data.value = value
-                        return .success(withValue: data)
+                self.tmpID = ref.key
+                
+                self.saveFiles(block: { (error) in
+                    if let error = error {
+                        completion?(ref, error)
+                        return
                     }
                     
-                    return .success(withValue: data)
-                    
-                }, andCompletionBlock: { (error, committed, snapshot) in
-                    
-                    type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
-                        self.snapshot = snapshot
+                    ref.runTransactionBlock({ (data) -> FIRTransactionResult in
                         
-                        // File save
-                        self.saveFiles(block: { (error) in
-                            completion?(ref, error as Error?)
+                        if data.value != nil {
+                            data.value = value
+                            return .success(withValue: data)
+                        }
+                        
+                        return .success(withValue: data)
+                        
+                    }, andCompletionBlock: { (error, committed, snapshot) in
+                        
+                        type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
+                            self.snapshot = snapshot
+                            
+                            // File save
+                            self.saveFiles(block: { (error) in
+                                completion?(ref, error as Error?)
+                            })
+                            
                         })
                         
-                    })
-                    
-                }, withLocalEvents: false)
+                    }, withLocalEvents: false)
+                                        
+                })
                 
             } else {
                 let error: ObjectError = ObjectError(kind: .invalidId, description: "It has been saved with an invalid ID.")
                 completion?(nil, error)
             }
+            
+            return self.uploadTasks
         }
         
         var timeout: Float = 20
