@@ -6,6 +6,11 @@
 -->
 Salad is a Model for Firebase database. It can handle Snapshot of Firebase easily.
 
+☑️ You no longer need to create a server.
+☑️ You no longer need to make a mock.
+☑️ It operates in real time.
+☑️ You can create a reactive UI.
+
 ## Requirements ❗️
 - iOS 8 or later
 - Swift 3.0 or later
