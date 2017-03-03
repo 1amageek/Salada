@@ -30,7 +30,7 @@ pod 'Firebase/Storage'
 ```
 
 1. [Download this project](https://github.com/1amageek/Salada/archive/master.zip)
-1. Put `Salada.Swift` in your project.
+1. Put `Salada.Swift`,`Salada+Datasource.swift`,`Salada+Relation.swift`,`Referenceable.swift` in your project.
 
 ## Usage 👀
 
