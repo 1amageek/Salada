@@ -790,11 +790,11 @@ extension Salada {
         
         // MARK: - Save
         
-        public func save(_ keyPath: String) -> FIRStorageUploadTask? {
+        fileprivate func save(_ keyPath: String) -> FIRStorageUploadTask? {
             return self.save(keyPath, completion: nil)
         }
         
-        public func save(_ keyPath: String, completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
+        fileprivate func save(_ keyPath: String, completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
             if let data: Data = self.data, let parent: Object = self.parent {
                 self.uploadTask = self.ref?.put(data, metadata: self.metadata) { (metadata, error) in
                     self.metadata = metadata
