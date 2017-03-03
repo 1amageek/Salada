@@ -39,16 +39,22 @@ pod 'Firebase/Storage'
 ### Model
 
 Model of the definition is very simple.
-To inherit the `Ingredient`.
+To inherit the `Salada.Object`.
 
 ``` Swift 
-class User: Ingredient {
-    typealias Tsp = User
+class User: Salada.Object {
+    
+    typealias Element = User
+    
     dynamic var name: String?
     dynamic var age: Int = 0
     dynamic var gender: String?
     dynamic var groups: Set<String> = []
     dynamic var items: [String] = []
+    dynamic var url: URL?
+    dynamic var birth: Date?
+    dynamic var thumbnail: Salada.File?
+
 }
 ```
 
@@ -56,8 +62,8 @@ When you want to create a property that you want to ignore.
 
 ``` Swift
 // Group
-class Group: Ingredient {
-    typealias Tsp = Group
+class Group: Salada.Object {
+    typealias Element = Group
     dynamic var name: String?
     dynamic var users: Set<String> = []
 }
@@ -159,17 +165,24 @@ if let groupId: String = user.groups.first {
 
 ### Custom property
 ``` Swift
-class User: Ingredient {
-    typealias Tsp = User
+class User: Salada.Object {
+    
+    typealias Element = User
+    
+    override class var _version: String {
+        return "v1"
+    }
+    
     dynamic var name: String?
     dynamic var age: Int = 0
     dynamic var gender: String?
     dynamic var groups: Set<String> = []
     dynamic var items: [String] = []
     dynamic var location: CLLocation?
-    dynamic var url: NSURL?
-    dynamic var birth: NSDate?
-    dynamic var thumbnail: File?
+    dynamic var url: URL?
+    dynamic var birth: Date?
+    dynamic var thumbnail: Salada.File?
+    dynamic var cover: Salada.File?
     dynamic var type: UserType = .first
     
     var tempName: String? 
@@ -178,18 +191,18 @@ class User: Ingredient {
         return ["tempName"]
     }
     
-    override func encode(key: String, value: Any) -> AnyObject? {
+    override func encode(_ key: String, value: Any?) -> Any? {
         if key == "location" {
             if let location = self.location {
                 return ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
             }
         } else if key == "type" {
-            return self.type.rawValue
+            return self.type.rawValue as AnyObject?
         }
         return nil
     }
     
-    override func decode(key: String, value: Any) -> Any? {
+    override func decode(_ key: String, value: Any?) -> Any? {
         if key == "location" {
             if let location: [String: Double] = value as? [String: Double] {
                 self.location = CLLocation(latitude: location["latitude"]!, longitude: location["longitude"]!)
