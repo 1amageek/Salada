@@ -235,6 +235,19 @@ user.save({ (error, ref) in
 })
 ```
 
+``` Swift
+let image: UIImage = #imageLiteral(resourceName: "salada")
+let data: Data = UIImageJPEGRepresentation(image, 1)!
+let file: Salada.File = Salada.File(data: data)
+item.file = file
+let task: FIRStorageUploadTask = item.file?.save(completion: { (metadata, error) in
+    if let error = error {
+        print(error)
+        return
+    }
+})
+```
+
 #### Download file
 
 Download of File is also available through the File.
@@ -249,6 +262,22 @@ user.thumbnail?.dataWithMaxSize(1 * 2000 * 2000, completion: { (data, error) in
     cell.imageView?.image = UIImage(data: data!)
     cell.setNeedsLayout()
 })
+```
+
+FirebaseUI makes it even easier to access.
+``` Ruby
+# Only pull in FirebaseUI Storage features
+pod 'FirebaseUI/Storage', '~> 3.0'
+```
+
+``` Swift
+User.observeSingle(friend, eventType: .value, block: { (user) in
+    if let user: User = user as? User {
+        if let ref: FIRStorageReference = user.thumbnail?.ref {
+            cell.imageView.sd_setImage(with: ref, placeholderImage: #imageLiteral(resourceName: "account_placeholder"))
+        }
+    }
+ })
 ```
 
 # Salada datasource
@@ -314,7 +343,7 @@ func tableView(_ tableView: UITableView, canPerformAction action: Selector, forR
 
 func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
-        self.datasource?.removeObject(at: indexPath.item, block: { (error) in
+        self.datasource?.removeObject(at: indexPath.item, cascade: true, block: { (key, error) in
             if let error: Error = error {
                 print(error)
             }
