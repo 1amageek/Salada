@@ -12,5 +12,4 @@ class Group: Salada.Object {
     typealias Element = Group
     dynamic var name: String?
     dynamic var users: Set<String> = []
-    //dynamic var users: Salada.Relation = []
 }
