@@ -286,15 +286,15 @@ For example
 
 ``` Swift
 // in ViewController property
-var datasource: Salada<Group, User>?
+var datasource: Datasource<Group, User>?
 ```
 
 ``` Swift
 // in viewDidLoad
 let options: SaladaOptions = SaladaOptions()
 options.limit = 10
-
-self.datasource = Salada(with: ref.key, referenceKey: "users", options: options, block: { [weak self](changes) in
+options.ascending = false
+self.datasource = Datasource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
     guard let tableView: UITableView = self?.tableView else { return }
     
     switch changes {
