@@ -11,10 +11,47 @@ import Firebase
 
 class TransactionTestViewController: UIViewController {
 
- 
+    var userID: String?
+    var handle: UInt?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let user: User = User()
+        user.tempName = "Test1_name"
+        user.name = "TestUser"
+        user.gender = "man"
+        user.age = 30
+        user.url = URL(string: "https://www.google.co.jp/")
+        user.items = ["Book", "Pen"]
+        user.type = .second
+        user.birth = Date()
+        user.save({ (ref, error) in
+            if let error: Error = error {
+                print(error)
+                return
+            }
+            self.userID = ref!.key
+            
+            self.handle = User.observe(ref!.key, eventType: .value) { [weak self] (user) in
+                guard let user: User = user as? User else {
+                    return
+                }
+                self?.countLabel.text = String(user.testItems.count)
+            }
+            
+        })
+        
+    }
+
+    
     @IBAction func testStart(_ sender: Any) {
         
-        User.observeSingle("-Ke24wLDZonHR5G-s0JD", eventType: .value) { [weak self](user) in
+        guard let id: String = self.userID else {
+            return
+        }
+        
+        User.observeSingle(id, eventType: .value) { (user) in
             guard let user: User = user as? User else {
                 return
             }
@@ -33,24 +70,15 @@ class TransactionTestViewController: UIViewController {
                 })
             })
             
-//            (0..<500).forEach({ (index) in
-//                user.testItems.insert(UUID().uuidString)
-//            })
-            
         }
         
     }
     @IBOutlet weak var countLabel: UILabel!
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        User.observe("-Ke24wLDZonHR5G-s0JD", eventType: .value) { [weak self] (user) in
-            guard let user: User = user as? User else {
-                return
-            }
-            self?.countLabel.text = String(user.testItems.count)
+
+    deinit {
+        if let handle: UInt = self.handle {
+            User.removeObserver(with: handle)
         }
-        
     }
 
 }
