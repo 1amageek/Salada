@@ -36,7 +36,7 @@ class SaladaFileTestViewController: UIViewController {
                 let data: Data = UIImageJPEGRepresentation(image, 1)!
                 let file: Salada.File = Salada.File(data: data)
                 item.file = file
-                item.file?.save(completion: { (metadata, error) in
+                _ = item.file?.save(completion: { (metadata, error) in
                     if let error = error {
                         print(error)
                         return
