@@ -92,7 +92,10 @@ Property are four that can be specified in Salada.
     ".write": true
   }
 }
+// This rule is dangerous. Please change the rules according to the model
 ```
+
+https://firebase.google.com/docs/database/security/
 
 The new model is stored in the `save()` or `save(completion: ((NSError?, FIRDatabaseReference) -> Void)?)`.
 It is updated automatically when you change the property Model that have already been saved.
@@ -222,6 +225,8 @@ class User: Salada.Object {
 You can easily save the file if you use the File.
 File saves the File in FirebaseStorage.
 
+<b>Do not forget to change the storage rule</b>
+
 ``` Swift
 let user: User = User()
 let image: UIImage = UIImage(named: "Salada")!
@@ -245,6 +250,8 @@ let task: FIRStorageUploadTask = item.file?.save(completion: { (metadata, error)
     }
 })
 ```
+
+
 
 #### Download file
 
