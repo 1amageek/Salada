@@ -1,4 +1,4 @@
-<img src="https://github.com/1amageek/Salada/blob/master/Salada.png", width="480">
+<img src="https://github.com/1amageek/Salada/blob/master/Salada.png", width="320">
 
 Logo was designed by [Take](https://dribbble.com/take_designer).
 
