@@ -270,7 +270,7 @@ public class Salada {
             return []
         }
         
-        fileprivate var hasObserve: Bool = false
+        private(set) var hasObserve: Bool = false
         
         public var value: [AnyHashable: Any] {
             let mirror = Mirror(reflecting: self)
@@ -295,6 +295,7 @@ public class Salada {
                         case .set       (let key, let value, _):    object[key] = value
                         case .relation  (let key, let value, _):    object[key] = value
                         case .file      (let key, let value):
+                            object[key] = value.name
                             value.parent = self
                             value.keyPath = key
                         case .object(let key, let value): object[key] = value
@@ -440,92 +441,6 @@ public class Salada {
             }
                         
             return uploadTasks
-            
-//            DispatchQueue.global(qos: .default).async {
-//
-//                var hasError: Error? = nil
-//                
-//                for (key, value) in Mirror(reflecting: self).children {
-//                    
-//                    guard let key: String = key else {
-//                        break
-//                    }
-//                    
-//                    if self.ignore.contains(key) {
-//                        break
-//                    }
-//                    
-//                    let mirror: Mirror = Mirror(reflecting: value)
-//                    let subjectType: Any.Type = mirror.subjectType
-//                    if subjectType == File?.self || subjectType == File.self {
-//                        if let file: File = value as? File {
-//                            group.enter()
-//                            if let task: FIRStorageUploadTask = file.save(key, completion: { (meta, error) in
-//                                if let error: Error = error {
-//                                    hasError = error
-//                                    uploadTasks.forEach({ (_, task) in
-//                                        task.cancel()
-//                                    })
-//                                    group.leave()
-//                                    return
-//                                }
-//                                group.leave()
-//                            }) {
-//                                uploadTasks[key] = task
-//                            }
-//                        }
-//                    }
-//                }
-//                
-//                let workItem: DispatchWorkItem = DispatchWorkItem {
-//                    for (key, value) in Mirror(reflecting: self).children {
-//                        
-//                        guard let key: String = key else {
-//                            break
-//                        }
-//                        
-//                        if self.ignore.contains(key) {
-//                            break
-//                        }
-//                        
-//                        let mirror: Mirror = Mirror(reflecting: value)
-//                        let subjectType: Any.Type = mirror.subjectType
-//                        if subjectType == File?.self || subjectType == File.self {
-//                            if let file: File = value as? File {
-//                                group.enter()
-//                                if let task: FIRStorageUploadTask = file.save(key, completion: { (meta, error) in
-//                                    if let error: Error = error {
-//                                        hasError = error
-//                                        uploadTasks.forEach({ (task) in
-//                                            task.cancel()
-//                                        })
-//                                        group.leave()
-//                                        return
-//                                    }
-//                                    group.leave()
-//                                }) {
-//                                    uploadTasks.append(task)
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                
-//                self.uploadQueue.async(group: group, execute: workItem)
-//                group.notify(queue: DispatchQueue.main, execute: {
-//                    block?(hasError)
-//                })
-//                switch group.wait(timeout: .now() + Double(Int64(4 * Double(NSEC_PER_SEC)))) {
-//                case .success: break
-//                case .timedOut:
-//                    uploadTasks.forEach({ (_, task) in
-//                        task.cancel()
-//                    })
-//                    let error: ObjectError = ObjectError(kind: .timeout, description: "Save the file timeout.")
-//                    block?(error)
-//                }
-//                return uploadTasks
-//            }
         }
         
         // MARK: - Transaction
@@ -575,20 +490,21 @@ public class Salada {
                     // File
                     if let _: File = value as? File {
                         if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
-                            let new: File = change[.newKey] as! File
+                            guard let new: File = change[.newKey] as? File else {
+                                if let old: File = change[.oldKey] as? File {
+                                    old.parent = self
+                                    old.keyPath = keyPath
+                                    old.remove()
+                                }
+                                return
+                            }
                             if let old: File = change[.oldKey] as? File {
                                 if old.name != new.name {
                                     new.parent = self
                                     new.keyPath = keyPath
                                     old.parent = self
                                     old.keyPath = keyPath
-                                    _ = new.save(keyPath, completion: { (meta, error) in
-                                        old.remove()
-                                    })
                                 }
-                            } else {
-                                new.parent = self
-                                _ = new.save(keyPath)
                             }
                         }
                         return
@@ -617,6 +533,7 @@ public class Salada {
                     
                     // Relation
                     // TODO:
+                    /*
                     if let _: Relation = value as? Relation {
                         if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
                             
@@ -626,7 +543,7 @@ public class Salada {
                             // TODO:
                         }
                         return
-                    }
+                    }*/
                     
                     
                     if let values: [String] = value as? [String] {
@@ -645,7 +562,7 @@ public class Salada {
         
         // update value & update timestamp
         // Value will be deleted if the nil.
-        private func updateValue(_ keyPath: String, child: String?, value: Any?) {
+        fileprivate func updateValue(_ keyPath: String, child: String?, value: Any?) {
             let reference: FIRDatabaseReference = type(of: self).databaseRef.child(self.id)
             let timestamp: AnyObject = FIRServerValue.timestamp() as AnyObject
             
@@ -799,8 +716,184 @@ public class Salada {
             return "\(_self) {\n\(values)}"
         }
         
+        subscript(key: String) -> Any? {
+            get {
+                return self.value(forKey: key)
+            }
+            set(newValue) {
+                self.setValue(newValue, forKey: key)
+            }
+        }
+        
     }
     
+}
+
+extension Salada {
+    
+    public class File: NSObject {
+        
+        /// Save location
+        open var ref: FIRStorageReference? {
+            if let parent: Object = self.parent {
+                return type(of: parent).storageRef.child(parent.id).child(self.name)
+            }
+            return nil
+        }
+        
+        /// Save data
+        open var data: Data?
+        
+        /// Save URL
+        open var url: URL?
+        
+        /// File name
+        open var name: String
+        
+        /// File metadata
+        open var metadata: FIRStorageMetadata?
+        
+        /// Parent to hold the location where you want to save
+        open var parent: Object?
+        
+        /// Property name to save
+        open var keyPath: String?
+        
+        /// Firebase uploading task
+        open fileprivate(set) weak var uploadTask: FIRStorageUploadTask?
+        
+        /// Firebase downloading task
+        open fileprivate(set) weak var downloadTask: FIRStorageDownloadTask?
+        
+        // MARK: - Initialize
+        
+        public init(name: String) {
+            self.name = name
+        }
+        
+        public convenience init(name: String, data: Data) {
+            self.init(name: name)
+            self.data = data
+        }
+        
+        public convenience init(data: Data) {
+            let name: String = "\(Int(Date().timeIntervalSince1970 * 1000))"
+            self.init(name: name)
+            self.data = data
+        }
+        
+        public convenience init(url: URL) {
+            let name: String = "\(Int(Date().timeIntervalSince1970 * 1000))"
+            self.init(name: name)
+            self.url = url
+        }
+        
+        // MARK: - Save
+        
+        public func save(_ keyPath: String) -> FIRStorageUploadTask? {
+            return self.save(keyPath, completion: nil)
+        }
+        
+        public func save(_ keyPath: String, completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
+            if let data: Data = self.data, let parent: Object = self.parent {
+                self.uploadTask = self.ref?.put(data, metadata: self.metadata) { (metadata, error) in
+                    self.metadata = metadata
+                    if let error: Error = error as Error? {
+                        completion?(metadata, error)
+                        return
+                    }
+                    if parent.hasObserve {
+                        parent.updateValue(keyPath, child: nil, value: self.name)
+                    } else {
+                        completion?(metadata, error as Error?)
+                    }
+                }
+                return self.uploadTask
+            } else if let url: URL = self.url, let parent: Object = self.parent {
+                self.uploadTask = self.ref?.putFile(url, metadata: self.metadata, completion: { (metadata, error) in
+                    self.metadata = metadata
+                    if let error: Error = error as Error? {
+                        completion?(metadata, error)
+                        return
+                    }
+                    if parent.hasObserve {
+                        parent.updateValue(keyPath, child: nil, value: self.name)
+                    } else {
+                        completion?(metadata, error as Error?)
+                    }
+                })
+                return self.uploadTask
+            } else {
+                let error: ObjectError = ObjectError(kind: .invalidFile, description: "It requires data when you save the file")
+                completion?(nil, error)
+            }
+            return nil
+        }
+        
+        public func save(completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
+            guard let parent: Object = self.parent else {
+                let error: ObjectError = ObjectError(kind: .invalidFile, description: "It requires data when you save the file")
+                completion?(nil, error)
+                return nil
+            }
+            
+            var task: FIRStorageUploadTask?
+            for (key, value) in Mirror(reflecting: parent).children {
+                
+                guard let key: String = key else {
+                    break
+                }
+                
+                if parent.ignore.contains(key) {
+                    break
+                }
+                
+                let mirror: Mirror = Mirror(reflecting: value)
+                let subjectType: Any.Type = mirror.subjectType
+                if subjectType == File?.self || subjectType == File.self {
+                    if let file: File = value as? File {
+                        if file == self {
+                            task = self.save(key, completion: completion)
+                        }
+                    }
+                }
+            }
+            return task
+        }
+        
+        // MARK: - Load
+        
+        public func dataWithMaxSize(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> FIRStorageDownloadTask? {
+            self.downloadTask?.cancel()
+            let task: FIRStorageDownloadTask? = self.ref?.data(withMaxSize: size, completion: { (data, error) in
+                self.downloadTask = nil
+                completion(data, error as Error?)
+            })
+            self.downloadTask = task
+            return task
+        }
+        
+        public func remove() {
+            self.remove(nil)
+        }
+        
+        public func remove(_ completion: ((Error?) -> Void)?) {
+            self.ref?.delete(completion: { (error) in
+                completion?(error)
+            })
+        }
+        
+        deinit {
+            self.parent = nil
+        }
+        
+        // MARK: -
+        
+        override open var description: String {
+            return "Salada.File"
+        }
+        
+    }
 }
 
 extension Salada.Object {
