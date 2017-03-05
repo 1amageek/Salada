@@ -257,7 +257,8 @@ typedef NSUInteger FIRDatabaseHandle;
 /**
  * queryStartingAtValue:childKey: is used to generate a reference to a limited view of the data at this location.
  * The FIRDatabaseQuery instance returned by queryStartingAtValue:childKey will respond to events at nodes with a value
- * greater than startValue, or equal to startValue and with a key greater than or equal to childKey.
+ * greater than startValue, or equal to startValue and with a key greater than or equal to childKey. This is most
+ * useful when implementing pagination in a case where multiple nodes can match the startValue.
  *
  * @param startValue The lower bound, inclusive, for the value of data visible to the returned FIRDatabaseQuery
  * @param childKey The lower bound, inclusive, for the key of nodes with value equal to startValue
@@ -278,7 +279,8 @@ typedef NSUInteger FIRDatabaseHandle;
 /**
  * queryEndingAtValue:childKey: is used to generate a reference to a limited view of the data at this location.
  * The FIRDatabaseQuery instance returned by queryEndingAtValue:childKey will respond to events at nodes with a value
- * less than endValue, or equal to endValue and with a key less than or equal to childKey.
+ * less than endValue, or equal to endValue and with a key less than or equal to childKey. This is most useful when
+ * implementing pagination in a case where multiple nodes can match the endValue.
  *
  * @param endValue The upper bound, inclusive, for the value of data visible to the returned FIRDatabaseQuery
  * @param childKey The upper bound, inclusive, for the key of nodes with value equal to endValue
@@ -299,8 +301,8 @@ typedef NSUInteger FIRDatabaseHandle;
 /**
  * queryEqualToValue:childKey: is used to generate a reference to a limited view of the data at this location.
  * The FIRDatabaseQuery instance returned by queryEqualToValue:childKey will respond to events at nodes with a value
- * equal to the supplied argument with a name equal to childKey. There will be at most one node that matches because
- * child keys are unique.
+ * equal to the supplied argument and with their key equal to childKey. There will be at most one node that matches
+ * because child keys are unique.
  *
  * @param value The value that the data returned by this FIRDatabaseQuery will have
  * @param childKey The name of nodes with the right value
