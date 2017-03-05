@@ -21,7 +21,7 @@
 //   than delegate methods.
 // - Out-of-process uploads and downloads using NSURLSession, including
 //   management of fetches after relaunch.
-// - Integration with GTMOAuth2 for invisible management and refresh of
+// - Integration with GTMAppAuth for invisible management and refresh of
 //   authorization tokens.
 // - Pretty-printed http logging.
 // - Cookies handling that does not interfere with or get interfered with
@@ -264,6 +264,9 @@
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
 #endif
+#if TARGET_OS_WATCH
+#import <WatchKit/WatchKit.h>
+#endif
 
 // By default it is stripped from non DEBUG builds. Developers can override
 // this in their project settings.
@@ -339,17 +342,17 @@
   #endif  // __has_feature(nullability)
 #endif  // GTM_NULLABLE
 
-#if ((!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_12) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_12) \
-      || (TARGET_OS_IPHONE && defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0))
+#if (TARGET_OS_TV \
+     || TARGET_OS_WATCH \
+     || (!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_12) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_12) \
+     || (TARGET_OS_IPHONE && defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0))
 #define GTMSESSION_DEPRECATE_ON_2016_SDKS(_MSG) __attribute__((deprecated("" _MSG)))
 #else
 #define GTMSESSION_DEPRECATE_ON_2016_SDKS(_MSG)
 #endif
 
 #ifndef GTM_DECLARE_GENERICS
-  #if __has_feature(objc_generics) \
-    && ((!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_11) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_11) \
-      || (TARGET_OS_IPHONE && defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0))
+  #if __has_feature(objc_generics)
     #define GTM_DECLARE_GENERICS 1
   #else
     #define GTM_DECLARE_GENERICS 0
@@ -375,21 +378,28 @@
 // To disallow use of background tasks during fetches, the target should define
 // GTM_BACKGROUND_TASK_FETCHING to 0, or alternatively may set the
 // skipBackgroundTask property to YES.
-#if TARGET_OS_IPHONE && !defined(GTM_BACKGROUND_TASK_FETCHING)
+#if TARGET_OS_IPHONE && !TARGET_OS_WATCH && !defined(GTM_BACKGROUND_TASK_FETCHING)
   #define GTM_BACKGROUND_TASK_FETCHING 1
+#endif
+
+// If GTM_BACKGROUND_TASK_FETCHING is enabled and GTMUIApplicationProtocol is not used,
+// GTM_BACKGROUND_UIAPPLICATION will allow defaulting to UIApplication. To avoid references to
+// UIApplication (e.g. for extensions), set GTM_BACKGROUND_UIAPPLICATION to 0.
+#if TARGET_OS_IPHONE && !TARGET_OS_WATCH && !defined(GTM_BACKGROUND_UIAPPLICATION)
+  #define GTM_BACKGROUND_UIAPPLICATION 1
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if (!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_11) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_11) \
-  || (TARGET_OS_IPHONE && defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0)
+#if (TARGET_OS_TV \
+     || TARGET_OS_WATCH \
+     || (!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_11) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_11) \
+     || (TARGET_OS_IPHONE && defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0))
   #ifndef GTM_USE_SESSION_FETCHER
     #define GTM_USE_SESSION_FETCHER 1
   #endif
-
-  #define GTMSESSION_DEPRECATE_OLD_ENUMS 1
 #endif
 
 #if !defined(GTMBridgeFetcher)
@@ -489,21 +499,6 @@ typedef NS_ENUM(NSInteger, GTMSessionFetcherStatus) {
   GTMSessionFetcherStatusForbidden = 403,
   GTMSessionFetcherStatusPreconditionFailed = 412
 };
-
-#if !GTMSESSION_DEPRECATE_OLD_ENUMS
-#define kGTMSessionFetcherErrorDownloadFailed         GTMSessionFetcherErrorDownloadFailed
-#define kGTMSessionFetcherErrorUploadChunkUnavailable GTMSessionFetcherErrorUploadChunkUnavailable
-#define kGTMSessionFetcherErrorBackgroundExpiration   GTMSessionFetcherErrorBackgroundExpiration
-#define kGTMSessionFetcherErrorBackgroundFetchFailed  GTMSessionFetcherErrorBackgroundFetchFailed
-#define kGTMSessionFetcherErrorInsecureRequest        GTMSessionFetcherErrorInsecureRequest
-#define kGTMSessionFetcherErrorTaskCreationFailed     GTMSessionFetcherErrorTaskCreationFailed
-
-#define kGTMSessionFetcherStatusNotModified        GTMSessionFetcherStatusNotModified
-#define kGTMSessionFetcherStatusBadRequest         GTMSessionFetcherStatusBadRequest
-#define kGTMSessionFetcherStatusUnauthorized       GTMSessionFetcherStatusUnauthorized
-#define kGTMSessionFetcherStatusForbidden          GTMSessionFetcherStatusForbidden
-#define kGTMSessionFetcherStatusPreconditionFailed GTMSessionFetcherStatusPreconditionFailed
-#endif  // !GTMSESSION_DEPRECATE_OLD_ENUMS
 
 #ifdef __cplusplus
 extern "C" {

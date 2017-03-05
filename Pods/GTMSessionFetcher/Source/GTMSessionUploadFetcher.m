@@ -43,9 +43,9 @@ static NSString *const kGTMSessionUploadFetcherChunkParentKey = @"_uploadFetcher
 int64_t const kGTMSessionUploadFetcherStandardChunkSize = (int64_t)LLONG_MAX;
 
 #if TARGET_OS_IPHONE
-int64_t const kGTMSessionUploadFetcherMaximumDemandBufferSize = 10 * 1024 * 1024;  // 10 MB for iOS
+int64_t const kGTMSessionUploadFetcherMaximumDemandBufferSize = 10 * 1024 * 1024;  // 10 MB for iOS, watchOS, tvOS
 #else
-int64_t const kGTMSessionUploadFetcherMaximumDemandBufferSize = 100 * 1024 * 1024;  // 100 MB for OS X
+int64_t const kGTMSessionUploadFetcherMaximumDemandBufferSize = 100 * 1024 * 1024;  // 100 MB for macOS
 #endif
 
 typedef NS_ENUM(NSUInteger, GTMSessionUploadFetcherStatus) {
@@ -1335,7 +1335,7 @@ NSString *const kGTMSessionFetcherUploadLocationObtainedNotification =
       void (^finish)(BOOL) = ^(BOOL shouldRetry){
         // We'll retry by sending an offset query.
         if (shouldRetry) {
-          self.shouldInitiateOffsetQuery = YES;
+          self.shouldInitiateOffsetQuery = !isQueryFetch;
 
           // We don't know what our actual offset is anymore, but the server will tell us.
           self.currentOffset = 0;
@@ -1373,6 +1373,12 @@ NSString *const kGTMSessionFetcherUploadLocationObtainedNotification =
       responseHeaders, self);
   BOOL isUploadStatusStopped = (uploadStatus == kStatusFinal || uploadStatus == kStatusCancelled);
 
+  // Check if the fetcher was actually querying. If it failed, do not retry,
+  // as it would enter an infinite retry loop.
+  NSString *uploadCommand =
+      chunkFetcher.request.allHTTPHeaderFields[kGTMSessionHeaderXGoogUploadCommand];
+  BOOL isQueryFetch = [uploadCommand isEqual:@"query"];
+
   int64_t previousContentLength =
       [[chunkFetcher.request valueForHTTPHeaderField:@"Content-Length"] longLongValue];
   // The Content-Length header may not be present if the chunk fetcher was recreated from
@@ -1380,14 +1386,14 @@ NSString *const kGTMSessionFetcherUploadLocationObtainedNotification =
   BOOL hasKnownChunkSize = (previousContentLength > 0);
   BOOL needsQuery = (!hasKnownChunkSize && !isUploadStatusStopped);
 
-  if (error || needsQuery) {
+  if (error || (needsQuery && !isQueryFetch)) {
     NSInteger status = error.code;
 
     // Status 4xx indicates a bad offset in the Google upload protocol. However, do not retry status
     // 404 per spec, nor if the upload size appears to have been zero (since the server will just
     // keep asking us to retry.)
     if (self.shouldInitiateOffsetQuery ||
-        needsQuery ||
+        (needsQuery && !isQueryFetch) ||
         ([error.domain isEqual:kGTMSessionFetcherStatusDomain] &&
          status >= 400 && status <= 499 &&
          status != 404 &&
@@ -1604,7 +1610,7 @@ NSString *const kGTMSessionFetcherUploadLocationObtainedNotification =
 @dynamic delegateCallbackQueue;
 
 + (void)removePointer:(void *)pointer fromPointerArray:(NSPointerArray *)pointerArray {
-  for (NSUInteger index = 0; index < pointerArray.count; ++index) {
+  for (NSUInteger index = 0, count = pointerArray.count; index < count; ++index) {
     void *pointerAtIndex = [pointerArray pointerAtIndex:index];
     if (pointerAtIndex == pointer) {
       [pointerArray removePointerAtIndex:index];

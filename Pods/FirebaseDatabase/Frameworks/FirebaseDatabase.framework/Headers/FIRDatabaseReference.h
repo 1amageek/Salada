@@ -705,7 +705,7 @@ is meant to be preserved, you should use setValue:andPriority: instead.
 
 
 /**
- * Gets the last token in a Firebase Database location (e.g. 'fred' in https://SampleChat.firebaseIO-demo.com/users/fred)
+ * Gets the last token in a Firebase Database location (e.g. 'fred' in https&#58;//SampleChat.firebaseIO-demo.com/users/fred)
  *
  * @return The key of the location this reference points to.
  */
