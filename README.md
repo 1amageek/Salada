@@ -6,6 +6,11 @@
 -->
 Salad is a Model for Firebase database. It can handle Snapshot of Firebase easily.
 
+☑️ You no longer need to create a server.</br>
+☑️ You no longer need to make a mock.</br>
+☑️ It operates in real time.</br>
+☑️ You can create a reactive UI.</br>
+
 ## Requirements ❗️
 - iOS 8 or later
 - Swift 3.0 or later
@@ -30,7 +35,7 @@ pod 'Firebase/Storage'
 ```
 
 1. [Download this project](https://github.com/1amageek/Salada/archive/master.zip)
-1. Put `Salada.Swift` in your project.
+1. Put `Salada.Swift`,`Salada+Datasource.swift`,`Salada+Relation.swift`,`Referenceable.swift` in your project.
 
 ## Usage 👀
 
@@ -92,7 +97,10 @@ Property are four that can be specified in Salada.
     ".write": true
   }
 }
+// This rule is dangerous. Please change the rules according to the model
 ```
+
+https://firebase.google.com/docs/database/security/
 
 The new model is stored in the `save()` or `save(completion: ((NSError?, FIRDatabaseReference) -> Void)?)`.
 It is updated automatically when you change the property Model that have already been saved.
@@ -222,6 +230,8 @@ class User: Salada.Object {
 You can easily save the file if you use the File.
 File saves the File in FirebaseStorage.
 
+<b>Do not forget to change the storage rule</b>
+
 ``` Swift
 let user: User = User()
 let image: UIImage = UIImage(named: "Salada")!
@@ -245,6 +255,8 @@ let task: FIRStorageUploadTask = item.file?.save(completion: { (metadata, error)
     }
 })
 ```
+
+
 
 #### Download file
 
@@ -286,15 +298,15 @@ For example
 
 ``` Swift
 // in ViewController property
-var datasource: Salada<Group, User>?
+var datasource: Datasource<Group, User>?
 ```
 
 ``` Swift
 // in viewDidLoad
 let options: SaladaOptions = SaladaOptions()
 options.limit = 10
-
-self.datasource = Salada(with: ref.key, referenceKey: "users", options: options, block: { [weak self](changes) in
+options.ascending = false
+self.datasource = Datasource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
     guard let tableView: UITableView = self?.tableView else { return }
     
     switch changes {
