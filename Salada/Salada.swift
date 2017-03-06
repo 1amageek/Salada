@@ -9,7 +9,8 @@
 //
 
 import Foundation
-import Firebase
+import FirebaseDatabase
+import FirebaseStorage
 
 public class Salada {
     
