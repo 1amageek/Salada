@@ -1,3 +1,10 @@
 framework module Salada {
+  umbrella header "Salada.h"
+
+  export *
+  module * { export * }
+}
+
+module Salada.Swift {
     header "Salada-Swift.h"
 }

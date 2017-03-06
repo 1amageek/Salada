@@ -7,12 +7,17 @@
 		<key>SaladBar.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</dict>
-		<key>Salada.xcscheme_^#shared#^_</key>
+		<key>Salada.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>8</integer>
+		</dict>
+		<key>SaladaFatBinary.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -62,6 +67,21 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>12A0AB9B1E6C417100F2E999</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>12A0ABAD1E6C427600F2E999</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>12A0ABB61E6CAE4C00F2E999</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>12A4FE3A1DB5CA21003A3104</key>
 		<dict>
 			<key>primary</key>
@@ -78,6 +98,11 @@
 			<true/>
 		</dict>
 		<key>12CB1A741D95184300E69000</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>12D0BE141E6D1ABD008E9AD0</key>
 		<dict>
 			<key>primary</key>
 			<true/>

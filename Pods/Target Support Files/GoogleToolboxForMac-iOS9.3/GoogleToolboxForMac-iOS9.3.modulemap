@@ -1,0 +1,6 @@
+framework module GoogleToolboxForMac {
+  umbrella header "GoogleToolboxForMac-iOS9.3-umbrella.h"
+
+  export *
+  module * { export * }
+}
