@@ -13,13 +13,13 @@ import FirebaseStorage
 public typealias SaladaChange = (deletions: [Int], insertions: [Int], modifications: [Int])
 
 public enum SaladaCollectionChange {
-
+    
     case initial
-
+    
     case update(SaladaChange)
-
+    
     case error(Error)
-
+    
     init(change: SaladaChange?, error: Error?) {
         if let error: Error = error {
             self = .error(error)
@@ -31,7 +31,7 @@ public enum SaladaCollectionChange {
         }
         self = .initial
     }
-
+    
 }
 
 open class SaladaOptions {
@@ -42,65 +42,70 @@ open class SaladaOptions {
 /// Datasource class.
 /// Observe at a Firebase Database location.
 open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada.Object, Child: Referenceable, Child: Salada.Object {
-
+    
     /// DatabaseReference
-
+    
     public var databaseRef: FIRDatabaseReference { return FIRDatabase.database().reference() }
-
+    
     public var count: Int { return pool.count }
-
+    
     fileprivate(set) var parentRef: FIRDatabaseReference
-
+    
     fileprivate(set) var reference: FIRDatabaseReference
-
+    
     fileprivate(set) var parentKey: String
-
+    
     fileprivate(set) var referenceKey: String
-
+    
     fileprivate(set) var limit: UInt = 30
-
+    
     fileprivate(set) var ascending: Bool = false
-
+    
     deinit {
-        self.reference.removeAllObservers()
         if let handle: UInt = self.addedHandle {
             self.addReference?.removeObserver(withHandle: handle)
         }
+        if let handle: UInt = self.changedHandle {
+            self.reference.removeObserver(withHandle: handle)
+        }
+        if let handle: UInt = self.removedHandle {
+            self.reference.removeObserver(withHandle: handle)
+        }
     }
-
+    
     private var addReference: FIRDatabaseQuery?
-
+    
     fileprivate var addedHandle: UInt?
     fileprivate var changedHandle: UInt?
     fileprivate var removedHandle: UInt?
-
+    
     internal var pool: [String] = []
-
+    
     private var changedBlock: (SaladaCollectionChange) -> Void
-
+    
     public init(parentKey: String, referenceKey: String, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
-
+        
         if let options: SaladaOptions = options {
             self.limit = options.limit
             self.ascending = options.ascending
         }
-
+        
         self.parentKey = parentKey
-
+        
         self.referenceKey = referenceKey
-
+        
         self.parentRef = Parent.databaseRef.child(parentKey)
-
+        
         self.reference = self.parentRef.child(referenceKey)
-
+        
         self.changedBlock = block
-
+        
         prev(at: nil, toLast: self.limit) { [weak self] (change, error) in
-
+            
             block(SaladaCollectionChange(change: nil, error: error))
-
+            
             guard let strongSelf = self else { return }
-
+            
             // add
             var addReference: FIRDatabaseQuery = strongSelf.reference
             if let fiarstKey: String = strongSelf.pool.first {
@@ -121,7 +126,7 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
                 }, withCancel: { (error) in
                     block(SaladaCollectionChange(change: nil, error: error))
             })
-
+            
             // change
             strongSelf.changedHandle = strongSelf.reference.observe(.childChanged, with: { (snapshot) in
                 if let i: Int = strongSelf.pool.index(of: snapshot.key) {
@@ -130,7 +135,7 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
             }, withCancel: { (error) in
                 block(SaladaCollectionChange(change: nil, error: error))
             })
-
+            
             // remove
             strongSelf.removedHandle = strongSelf.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
                 objc_sync_enter(self)
@@ -143,28 +148,28 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
                 }, withCancel: { (error) in
                     block(SaladaCollectionChange(change: nil, error: error))
             })
-
+            
         }
-
+        
     }
-
+    
     private var isFirst: Bool = false
-
+    
     // Firebase firstKey
     private var firstKey: String? {
         return self.ascending ? self.pool.last : self.pool.first
     }
-
+    
     // Firebase lastKey
     private var lastKey: String? {
         return self.ascending ? self.pool.first : self.pool.last
     }
-
+    
     // Sorted pool
     private var sortedPool: [String] {
         return self.pool.sorted { self.ascending ? $0 < $1 : $0 > $1 }
     }
-
+    
     /**
      It gets the oldest subsequent data of the data that are currently obtained.
      */
@@ -174,7 +179,7 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
             strongSelf.changedBlock(SaladaCollectionChange(change: change, error: error))
         }
     }
-
+    
     /**
      Load the previous data from the server.
      - parameter lastKey: It gets the data after the Key
@@ -182,12 +187,12 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
      - parameter block: block The block that should be called. Change if successful will be returned. An error will return if it fails.
      */
     public func prev(at lastKey: String?, toLast limit: UInt, block: ((SaladaChange?, Error?) -> Void)?) {
-
+        
         if isFirst {
             block?((deletions: [], insertions: [], modifications: []), nil)
             return
         }
-
+        
         var reference: FIRDatabaseQuery = self.reference.queryOrderedByKey()
         var limit: UInt = limit
         if let lastKey: String = lastKey {
@@ -195,13 +200,13 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
             limit = limit + 1
         }
         reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
-
+            
             guard let strongSelf = self else { return }
-
+            
             if snapshot.childrenCount < limit {
                 strongSelf.isFirst = true
             }
-
+            
             objc_sync_enter(self)
             var changes: [Int] = []
             if strongSelf.ascending {
@@ -232,9 +237,9 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
         }) { (error) in
             block?(nil, error)
         }
-
+        
     }
-
+    
     /**
      Remove object
      - parameter index: Order of the data source
@@ -243,11 +248,11 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
      */
     public func removeObject(at index: Int, cascade: Bool, block: @escaping (String, Error?) -> Void) {
         let key: String = self.pool[index]
-
+        
         if cascade {
             let parentPath: AnyHashable = "/\(Parent._path)/\(parentKey)/\(self.reference.key)/\(key)"
             let childPath: AnyHashable = "/\(Child._path)/\(key)"
-
+            
             self.databaseRef.updateChildValues([parentPath : NSNull(), childPath: NSNull()]) { (error, ref) in
                 if let error: Error = error {
                     block(key, error)
@@ -264,9 +269,9 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
                 block(key, nil)
             })
         }
-
+        
     }
-
+    
     /**
      Removes all observers at the reference of key
      - parameter index: Order of the data source
@@ -317,11 +322,11 @@ open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada
             block(nil)
         }
     }
-
+    
 }
 
 extension Datasource: Collection {
-
+    
     typealias Element = String
     
     public var startIndex: Int {
