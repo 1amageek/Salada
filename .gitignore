@@ -27,5 +27,9 @@ xcuserdata
 *.moved-aside
 *.xcuserstate
 .gitattributes
-Sample/GoogleService-Info.plist
 
+#CocoaPod
+Pods/*
+
+#GoogleService
+*/GoogleService-Info.plist
