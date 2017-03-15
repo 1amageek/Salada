@@ -6,26 +6,11 @@
 	objectVersion = 48;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		12A0ABB61E6CAE4C00F2E999 /* SaladaFatBinary */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 12A0ABB71E6CAE4C00F2E999 /* Build configuration list for PBXAggregateTarget "SaladaFatBinary" */;
-			buildPhases = (
-				12A0ABBA1E6CAE6900F2E999 /* ShellScript */,
-				12A0ABBB1E6CAF5200F2E999 /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = SaladaFatBinary;
-			productName = SaladaFatBinary;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
+		1228842A1E7907ED005F6E19 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 122884291E7907ED005F6E19 /* GoogleService-Info.plist */; };
 		123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A41E6696E100A2655F /* FileTestViewController.swift */; };
 		123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 123C27A61E66A3F600A2655F /* pexels-photo.jpg */; };
 		123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */; };
-		12A4FE341DB5C987003A3104 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12A4FE311DB5C987003A3104 /* GoogleService-Info.plist */; };
 		12A4FE351DB5C987003A3104 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE321DB5C987003A3104 /* Group.swift */; };
 		12A4FE361DB5C987003A3104 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE331DB5C987003A3104 /* User.swift */; };
 		12C097DF1E653CEF001B2010 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C097DE1E653CEF001B2010 /* Item.swift */; };
@@ -49,12 +34,12 @@
 
 /* Begin PBXFileReference section */
 		0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.release.xcconfig"; sourceTree = "<group>"; };
+		122884291E7907ED005F6E19 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		123C27A41E6696E100A2655F /* FileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTestViewController.swift; sourceTree = "<group>"; };
 		123C27A61E66A3F600A2655F /* pexels-photo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "pexels-photo.jpg"; sourceTree = "<group>"; };
 		123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaladaFileTestViewController.swift; sourceTree = "<group>"; };
 		123C74841DB7D01C0079CF4A /* ObjectTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectTests.swift; sourceTree = "<group>"; };
 		1275E8291DB5CEE0004F74AC /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
-		12A4FE311DB5C987003A3104 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		12A4FE321DB5C987003A3104 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		12A4FE331DB5C987003A3104 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		12A4FE3D1DB5CA21003A3104 /* SaladaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaladaTests.swift; sourceTree = "<group>"; };
@@ -148,7 +133,6 @@
 				12C097E01E653F19001B2010 /* TransactionTestViewController.swift */,
 				123C27A41E6696E100A2655F /* FileTestViewController.swift */,
 				123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */,
-				12A4FE311DB5C987003A3104 /* GoogleService-Info.plist */,
 				12A4FE321DB5C987003A3104 /* Group.swift */,
 				12A4FE331DB5C987003A3104 /* User.swift */,
 				12C097DE1E653CEF001B2010 /* Item.swift */,
@@ -157,6 +141,7 @@
 				12CB1A621D95184300E69000 /* LaunchScreen.storyboard */,
 				123C27A61E66A3F600A2655F /* pexels-photo.jpg */,
 				12CB1A651D95184300E69000 /* Info.plist */,
+				122884291E7907ED005F6E19 /* GoogleService-Info.plist */,
 			);
 			path = SaladBar;
 			sourceTree = "<group>";
@@ -263,10 +248,6 @@
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = Stamp;
 				TargetAttributes = {
-					12A0ABB61E6CAE4C00F2E999 = {
-						CreatedOnToolsVersion = 8.3;
-						ProvisioningStyle = Automatic;
-					};
 					12CB1A561D95184300E69000 = {
 						CreatedOnToolsVersion = 8.0;
 						LastSwiftMigration = 0810;
@@ -293,7 +274,6 @@
 			projectRoot = "";
 			targets = (
 				12CB1A561D95184300E69000 /* SaladBar */,
-				12A0ABB61E6CAE4C00F2E999 /* SaladaFatBinary */,
 				12D0BE141E6D1ABD008E9AD0 /* Salada */,
 			);
 		};
@@ -306,7 +286,7 @@
 			files = (
 				12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */,
 				123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */,
-				12A4FE341DB5C987003A3104 /* GoogleService-Info.plist in Resources */,
+				1228842A1E7907ED005F6E19 /* GoogleService-Info.plist in Resources */,
 				12CB1A611D95184300E69000 /* Assets.xcassets in Resources */,
 				12CB1A5F1D95184300E69000 /* Main.storyboard in Resources */,
 			);
@@ -351,32 +331,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SaladBar/Pods-SaladBar-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		12A0ABBA1E6CAE6900F2E999 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\n#!/bin/sh\n\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 1. Build Device and Simulator versions\nxcodebuild -target \"${PROJECT_NAME}\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"${PROJECT_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n\n# Step 3. Copy Swift modules from iphonesimulator build (if it exists) to the copied framework directory\nSIMULATOR_SWIFT_MODULES_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\"\nif [ -d \"${SIMULATOR_SWIFT_MODULES_DIR}\" ]; then\ncp -R \"${SIMULATOR_SWIFT_MODULES_DIR}\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\nfi\n\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n# Step 5. Convenience step to copy the framework to the project's directory\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework\" \"${PROJECT_DIR}\"\n\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${PROJECT_DIR}\"";
-		};
-		12A0ABBB1E6CAF5200F2E999 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\n#!/bin/sh\nlipo -info \"${PROJECT_DIR}/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\nenv > env.txt";
 		};
 		5695729C28C4EED4932F010E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -566,22 +520,6 @@
 			};
 			name = Release;
 		};
-		12A0ABB81E6CAE4C00F2E999 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEVELOPMENT_TEAM = 88ACA86N96;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		12A0ABB91E6CAE4C00F2E999 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEVELOPMENT_TEAM = 88ACA86N96;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		12CB1A7C1D95184300E69000 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AD3F1F2600AA1891F8D243D4 /* Pods-SaladBar.debug.xcconfig */;
@@ -696,15 +634,6 @@
 			buildConfigurations = (
 				122314FE1D618B22003864BD /* Debug */,
 				122314FF1D618B22003864BD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		12A0ABB71E6CAE4C00F2E999 /* Build configuration list for PBXAggregateTarget "SaladaFatBinary" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				12A0ABB81E6CAE4C00F2E999 /* Debug */,
-				12A0ABB91E6CAE4C00F2E999 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
