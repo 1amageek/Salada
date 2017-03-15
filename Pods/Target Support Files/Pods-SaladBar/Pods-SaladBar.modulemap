@@ -1,6 +1,0 @@
-framework module Pods_SaladBar {
-  umbrella header "Pods-SaladBar-umbrella.h"
-
-  export *
-  module * { export * }
-}
