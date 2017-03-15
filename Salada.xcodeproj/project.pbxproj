@@ -39,7 +39,6 @@
 		12D0BE221E6D1ADB008E9AD0 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1E1E6D1ADA008E9AD0 /* Salada.swift */; };
 		12D0BE231E6D1ADB008E9AD0 /* Salada+Datasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1F1E6D1ADA008E9AD0 /* Salada+Datasource.swift */; };
 		12D0BE241E6D1ADB008E9AD0 /* Salada+Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE201E6D1ADA008E9AD0 /* Salada+Relation.swift */; };
-		12D0BE261E6D1CF0008E9AD0 /* Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D0BE251E6D1CF0008E9AD0 /* Salada.framework */; };
 		12D0BE271E6D1E86008E9AD0 /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
 		12D0BE281E6D1E86008E9AD0 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1E1E6D1ADA008E9AD0 /* Salada.swift */; };
 		12D0BE291E6D1E86008E9AD0 /* Salada+Datasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1F1E6D1ADA008E9AD0 /* Salada+Datasource.swift */; };
@@ -75,7 +74,6 @@
 		12D0BE1E1E6D1ADA008E9AD0 /* Salada.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Salada.swift; sourceTree = "<group>"; };
 		12D0BE1F1E6D1ADA008E9AD0 /* Salada+Datasource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Salada+Datasource.swift"; sourceTree = "<group>"; };
 		12D0BE201E6D1ADA008E9AD0 /* Salada+Relation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Salada+Relation.swift"; sourceTree = "<group>"; };
-		12D0BE251E6D1CF0008E9AD0 /* Salada.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Salada.framework; sourceTree = "<group>"; };
 		12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		148106A1CEF7A4448F530DB1 /* Pods_SaladaTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D5576D8CC9B13C671F0A5B3 /* Pods_Sample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,7 +93,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12D0BE261E6D1CF0008E9AD0 /* Salada.framework in Frameworks */,
 				C35C4D47E9AF5DFEAD3BE386 /* Pods_SaladBar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -160,7 +157,6 @@
 				12CB1A621D95184300E69000 /* LaunchScreen.storyboard */,
 				123C27A61E66A3F600A2655F /* pexels-photo.jpg */,
 				12CB1A651D95184300E69000 /* Info.plist */,
-				12D0BE251E6D1CF0008E9AD0 /* Salada.framework */,
 			);
 			path = SaladBar;
 			sourceTree = "<group>";
