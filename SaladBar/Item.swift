@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import Salada
+
+
 
 class Item: Salada.Object {
     typealias Element = Item

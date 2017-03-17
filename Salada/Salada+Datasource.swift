@@ -34,14 +34,15 @@ public enum SaladaCollectionChange {
     
 }
 
-open class SaladaOptions {
-    var limit: UInt = 30
-    var ascending: Bool = false
+public class SaladaOptions {
+    public var limit: UInt = 30
+    public var ascending: Bool = false
+    public init() { }
 }
 
 /// Datasource class.
 /// Observe at a Firebase Database location.
-open class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada.Object, Child: Referenceable, Child: Salada.Object {
+public class Datasource<Parent, Child> where Parent: Referenceable, Parent: Salada.Object, Child: Referenceable, Child: Salada.Object {
     
     /// DatabaseReference
     
