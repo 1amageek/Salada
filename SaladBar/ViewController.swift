@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 import CoreLocation
+import Salada
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     

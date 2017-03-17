@@ -12,7 +12,7 @@ import FirebaseStorage
 
 extension Salada {
 
-    open class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
+    public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
 
         internal var _Self: [String] = [] 
 
@@ -117,19 +117,18 @@ extension Salada {
             }
         }
         
-        open override func setValue(_ value: Any?, forKeyPath keyPath: String) {
+        public override func setValue(_ value: Any?, forKeyPath keyPath: String) {
             super.setValue(value, forKeyPath: keyPath)
         }
         
-        open override func mutableSetValue(forKeyPath keyPath: String) -> NSMutableSet {
+        public override func mutableSetValue(forKeyPath keyPath: String) -> NSMutableSet {
             let set = super.mutableSetValue(forKeyPath: keyPath)
-            print(set)
             return set
         }
         
         // MARK: -
         
-        override open var description: String {
+        override public var description: String {
             if _Self.isEmpty {
                 return "Relation([])"
             }

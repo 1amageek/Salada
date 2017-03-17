@@ -12,7 +12,7 @@ import Foundation
 import FirebaseDatabase
 import FirebaseStorage
 
-public class Salada {
+open class Salada {
     
     public struct ObjectError: Error {
         enum ErrorKind {
@@ -33,7 +33,7 @@ public class Salada {
      1. Declaration the Element
      1. Class other than the Foundation description 'decode, 'encode'
      */
-    public class Object: NSObject, Referenceable {
+    open class Object: NSObject, Referenceable {
         
         public typealias Element = Object
         
@@ -150,15 +150,15 @@ public class Salada {
         
         // MARK: Referenceable
         
-        public class var _modelName: String {
+        open class var _modelName: String {
             return String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!.lowercased()
         }
         
-        public class var _version: String {
+        open class var _version: String {
             return "v1"
         }
         
-        public static var _path: String {
+        open class var _path: String {
             return "\(self._version)/\(self._modelName)"
         }
         
@@ -267,7 +267,7 @@ public class Salada {
         
         // MARK: Ignore
         
-        public var ignore: [String] {
+        open var ignore: [String] {
             return []
         }
         
@@ -312,12 +312,12 @@ public class Salada {
         // MARK: - Encode, Decode
         
         /// Model -> Firebase
-        public func encode(_ key: String, value: Any?) -> Any? {
+        open func encode(_ key: String, value: Any?) -> Any? {
             return nil
         }
         
         /// Snapshot -> Model
-        public func decode(_ key: String, value: Any?) -> Any? {
+        open func decode(_ key: String, value: Any?) -> Any? {
             return nil
         }
         
@@ -456,15 +456,13 @@ public class Salada {
         private var transactionBlock: ((FIRDatabaseReference?, Error?) -> Void)?
         
         public func transaction(key: String, value: Any, completion: ((FIRDatabaseReference?, Error?) -> Void)?) {
-            
             self.transactionBlock = completion
             self.setValue(value, forKey: key)
-            
         }
         
         // MARK: - Delete
         
-        open func remove() {
+        public func remove() {
             let id: String = self.id
             type(of: self).databaseRef.child(id).removeValue()
         }
@@ -735,7 +733,7 @@ extension Salada {
     public class File: NSObject {
         
         /// Save location
-        open var ref: FIRStorageReference? {
+        public var ref: FIRStorageReference? {
             if let parent: Object = self.parent {
                 return type(of: parent).storageRef.child(parent.id).child(self.name)
             }
@@ -743,28 +741,28 @@ extension Salada {
         }
         
         /// Save data
-        open var data: Data?
+        public var data: Data?
         
         /// Save URL
-        open var url: URL?
+        public var url: URL?
         
         /// File name
-        open var name: String
+        public var name: String
         
         /// File metadata
-        open var metadata: FIRStorageMetadata?
+        public var metadata: FIRStorageMetadata?
         
         /// Parent to hold the location where you want to save
-        open var parent: Object?
+        public var parent: Object?
         
         /// Property name to save
-        open var keyPath: String?
+        public var keyPath: String?
         
         /// Firebase uploading task
-        open fileprivate(set) weak var uploadTask: FIRStorageUploadTask?
+        public fileprivate(set) weak var uploadTask: FIRStorageUploadTask?
         
         /// Firebase downloading task
-        open fileprivate(set) weak var downloadTask: FIRStorageDownloadTask?
+        public fileprivate(set) weak var downloadTask: FIRStorageDownloadTask?
         
         // MARK: - Initialize
         
@@ -890,7 +888,7 @@ extension Salada {
         
         // MARK: -
         
-        override open var description: String {
+        override public var description: String {
             return "Salada.File"
         }
         
@@ -903,7 +901,7 @@ extension Salada.Object {
     }
 }
 
-func == (lhs: Salada.Object, rhs: Salada.Object) -> Bool {
+public func == (lhs: Salada.Object, rhs: Salada.Object) -> Bool {
     return lhs.id == rhs.id
 }
 

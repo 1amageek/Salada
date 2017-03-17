@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.source       = { :http => "https://github.com//1amageek/Salada/releases/download/1.0/SaladaFrameworks.zip" }
   #s.source	 = { :git => "https://github.com/1amageek/Salada.git", :tag => "#{s.version}" } 
 
-  #s.source_files = "Salada/Salada.swift", "Salada/Salada+Datasource.swift", "Salada/Salada+Relation.swift", "Salada/Referenceable.swift"
+  s.source_files = "Salada/**/*.swift"
   s.dependency "Firebase/Database"
   s.dependency "Firebase/Storage"
 

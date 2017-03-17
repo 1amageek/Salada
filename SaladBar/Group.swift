@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Salada
 
 class Group: Salada.Object {
     typealias Element = Group
