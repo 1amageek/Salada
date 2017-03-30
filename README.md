@@ -1,4 +1,4 @@
-<img src="https://github.com/1amageek/Salada/blob/master/Salada.png", width="320">
+<img src="https://github.com/1amageek/Salada/blob/master/Salada.png">
 
 # Salada 🍐
 <!--

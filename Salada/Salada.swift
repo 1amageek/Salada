@@ -652,6 +652,7 @@ open class Salada {
                             }
                         }
                     })
+                    block(children)
                 } else {
                     block([])
                 }
