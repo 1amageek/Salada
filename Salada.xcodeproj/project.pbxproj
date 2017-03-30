@@ -11,7 +11,6 @@
 		123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 123C27A61E66A3F600A2655F /* pexels-photo.jpg */; };
 		123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */; };
 		12733C3F1E7B82AE000C8583 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12733C3E1E7B82AE000C8583 /* GoogleService-Info.plist */; };
-		12733C401E7B82F4000C8583 /* Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D0BE151E6D1ABD008E9AD0 /* Salada.framework */; };
 		12A4FE351DB5C987003A3104 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE321DB5C987003A3104 /* Group.swift */; };
 		12A4FE361DB5C987003A3104 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE331DB5C987003A3104 /* User.swift */; };
 		12C097DF1E653CEF001B2010 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C097DE1E653CEF001B2010 /* Item.swift */; };
@@ -25,6 +24,10 @@
 		12D0BE221E6D1ADB008E9AD0 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1E1E6D1ADA008E9AD0 /* Salada.swift */; };
 		12D0BE231E6D1ADB008E9AD0 /* Salada+Datasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1F1E6D1ADA008E9AD0 /* Salada+Datasource.swift */; };
 		12D0BE241E6D1ADB008E9AD0 /* Salada+Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE201E6D1ADA008E9AD0 /* Salada+Relation.swift */; };
+		12F6446E1E8CF49F0014CB4C /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
+		12F6446F1E8CF49F0014CB4C /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1E1E6D1ADA008E9AD0 /* Salada.swift */; };
+		12F644701E8CF49F0014CB4C /* Salada+Datasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1F1E6D1ADA008E9AD0 /* Salada+Datasource.swift */; };
+		12F644711E8CF49F0014CB4C /* Salada+Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE201E6D1ADA008E9AD0 /* Salada+Relation.swift */; };
 		9088C4FC448D53572D030044 /* Pods_SaladBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */; };
 		B2DAD0D9709B23A30CB0EE7E /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; };
 /* End PBXBuildFile section */
@@ -74,7 +77,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12733C401E7B82F4000C8583 /* Salada.framework in Frameworks */,
 				9088C4FC448D53572D030044 /* Pods_SaladBar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,11 +385,15 @@
 				123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */,
 				12CB1A5C1D95184300E69000 /* ViewController.swift in Sources */,
 				12CB1A5A1D95184300E69000 /* AppDelegate.swift in Sources */,
+				12F6446E1E8CF49F0014CB4C /* Referenceable.swift in Sources */,
 				12C097E11E653F19001B2010 /* TransactionTestViewController.swift in Sources */,
 				123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */,
 				12C097DF1E653CEF001B2010 /* Item.swift in Sources */,
+				12F644701E8CF49F0014CB4C /* Salada+Datasource.swift in Sources */,
+				12F6446F1E8CF49F0014CB4C /* Salada.swift in Sources */,
 				12A4FE361DB5C987003A3104 /* User.swift in Sources */,
 				12A4FE351DB5C987003A3104 /* Group.swift in Sources */,
+				12F644711E8CF49F0014CB4C /* Salada+Relation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

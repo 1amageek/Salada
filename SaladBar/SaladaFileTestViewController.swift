@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Salada
 
 class SaladaFileTestViewController: UIViewController {
 

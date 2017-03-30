@@ -8,7 +8,6 @@
 
 import Foundation
 import CoreLocation
-import Salada
 
 @objc enum UserType: Int {
     case first
