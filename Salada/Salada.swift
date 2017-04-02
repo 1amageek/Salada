@@ -373,7 +373,7 @@ open class Salada {
                         })
                         
                     }, withLocalEvents: false)
-                                        
+                    
                 })
                 
             } else {
@@ -381,7 +381,7 @@ open class Salada {
                 completion?(nil, error)
                 return [:]
             }
-    
+            
         }
         
         var timeout: Float = 20
@@ -440,7 +440,7 @@ open class Salada {
                     block?(error)
                 }
             }
-                        
+            
             return uploadTasks
         }
         
@@ -533,16 +533,16 @@ open class Salada {
                     // Relation
                     // TODO:
                     /*
-                    if let _: Relation = value as? Relation {
-                        if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
-                            
-                            let new: Relation = change[.newKey] as! Relation
-                            let old: Relation = change[.oldKey] as! Relation
-                            
-                            // TODO:
-                        }
-                        return
-                    }*/
+                     if let _: Relation = value as? Relation {
+                     if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
+                     
+                     let new: Relation = change[.newKey] as! Relation
+                     let old: Relation = change[.oldKey] as! Relation
+                     
+                     // TODO:
+                     }
+                     return
+                     }*/
                     
                     
                     if let values: [String] = value as? [String] {
@@ -550,6 +550,8 @@ open class Salada {
                         updateValue(keyPath, child: nil, value: value)
                     } else if let value: String = value as? String {
                         updateValue(keyPath, child: nil, value: value)
+                    } else if let value: Date = value as? Date {
+                        updateValue(keyPath, child: nil, value: value.timeIntervalSince1970)
                     } else {
                         updateValue(keyPath, child: nil, value: value)
                     }

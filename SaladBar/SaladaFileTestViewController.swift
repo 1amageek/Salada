@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import Firebase
 
 class SaladaFileTestViewController: UIViewController {
 
     @IBAction func start(_ sender: Any) {
-        let image: UIImage = #imageLiteral(resourceName: "salada")
+        let image: UIImage = #imageLiteral(resourceName: "pexels-photo.jpg")
         let data: Data = UIImageJPEGRepresentation(image, 1)!
         
         let tmpURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
@@ -24,7 +25,7 @@ class SaladaFileTestViewController: UIViewController {
         let item: Item = Item()
         item.file = file
         item.index = 0
-        item.save { (ref, error) in
+        let task: FIRStorageUploadTask = item.save { (ref, error) in
             if let error = error {
                 print(error)
                 return
@@ -45,9 +46,10 @@ class SaladaFileTestViewController: UIViewController {
                     
                 })
             })
-            
-
-            
+        }["file"]!
+        
+        task.observe(.progress) { (snapshot) in
+            print(snapshot.progress!)
         }
         
     }
