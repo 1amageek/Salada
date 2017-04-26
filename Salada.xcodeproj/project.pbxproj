@@ -10,7 +10,7 @@
 		123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A41E6696E100A2655F /* FileTestViewController.swift */; };
 		123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 123C27A61E66A3F600A2655F /* pexels-photo.jpg */; };
 		123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */; };
-		12733C3F1E7B82AE000C8583 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12733C3E1E7B82AE000C8583 /* GoogleService-Info.plist */; };
+		127500611EB05211007ACE6F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 127500601EB05211007ACE6F /* GoogleService-Info.plist */; };
 		12A4FE351DB5C987003A3104 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE321DB5C987003A3104 /* Group.swift */; };
 		12A4FE361DB5C987003A3104 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE331DB5C987003A3104 /* User.swift */; };
 		12C097DF1E653CEF001B2010 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C097DE1E653CEF001B2010 /* Item.swift */; };
@@ -38,7 +38,7 @@
 		123C27A61E66A3F600A2655F /* pexels-photo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "pexels-photo.jpg"; sourceTree = "<group>"; };
 		123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaladaFileTestViewController.swift; sourceTree = "<group>"; };
 		123C74841DB7D01C0079CF4A /* ObjectTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectTests.swift; sourceTree = "<group>"; };
-		12733C3E1E7B82AE000C8583 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		127500601EB05211007ACE6F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1275E8291DB5CEE0004F74AC /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		12A4FE321DB5C987003A3104 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		12A4FE331DB5C987003A3104 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -140,7 +140,7 @@
 				12CB1A621D95184300E69000 /* LaunchScreen.storyboard */,
 				123C27A61E66A3F600A2655F /* pexels-photo.jpg */,
 				12CB1A651D95184300E69000 /* Info.plist */,
-				12733C3E1E7B82AE000C8583 /* GoogleService-Info.plist */,
+				127500601EB05211007ACE6F /* GoogleService-Info.plist */,
 			);
 			path = SaladBar;
 			sourceTree = "<group>";
@@ -284,9 +284,9 @@
 			files = (
 				12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */,
 				123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */,
+				127500611EB05211007ACE6F /* GoogleService-Info.plist in Resources */,
 				12CB1A611D95184300E69000 /* Assets.xcassets in Resources */,
 				12CB1A5F1D95184300E69000 /* Main.storyboard in Resources */,
-				12733C3F1E7B82AE000C8583 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,7 +312,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5695729C28C4EED4932F010E /* [CP] Check Pods Manifest.lock */ = {
@@ -327,7 +327,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		7E89B42D6FC7A99CB29625F5 /* [CP] Copy Pods Resources */ = {

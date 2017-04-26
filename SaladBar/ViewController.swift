@@ -32,11 +32,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 guard let group: Group = group as? Group else { return }
                 
                 let user: User = User()
-                let image: UIImage = UIImage(named: "salada")!
-                let data: Data = UIImagePNGRepresentation(image)!
-                let thumbnail: Salada.File = Salada.File(name: "salada.png", data: data)
-                thumbnail.data = data
-                user.thumbnail = thumbnail
+//                let image: UIImage = UIImage(named: "salada")!
+//                let data: Data = UIImagePNGRepresentation(image)!
+//                let thumbnail: Salada.File = Salada.File(name: "salada.png", data: data)
+//                thumbnail.data = data
+//                user.thumbnail = thumbnail
                 user.tempName = "Test1_name"
                 user.name = "Spider man"
                 user.gender = "man"
@@ -147,7 +147,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
         self.datasource?.observeObject(at: indexPath.item, block: { (user) in
-            print(user!)
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
             cell.setNeedsLayout()
