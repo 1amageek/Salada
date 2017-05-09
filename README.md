@@ -326,7 +326,7 @@ self.datasource = Datasource(parentKey: key, referenceKey: "users", options: opt
 
 ``` Swift
 // TableViewDatasource
-func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return self.datasource?.count ?? 0
 }
     
