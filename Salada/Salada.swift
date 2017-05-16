@@ -809,6 +809,7 @@ extension Salada {
                     }
                     if parent.hasObserve {
                         parent.updateValue(keyPath, child: nil, value: self.name)
+                        completion?(metadata, error as Error?)
                     } else {
                         completion?(metadata, error as Error?)
                     }
@@ -823,6 +824,7 @@ extension Salada {
                     }
                     if parent.hasObserve {
                         parent.updateValue(keyPath, child: nil, value: self.name)
+                        completion?(metadata, error as Error?)
                     } else {
                         completion?(metadata, error as Error?)
                     }
@@ -836,34 +838,13 @@ extension Salada {
         }
         
         public func save(completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
-            guard let parent: Object = self.parent else {
+            guard let _: Object = self.parent, let keyPath: String = self.keyPath else {
                 let error: ObjectError = ObjectError(kind: .invalidFile, description: "It requires data when you save the file")
                 completion?(nil, error)
                 return nil
             }
             
-            var task: FIRStorageUploadTask?
-            for (key, value) in Mirror(reflecting: parent).children {
-                
-                guard let key: String = key else {
-                    break
-                }
-                
-                if parent.ignore.contains(key) {
-                    break
-                }
-                
-                let mirror: Mirror = Mirror(reflecting: value)
-                let subjectType: Any.Type = mirror.subjectType
-                if subjectType == File?.self || subjectType == File.self {
-                    if let file: File = value as? File {
-                        if file == self {
-                            task = self.save(key, completion: completion)
-                        }
-                    }
-                }
-            }
-            return task
+            return self.save(keyPath, completion: completion)
         }
         
         // MARK: - Load
