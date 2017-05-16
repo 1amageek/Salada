@@ -504,6 +504,9 @@ open class Salada {
                                     old.parent = self
                                     old.keyPath = keyPath
                                 }
+                            } else {
+                                new.parent = self
+                                new.keyPath = keyPath
                             }
                         }
                         return
