@@ -25,7 +25,7 @@ class SaladaFileTestViewController: UIViewController {
         let item: Item = Item()
         item.file = file
         item.index = 0
-        let task: FIRStorageUploadTask = item.save { (ref, error) in
+        let task: StorageUploadTask = item.save { (ref, error) in
             if let error = error {
                 print(error)
                 return

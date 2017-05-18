@@ -73,7 +73,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.view.addSubview(tableView)
     }
     
-    var dbRef: FIRDatabaseReference!
+    var dbRef: DatabaseReference!
     
     override func viewDidLoad() {
         super.viewDidLoad()

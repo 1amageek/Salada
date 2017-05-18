@@ -11,7 +11,7 @@ import Firebase
 
 class FileTestViewController: UIViewController {
     
-    var task: FIRStorageUploadTask? {
+    var task: StorageUploadTask? {
         didSet {
             self.pause = task?.observe(.pause, handler: { (snapshot) in
                 print(snapshot)
@@ -50,9 +50,9 @@ class FileTestViewController: UIViewController {
             .appendingPathExtension("jpg")
         
         try! data.write(to: tmpURL)
-        let ref: FIRStorageReference = FIRStorage.storage().reference().child("test")
+        let ref: StorageReference = Storage.storage().reference().child("test")
         
-        self.task = ref.putFile(tmpURL, metadata: nil) { (metadata, error) in
+        self.task = ref.putFile(from: tmpURL, metadata: nil) { (metadata, error) in
 
             if let error: Error = error as Error? {
                 print(error)

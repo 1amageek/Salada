@@ -21,7 +21,7 @@ class SaladaTests: XCTestCase {
     }
     
     private static let appConfigure: () = {
-        FIRApp.configure()
+        FirebaseApp.configure()
     }()
     
     
