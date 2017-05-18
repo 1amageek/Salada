@@ -46,13 +46,13 @@ public class Datasource<Parent, Child> where Parent: Referenceable, Parent: Sala
     
     /// DatabaseReference
     
-    public var databaseRef: FIRDatabaseReference { return FIRDatabase.database().reference() }
+    public var databaseRef: DatabaseReference { return Database.database().reference() }
     
     public var count: Int { return pool.count }
     
-    fileprivate(set) var parentRef: FIRDatabaseReference
+    fileprivate(set) var parentRef: DatabaseReference
     
-    fileprivate(set) var reference: FIRDatabaseReference
+    fileprivate(set) var reference: DatabaseReference
     
     fileprivate(set) var parentKey: String
     
@@ -74,7 +74,7 @@ public class Datasource<Parent, Child> where Parent: Referenceable, Parent: Sala
         }
     }
     
-    private var addReference: FIRDatabaseQuery?
+    private var addReference: DatabaseQuery?
     
     fileprivate var addedHandle: UInt?
     fileprivate var changedHandle: UInt?
@@ -108,7 +108,7 @@ public class Datasource<Parent, Child> where Parent: Referenceable, Parent: Sala
             guard let strongSelf = self else { return }
             
             // add
-            var addReference: FIRDatabaseQuery = strongSelf.reference
+            var addReference: DatabaseQuery = strongSelf.reference
             if let fiarstKey: String = strongSelf.pool.first {
                 addReference = addReference.queryOrderedByKey().queryStarting(atValue: fiarstKey)
             }
@@ -194,7 +194,7 @@ public class Datasource<Parent, Child> where Parent: Referenceable, Parent: Sala
             return
         }
         
-        var reference: FIRDatabaseQuery = self.reference.queryOrderedByKey()
+        var reference: DatabaseQuery = self.reference.queryOrderedByKey()
         var limit: UInt = limit
         if let lastKey: String = lastKey {
             reference = reference.queryEnding(atValue: lastKey)

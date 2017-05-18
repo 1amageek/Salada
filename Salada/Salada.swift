@@ -168,7 +168,7 @@ open class Salada {
             self.localTimestamp = Date()
         }
         
-        convenience required public init?(snapshot: FIRDataSnapshot) {
+        convenience required public init?(snapshot: DataSnapshot) {
             self.init()
             _setSnapshot(snapshot)
         }
@@ -187,9 +187,9 @@ open class Salada {
             return tmpID
         }
         
-        public var snapshot: FIRDataSnapshot? {
+        public var snapshot: DataSnapshot? {
             didSet {
-                if let snapshot: FIRDataSnapshot = snapshot {
+                if let snapshot: DataSnapshot = snapshot {
                     self.hasObserve = true
                     guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
                     self.serverCreatedAtTimestamp = snapshot["_createdAt"] as? Double
@@ -232,7 +232,7 @@ open class Salada {
             }
         }
         
-        fileprivate func _setSnapshot(_ snapshot: FIRDataSnapshot) {
+        fileprivate func _setSnapshot(_ snapshot: DataSnapshot) {
             self.snapshot = snapshot
             type(of: self).databaseRef.child(self.id).keepSynced(true)
         }
@@ -324,7 +324,7 @@ open class Salada {
         // MARK: - Save
         
         @discardableResult
-        public func save() -> [String: FIRStorageUploadTask] {
+        public func save() -> [String: StorageUploadTask] {
             return self.save(nil)
         }
         
@@ -333,18 +333,18 @@ open class Salada {
          - parameter completion: If successful reference will return. An error will return if it fails.
          */
         @discardableResult
-        public func save(_ completion: ((FIRDatabaseReference?, Error?) -> Void)?) -> [String: FIRStorageUploadTask] {
+        public func save(_ completion: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
             
             if self.id == self.tmpID || self.id == self._id {
                 
                 var value: [AnyHashable: Any] = self.value
                 
-                let timestamp: AnyObject = FIRServerValue.timestamp() as AnyObject
+                let timestamp: AnyObject = ServerValue.timestamp() as AnyObject
                 
                 value["_createdAt"] = timestamp
                 value["_updatedAt"] = timestamp
                 
-                var ref: FIRDatabaseReference
+                var ref: DatabaseReference
                 if let id: String = self._id {
                     ref = type(of: self).databaseRef.child(id)
                 } else {
@@ -359,7 +359,7 @@ open class Salada {
                         return
                     }
                     
-                    ref.runTransactionBlock({ (data) -> FIRTransactionResult in
+                    ref.runTransactionBlock({ (data) -> TransactionResult in
                         if data.value != nil {
                             data.value = value
                             return .success(withValue: data)
@@ -387,10 +387,10 @@ open class Salada {
         var timeout: Float = 20
         let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
         
-        private func saveFiles(block: ((Error?) -> Void)?) -> [String: FIRStorageUploadTask] {
+        private func saveFiles(block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
             
             let group: DispatchGroup = DispatchGroup()
-            var uploadTasks: [String: FIRStorageUploadTask] = [:]
+            var uploadTasks: [String: StorageUploadTask] = [:]
             
             var hasError: Error? = nil
             
@@ -409,7 +409,7 @@ open class Salada {
                 if subjectType == File?.self || subjectType == File.self {
                     if let file: File = value as? File {
                         group.enter()
-                        if let task: FIRStorageUploadTask = file.save(key, completion: { (meta, error) in
+                        if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
                             if let error: Error = error {
                                 hasError = error
                                 uploadTasks.forEach({ (_, task) in
@@ -453,9 +453,9 @@ open class Salada {
          - parameter completion: If successful reference will return. An error will return if it fails.
          */
         
-        private var transactionBlock: ((FIRDatabaseReference?, Error?) -> Void)?
+        private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
         
-        public func transaction(key: String, value: Any, completion: ((FIRDatabaseReference?, Error?) -> Void)?) {
+        public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {
             self.transactionBlock = completion
             self.setValue(value, forKey: key)
         }
@@ -567,8 +567,8 @@ open class Salada {
         // update value & update timestamp
         // Value will be deleted if the nil.
         fileprivate func updateValue(_ keyPath: String, child: String?, value: Any?) {
-            let reference: FIRDatabaseReference = type(of: self).databaseRef.child(self.id)
-            let timestamp: AnyObject = FIRServerValue.timestamp() as AnyObject
+            let reference: DatabaseReference = type(of: self).databaseRef.child(self.id)
+            let timestamp: AnyObject = ServerValue.timestamp() as AnyObject
             
             if let value: Any = value {
                 var path: String = keyPath
@@ -592,12 +592,12 @@ open class Salada {
         /**
          A function that gets all data from DB whose name is model.
          */
-        public class func observeSingle(_ eventType: FIRDataEventType, block: @escaping ([Object]) -> Void) {
+        public class func observeSingle(_ eventType: DataEventType, block: @escaping ([Object]) -> Void) {
             self.databaseRef.observeSingleEvent(of: eventType, with: { (snapshot) in
                 if snapshot.exists() {
                     var children: [Object] = []
                     snapshot.children.forEach({ (snapshot) in
-                        if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let snapshot: DataSnapshot = snapshot as? DataSnapshot {
                             if let tsp: Object = self.init(snapshot: snapshot) {
                                 children.append(tsp)
                             }
@@ -613,7 +613,7 @@ open class Salada {
         /**
          A function that gets data of ID within the variable form DB selected.
          */
-        public class func observeSingle(_ id: String, eventType: FIRDataEventType, block: @escaping (Object?) -> Void) {
+        public class func observeSingle(_ id: String, eventType: DataEventType, block: @escaping (Object?) -> Void) {
             self.databaseRef.child(id).observeSingleEvent(of: eventType, with: { (snapshot) in
                 if snapshot.exists() {
                     if let tsp: Object = self.init(snapshot: snapshot) {
@@ -625,12 +625,12 @@ open class Salada {
             })
         }
         
-        public class func observeSingle(child key: String, equal value: String, eventType: FIRDataEventType, block: @escaping ([Object]) -> Void) {
+        public class func observeSingle(child key: String, equal value: String, eventType: DataEventType, block: @escaping ([Object]) -> Void) {
             self.databaseRef.queryOrdered(byChild: key).queryEqual(toValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
                 if snapshot.exists() {
                     var children: [Object] = []
                     snapshot.children.forEach({ (snapshot) in
-                        if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let snapshot: DataSnapshot = snapshot as? DataSnapshot {
                             if let tsp: Object = self.init(snapshot: snapshot) {
                                 children.append(tsp)
                             }
@@ -646,12 +646,12 @@ open class Salada {
         /**
          A function that gets all data from DB whenever DB has been changed.
          */
-        public class func observe(_ eventType: FIRDataEventType, block: @escaping ([Object]) -> Void) -> UInt {
+        public class func observe(_ eventType: DataEventType, block: @escaping ([Object]) -> Void) -> UInt {
             return self.databaseRef.observe(eventType, with: { (snapshot) in
                 if snapshot.exists() {
                     var children: [Object] = []
                     snapshot.children.forEach({ (snapshot) in
-                        if let snapshot: FIRDataSnapshot = snapshot as? FIRDataSnapshot {
+                        if let snapshot: DataSnapshot = snapshot as? DataSnapshot {
                             if let tsp: Object = self.init(snapshot: snapshot) {
                                 children.append(tsp)
                             }
@@ -667,7 +667,7 @@ open class Salada {
         /**
          A function that gets data of ID within the variable from DB whenever data of the ID has been changed.
          */
-        public class func observe(_ id: String, eventType: FIRDataEventType, block: @escaping (Object?) -> Void) -> UInt {
+        public class func observe(_ id: String, eventType: DataEventType, block: @escaping (Object?) -> Void) -> UInt {
             return self.databaseRef.child(id).observe(eventType, with: { (snapshot) in
                 if snapshot.exists() {
                     if let tsp: Object = self.init(snapshot: snapshot) {
@@ -739,7 +739,7 @@ extension Salada {
     public class File: NSObject {
         
         /// Save location
-        public var ref: FIRStorageReference? {
+        public var ref: StorageReference? {
             if let parent: Object = self.parent {
                 return type(of: parent).storageRef.child(parent.id).child(self.name)
             }
@@ -756,7 +756,7 @@ extension Salada {
         public var name: String
         
         /// File metadata
-        public var metadata: FIRStorageMetadata?
+        public var metadata: StorageMetadata?
         
         /// Parent to hold the location where you want to save
         public var parent: Object?
@@ -765,10 +765,10 @@ extension Salada {
         public var keyPath: String?
         
         /// Firebase uploading task
-        public fileprivate(set) weak var uploadTask: FIRStorageUploadTask?
+        public fileprivate(set) weak var uploadTask: StorageUploadTask?
         
         /// Firebase downloading task
-        public fileprivate(set) weak var downloadTask: FIRStorageDownloadTask?
+        public fileprivate(set) weak var downloadTask: StorageDownloadTask?
         
         // MARK: - Initialize
         
@@ -795,13 +795,13 @@ extension Salada {
         
         // MARK: - Save
         
-        fileprivate func save(_ keyPath: String) -> FIRStorageUploadTask? {
+        fileprivate func save(_ keyPath: String) -> StorageUploadTask? {
             return self.save(keyPath, completion: nil)
         }
         
-        fileprivate func save(_ keyPath: String, completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
+        fileprivate func save(_ keyPath: String, completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
             if let data: Data = self.data, let parent: Object = self.parent {
-                self.uploadTask = self.ref?.put(data, metadata: self.metadata) { (metadata, error) in
+                self.uploadTask = self.ref?.putData(data, metadata: self.metadata) { (metadata, error) in
                     self.metadata = metadata
                     if let error: Error = error as Error? {
                         completion?(metadata, error)
@@ -816,7 +816,7 @@ extension Salada {
                 }
                 return self.uploadTask
             } else if let url: URL = self.url, let parent: Object = self.parent {
-                self.uploadTask = self.ref?.putFile(url, metadata: self.metadata, completion: { (metadata, error) in
+                self.uploadTask = self.ref?.putFile(from: url, metadata: self.metadata, completion: { (metadata, error) in
                     self.metadata = metadata
                     if let error: Error = error as Error? {
                         completion?(metadata, error)
@@ -837,7 +837,7 @@ extension Salada {
             return nil
         }
         
-        public func save(completion: ((FIRStorageMetadata?, Error?) -> Void)?) -> FIRStorageUploadTask? {
+        public func save(completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
             guard let _: Object = self.parent, let keyPath: String = self.keyPath else {
                 let error: ObjectError = ObjectError(kind: .invalidFile, description: "It requires data when you save the file")
                 completion?(nil, error)
@@ -849,9 +849,9 @@ extension Salada {
         
         // MARK: - Load
         
-        public func dataWithMaxSize(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> FIRStorageDownloadTask? {
+        public func dataWithMaxSize(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> StorageDownloadTask? {
             self.downloadTask?.cancel()
-            let task: FIRStorageDownloadTask? = self.ref?.data(withMaxSize: size, completion: { (data, error) in
+            let task: StorageDownloadTask? = self.ref?.getData(maxSize: size, completion: { (data, error) in
                 self.downloadTask = nil
                 completion(data, error as Error?)
             })
