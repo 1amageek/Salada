@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="wR6-qf-yF6">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Entrance View Controller-->
+        <scene sceneID="vUr-2m-aYT">
+            <objects>
+                <viewController id="wR6-qf-yF6" customClass="EntranceViewController" customModule="SaladBar" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="YPg-dI-Lx5"/>
+                        <viewControllerLayoutGuide type="bottom" id="BSa-RB-4Km"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bjy-v1-Hlg">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pmq-2y-ycn">
+                                <rect key="frame" x="138" y="546" width="98" height="40"/>
+                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="23"/>
+                                <state key="normal" title="Let's go!"/>
+                                <connections>
+                                    <action selector="start:" destination="wR6-qf-yF6" eventType="touchUpInside" id="VFh-Xj-pZ4"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mse-4n-e0p">
+                                <rect key="frame" x="16" y="618" width="343" height="29"/>
+                                <string key="text">SaladBar is Salada sample code.
+This project introduces a simple way to configure TableView.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="xB9-sM-LiX">
+                                <rect key="frame" x="67" y="213" width="240" height="240"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="IUs-hp-mlM"/>
+                                    <constraint firstAttribute="height" constant="240" id="XAX-gK-oG5"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Salada" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Cy-QG-n8T">
+                                <rect key="frame" x="87.5" y="93" width="199" height="72"/>
+                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="60"/>
+                                <color key="textColor" red="0.24192438471502586" green="0.24192438471502586" blue="0.24192438471502586" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="DTv-gf-SRM">
+                                <rect key="frame" x="177" y="518" width="20" height="20"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="xB9-sM-LiX" firstAttribute="centerY" secondItem="bjy-v1-Hlg" secondAttribute="centerY" id="CBD-GH-Sbt"/>
+                            <constraint firstItem="pmq-2y-ycn" firstAttribute="centerX" secondItem="bjy-v1-Hlg" secondAttribute="centerX" id="KFj-2e-Dey"/>
+                            <constraint firstItem="pmq-2y-ycn" firstAttribute="top" secondItem="DTv-gf-SRM" secondAttribute="bottom" constant="8" id="Mon-ZQ-thI"/>
+                            <constraint firstItem="DTv-gf-SRM" firstAttribute="centerX" secondItem="bjy-v1-Hlg" secondAttribute="centerX" id="OVQ-yg-f3k"/>
+                            <constraint firstItem="xB9-sM-LiX" firstAttribute="top" secondItem="6Cy-QG-n8T" secondAttribute="bottom" constant="48" id="Ta9-UV-T2d"/>
+                            <constraint firstItem="6Cy-QG-n8T" firstAttribute="centerX" secondItem="bjy-v1-Hlg" secondAttribute="centerX" id="VS2-G0-DWd"/>
+                            <constraint firstItem="BSa-RB-4Km" firstAttribute="top" secondItem="Mse-4n-e0p" secondAttribute="bottom" constant="20" id="X1X-dq-W4K"/>
+                            <constraint firstItem="Mse-4n-e0p" firstAttribute="centerX" secondItem="bjy-v1-Hlg" secondAttribute="centerX" id="cfa-he-Ejb"/>
+                            <constraint firstItem="xB9-sM-LiX" firstAttribute="centerX" secondItem="bjy-v1-Hlg" secondAttribute="centerX" id="dJg-n2-4gU"/>
+                            <constraint firstAttribute="trailing" secondItem="Mse-4n-e0p" secondAttribute="trailing" constant="16" id="iDq-p8-sLn"/>
+                            <constraint firstItem="Mse-4n-e0p" firstAttribute="top" secondItem="pmq-2y-ycn" secondAttribute="bottom" constant="32" id="oCF-09-6re"/>
+                            <constraint firstItem="Mse-4n-e0p" firstAttribute="leading" secondItem="bjy-v1-Hlg" secondAttribute="leading" constant="16" id="ojc-8D-QG1"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="activityIndicator" destination="DTv-gf-SRM" id="rXa-vo-EjT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Gmc-2z-UvC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="85.599999999999994" y="139.880059970015"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="icon" width="1024" height="1024"/>
+    </resources>
+</document>

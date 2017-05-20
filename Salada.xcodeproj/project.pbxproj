@@ -34,6 +34,12 @@
 
 /* Begin PBXFileReference section */
 		0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.release.xcconfig"; sourceTree = "<group>"; };
+		1237E6061ED034650033AB46 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1237E6081ED034650033AB46 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1237E60B1ED034650033AB46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1237E60D1ED034650033AB46 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1237E6101ED034650033AB46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1237E6121ED034650033AB46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		123C27A41E6696E100A2655F /* FileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTestViewController.swift; sourceTree = "<group>"; };
 		123C27A61E66A3F600A2655F /* pexels-photo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "pexels-photo.jpg"; sourceTree = "<group>"; };
 		123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaladaFileTestViewController.swift; sourceTree = "<group>"; };
@@ -98,6 +104,7 @@
 				12D0BE161E6D1ABD008E9AD0 /* Salada */,
 				12CB1A581D95184300E69000 /* SaladBar */,
 				12A4FE3C1DB5CA21003A3104 /* SaladaTests */,
+				1237E6051ED034650033AB46 /* SNS */,
 				122314EF1D618B22003864BD /* Products */,
 				F3116AD0B5DBD472DD5E7AA8 /* Pods */,
 				8110B8D679C43AD435231EAB /* Frameworks */,
@@ -111,6 +118,19 @@
 				12D0BE151E6D1ABD008E9AD0 /* Salada.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1237E6051ED034650033AB46 /* SNS */ = {
+			isa = PBXGroup;
+			children = (
+				1237E6061ED034650033AB46 /* AppDelegate.swift */,
+				1237E6081ED034650033AB46 /* ViewController.swift */,
+				1237E60A1ED034650033AB46 /* Main.storyboard */,
+				1237E60D1ED034650033AB46 /* Assets.xcassets */,
+				1237E60F1ED034650033AB46 /* LaunchScreen.storyboard */,
+				1237E6121ED034650033AB46 /* Info.plist */,
+			);
+			path = SNS;
 			sourceTree = "<group>";
 		};
 		12A4FE3C1DB5CA21003A3104 /* SaladaTests */ = {
@@ -242,7 +262,7 @@
 		122314E61D618B22003864BD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0810;
+				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = Stamp;
 				TargetAttributes = {
@@ -411,6 +431,22 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		1237E60A1ED034650033AB46 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1237E60B1ED034650033AB46 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		1237E60F1ED034650033AB46 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1237E6101ED034650033AB46 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
 		12CB1A5D1D95184300E69000 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
