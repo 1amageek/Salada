@@ -1,4 +1,10 @@
-<img src="https://github.com/1amageek/Salada/blob/master/Salada.png">
+<div style="text-align: center; width: 100%">
+<img src="https://github.com/1amageek/Salada/blob/master/Salada.png", width="320px">
+
+ [![Version](http://img.shields.io/cocoapods/v/Bleu.svg)](http://cocoapods.org/?q=Salada)
+ [![Platform](http://img.shields.io/cocoapods/p/Bleu.svg)](http://cocoapods.org/?q=Salada)
+ 
+</div>
 
 # Salada 🍐
 <!--
