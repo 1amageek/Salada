@@ -1,8 +1,9 @@
 <div style="text-align: center; width: 100%">
-<img src="https://github.com/1amageek/Salada/blob/master/Salada.png", width="320px">
+<img src="https://github.com/1amageek/Salada/blob/master/logo.png", width="100%">
 
- [![Version](http://img.shields.io/cocoapods/v/Bleu.svg)](http://cocoapods.org/?q=Salada)
- [![Platform](http://img.shields.io/cocoapods/p/Bleu.svg)](http://cocoapods.org/?q=Salada)
+ [![Version](http://img.shields.io/cocoapods/v/Salada.svg)](http://cocoapods.org/?q=Salada)
+ [![Platform](http://img.shields.io/cocoapods/p/Salada.svg)](http://cocoapods.org/?q=Salada)
+ [![Downloads](https://img.shields.io/cocoapods/dt/Salada.svg?label=Total%20Downloads&colorB=28B9FE)](https://cocoapods.org/pods/Salada)
  
 </div>
 
@@ -32,16 +33,12 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 - Link your app with Salada.framework in Carthage/Checkouts.
 -->
 
-Add the following to the pod file, `Pods install`
+__CocoaPods__
 
-``` ruby
-pod 'Firebase'
-pod 'Firebase/Database'
-pod 'Firebase/Storage'
-```
+- Insert `pod 'Salada' ` to your Podfile.
+- Run `pod install`.
 
-1. [Download this project](https://github.com/1amageek/Salada/archive/master.zip)
-1. Put `Salada.Swift`,`Salada+Datasource.swift`,`Salada+Relation.swift`,`Referenceable.swift` in your project.
+Note: CocoaPods 1.1.0 is required to install Bleu.
 
 ## Usage 👀
 
