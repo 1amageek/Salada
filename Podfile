@@ -1,17 +1,12 @@
-# Uncomment this line to define a global platform for your project
-# platform :ios, '10.0'
-
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
 use_frameworks!
-
-# Pods for Salada
-
+pod 'Firebase/Database'
+pod 'Firebase/Storage'
 target 'Salada' do
-pod 'Firebase/Database'
-pod 'Firebase/Storage'
-end
 
-target 'SaladBar' do
-pod 'Firebase/Database'
-pod 'Firebase/Storage'
-end
+  target 'SaladaTests' do
+    inherit! :search_paths
+  end
 
+end

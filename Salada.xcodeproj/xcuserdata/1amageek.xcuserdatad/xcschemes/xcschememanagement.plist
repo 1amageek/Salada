@@ -4,100 +4,20 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>SaladBar.xcscheme_^#shared#^_</key>
+		<key>Salada.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>Salada.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>5</integer>
-		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>122314ED1D618B22003864BD</key>
+		<key>125817361ED12E4F001B6864</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>122315141D645985003864BD</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>122315261D645A19003864BD</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>122315371D645A7A003864BD</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>122315461D645AEE003864BD</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>122315631D645B73003864BD</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>123C748F1DB8596E0079CF4A</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>124200A51D669E82004B87B1</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>129DF2731D654A1F00AD8148</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>12A0AB9B1E6C417100F2E999</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>12A0ABAD1E6C427600F2E999</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>12A0ABB61E6CAE4C00F2E999</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>12A4FE3A1DB5CA21003A3104</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>12CB1A561D95184300E69000</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>12CB1A691D95184300E69000</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>12CB1A741D95184300E69000</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>12D0BE141E6D1ABD008E9AD0</key>
+		<key>1258173F1ED12E4F001B6864</key>
 		<dict>
 			<key>primary</key>
 			<true/>
