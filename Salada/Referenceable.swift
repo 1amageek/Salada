@@ -6,9 +6,7 @@
 //  Copyright © 2017年 Stamp. All rights reserved.
 //
 
-import Foundation
-import FirebaseDatabase
-import FirebaseStorage
+import Firebase
 
 /**
  Protocol that holds a reference Firebase
