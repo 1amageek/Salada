@@ -10,10 +10,6 @@ let schemes = [
     "Salada"
 ]
 
-let staticLibs = [
-    "Salada": "Salada",
-]
-
 // TODO: Use NSFileManager instead of all these awful
 // manual path appendings and mkdir/mv/cp
 let DerivedDataDir = "artifacts/"
@@ -91,31 +87,17 @@ func buildTask(args: [String] = []) -> Process {
     return task
 }
 
-//let test = buildTask(args: [
-//  "-workspace", "Salada.xcworkspace",
-//  "-scheme",  "Salada",
-//  "-sdk", "iphonesimulator",
-//  "-destination", "platform=iOS Simulator,name=iPhone 7",
-//  "test",
-//  "ONLY_ACTIVE_ARCH=YES", "CODE_SIGNING_REQUIRED=NO"
-//])
-//test.launch()
-//test.waitUntilExit()
-//guard test.terminationStatus == 0 else {
-//  exit(test.terminationStatus)
-//}
-
 /// A value type representing an xcodebuild call.
 /// param keys are parameters and expect leading dashes,
 /// i.e. `-workspace`
 struct Build {
-    
+
     var params: [String: String]
-    
+
     init(_ params: [String: String]) {
         self.params = params
     }
-    
+
     var args: [String] {
         var params: [String] = []
         let keys = self.params.keys
@@ -130,10 +112,10 @@ struct Build {
         // files are built with bitcode, hope for
         // no consequences later
         params.append("BITCODE_GENERATION_MODE=bitcode")
-        params.append("ONLY_ACTIVE_ARCH=YES")
+        params.append("ONLY_ACTIVE_ARCH=NO")
         return params
     }
-    
+
     func launch() {
         let task = buildTask(args: self.args)
         task.launch()
@@ -153,23 +135,8 @@ schemes.forEach { scheme in
     mkdir(schemeDir + "/Frameworks")
 }
 
-// Invoke xcodebuild, building each scheme in
-// release for each target sdk. Building
-// dynamic frameworks so we don't have to do
-// the asset bundling and folder structures manually,
-// at the costs of lots of duplication. Not sure if ideal.
-let builds =  schemes.map { scheme in
-    return Build([
-        "-workspace"      : "Salada.xcworkspace",
-        "-scheme"         : scheme,
-        "-configuration"  : "Release",
-        "-sdk"            : sdks[0],
-        "-derivedDataPath": DerivedDataDir,
-        ])
-}
-
-let staticBuilds: [Build] = sdks.flatMap { sdk -> [Build] in
-    let schemeNames = Array(staticLibs.keys)
+let builds: [Build] = sdks.flatMap { sdk -> [Build] in
+    let schemeNames = schemes
     return schemeNames.map { scheme -> Build in
         return Build([
             "-workspace"      : "Salada.xcworkspace",
@@ -181,8 +148,8 @@ let staticBuilds: [Build] = sdks.flatMap { sdk -> [Build] in
     }
 }
 
+// builds.forEach { $0.launch() }
 builds.forEach { $0.launch() }
-staticBuilds.forEach { $0.launch() }
 
 // Copy frameworks into built products dir. Don't really
 // care about sdk here since we're gonna lipo everything later
@@ -193,11 +160,6 @@ schemes.forEach { scheme in
     let framework = scheme
     let frameworkPath = "\(DerivedDataDir)Build/Products/Release-\(sdk)/\(framework).framework"
     cp(from: frameworkPath, to: frameworkDir)
-    
-//    let frameworkModulePath = "\(frameworkPath)/Modules/\(framework).swiftmodule"
-//    let frameworkModuleDir = "\(frameworkDir)/\(framework).framework/Modules/\(framework).swiftmodule"
-//    mkdir(frameworkModuleDir)
-//    cp(from: frameworkModulePath, to: frameworkModuleDir)
 }
 
 // Lipo
@@ -205,7 +167,7 @@ schemes.forEach { scheme in
 struct Lipo {
     var inputs: [String]
     var output: String
-    
+
     func launch() {
         print("lipo \(output)")
         let task = Process()
@@ -226,11 +188,10 @@ let productsPaths = sdks.map {
 }
 
 // create lipo tasks from built products
-let lipos: [Lipo] = Array(staticLibs.keys).map { scheme in
-    let product = staticLibs[scheme]!
+let lipos: [Lipo] = schemes.map { scheme in
+    let product = scheme
     let framework = "\(product).framework"
-    //  let binary = "lib\(scheme).a"
-    
+
     let chunks = productsPaths.map { path in
         return "\(path)/\(framework)/\(product)"
     }
