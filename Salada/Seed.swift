@@ -24,7 +24,6 @@ open class Seed: NSObject {
 
         case bool(String, Bool)
         case int(String, Int)
-        case uint(String, UInt)
         case float(String, Float)
         case double(String, Double)
         case string(String, String)
@@ -69,11 +68,7 @@ open class Seed: NSObject {
                     self = .int(key, Int(value))
                     return
                 }
-            case is UInt:
-                if let value: UInt = value as? UInt {
-                    self = .int(key, Int(value))
-                    return
-                }
+            case is UInt: fatalError("UInt is not supported.")
             case is Float:
                 if let value: Float = value as? Float {
                     self = .float(key, Float(value))
@@ -102,6 +97,7 @@ open class Seed: NSObject {
             case is [Any]:
                 if let value: [Any] = value as? [Any], !value.isEmpty {
                     self = .array(key, value)
+                    return
                 }
             case is Set<String>:
                 if let value: Set<String> = value as? Set<String>, !value.isEmpty {
@@ -130,7 +126,7 @@ open class Seed: NSObject {
                 }
             default: self = .null
             }
-            print("\(value) is not valid Salada's Value type.")
+            print("Property: \(key)   \(value) is not valid Salada's Value type.")
             self = .null
         }
 
@@ -144,11 +140,6 @@ open class Seed: NSObject {
             } else if subjectType == Int.self || subjectType == Int?.self {
                 if let value: Int = snapshot[key] as? Int {
                     self = .int(key, Int(value))
-                    return
-                }
-            } else if subjectType == UInt.self || subjectType == UInt?.self {
-                if let value: UInt = snapshot[key] as? UInt {
-                    self = .uint(key, UInt(value))
                     return
                 }
             } else if subjectType == Float.self || subjectType == Float?.self {

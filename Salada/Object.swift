@@ -75,7 +75,6 @@ open class Object: Seed, Referenceable {
                     switch ValueType(key: key, value: value) {
                     case .bool      (let key, let value):       object[key] = value
                     case .int       (let key, let value):       object[key] = value
-                    case .uint      (let key, let value):       object[key] = value
                     case .double    (let key, let value):       object[key] = value
                     case .float     (let key, let value):       object[key] = value
                     case .string    (let key, let value):       object[key] = value
@@ -123,7 +122,6 @@ open class Object: Seed, Referenceable {
                             switch ValueType(key: key, mirror: mirror, snapshot: snapshot) {
                             case .bool(let key, let value): self.setValue(value, forKey: key)
                             case .int(let key, let value): self.setValue(value, forKey: key)
-                            case .uint(let key, let value): self.setValue(value, forKey: key)
                             case .float(let key, let value): self.setValue(value, forKey: key)
                             case .double(let key, let value): self.setValue(value, forKey: key)
                             case .string(let key, let value): self.setValue(value, forKey: key)
