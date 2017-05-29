@@ -23,15 +23,9 @@
 		12CB1A611D95184300E69000 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A601D95184300E69000 /* Assets.xcassets */; };
 		12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A621D95184300E69000 /* LaunchScreen.storyboard */; };
 		12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
-		12D0BE221E6D1ADB008E9AD0 /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1E1E6D1ADA008E9AD0 /* Salada.swift */; };
-		12D0BE231E6D1ADB008E9AD0 /* Salada+Datasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1F1E6D1ADA008E9AD0 /* Salada+Datasource.swift */; };
-		12D0BE241E6D1ADB008E9AD0 /* Salada+Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE201E6D1ADA008E9AD0 /* Salada+Relation.swift */; };
 		12DA5D621EDBE4E700D2A73D /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
-		12F6446E1E8CF49F0014CB4C /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
-		12F6446F1E8CF49F0014CB4C /* Salada.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1E1E6D1ADA008E9AD0 /* Salada.swift */; };
-		12F644701E8CF49F0014CB4C /* Salada+Datasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1F1E6D1ADA008E9AD0 /* Salada+Datasource.swift */; };
-		12F644711E8CF49F0014CB4C /* Salada+Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE201E6D1ADA008E9AD0 /* Salada+Relation.swift */; };
-		8DDA53C11ED38684000C1F06 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8DDA53C01ED38684000C1F06 /* Info.plist */; };
+		12DA5D641EDBF12600D2A73D /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D631EDBF12600D2A73D /* Relation.swift */; };
+		12DA5D941EDC198B00D2A73D /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
 		9088C4FC448D53572D030044 /* Pods_SaladBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */; };
 		B2DAD0D9709B23A30CB0EE7E /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; };
 /* End PBXBuildFile section */
@@ -61,22 +55,24 @@
 		12CB1A651D95184300E69000 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12D0BE151E6D1ABD008E9AD0 /* Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Referenceable.swift; sourceTree = "<group>"; };
-		12D0BE1E1E6D1ADA008E9AD0 /* Salada.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Salada.swift; sourceTree = "<group>"; };
-		12D0BE1F1E6D1ADA008E9AD0 /* Salada+Datasource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Salada+Datasource.swift"; sourceTree = "<group>"; };
-		12D0BE201E6D1ADA008E9AD0 /* Salada+Relation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Salada+Relation.swift"; sourceTree = "<group>"; };
 		12DA5D611EDBE4E700D2A73D /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		12DA5D631EDBF12600D2A73D /* Relation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Relation.swift; sourceTree = "<group>"; };
+		12DA5D931EDC198B00D2A73D /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		148106A1CEF7A4448F530DB1 /* Pods_SaladaTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D5576D8CC9B13C671F0A5B3 /* Pods_Sample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		334D5EA5F2937224A1EF3EB5 /* Pods-Hooo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hooo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Hooo/Pods-Hooo.release.xcconfig"; sourceTree = "<group>"; };
 		358EA389C352FB0DBF611EBD /* Pods-SaladaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		788D92D6A77F55576E11BEF0 /* Pods-SaladaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests.release.xcconfig"; sourceTree = "<group>"; };
 		7B9402518CF51E7EAFB4ED63 /* Pods-SaladBar.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladBar.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaladBar/Pods-SaladBar.debug.xcconfig"; sourceTree = "<group>"; };
 		8DDA53C01ED38684000C1F06 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		97342D02C2448E4E7DF22FBE /* Pods_Hooo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hooo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B527BBE07E11D96C847178F4 /* Pods-Salada.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Salada.release.xcconfig"; path = "Pods/Target Support Files/Pods-Salada/Pods-Salada.release.xcconfig"; sourceTree = "<group>"; };
 		CACFF8A827AF5750D7560F54 /* Pods-Salada.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Salada.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Salada/Pods-Salada.debug.xcconfig"; sourceTree = "<group>"; };
 		D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E06963052D0D94CF68DFE11D /* Pods-SaladaTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.debug.xcconfig"; sourceTree = "<group>"; };
+		E45B8EB2B9B5BC22BC26AF38 /* Pods-Hooo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hooo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Hooo/Pods-Hooo.debug.xcconfig"; sourceTree = "<group>"; };
 		FAC0A36C0458089E30C8CDB2 /* Pods-SaladBar.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladBar.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladBar/Pods-SaladBar.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -158,12 +154,11 @@
 			children = (
 				8DDA53C01ED38684000C1F06 /* Info.plist */,
 				12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */,
-				12D0BE1E1E6D1ADA008E9AD0 /* Salada.swift */,
-				12D0BE1F1E6D1ADA008E9AD0 /* Salada+Datasource.swift */,
-				12D0BE201E6D1ADA008E9AD0 /* Salada+Relation.swift */,
 				12523B8E1EDBD5820074DACB /* Seed.swift */,
 				12523B8C1EDBB74A0074DACB /* Object.swift */,
 				12DA5D611EDBE4E700D2A73D /* File.swift */,
+				12DA5D631EDBF12600D2A73D /* Relation.swift */,
+				12DA5D931EDC198B00D2A73D /* DataSource.swift */,
 			);
 			path = Salada;
 			sourceTree = "<group>";
@@ -176,6 +171,7 @@
 				12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */,
 				265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */,
 				148106A1CEF7A4448F530DB1 /* Pods_SaladaTestApp.framework */,
+				97342D02C2448E4E7DF22FBE /* Pods_Hooo.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -191,6 +187,8 @@
 				0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */,
 				7B9402518CF51E7EAFB4ED63 /* Pods-SaladBar.debug.xcconfig */,
 				FAC0A36C0458089E30C8CDB2 /* Pods-SaladBar.release.xcconfig */,
+				E45B8EB2B9B5BC22BC26AF38 /* Pods-Hooo.debug.xcconfig */,
+				334D5EA5F2937224A1EF3EB5 /* Pods-Hooo.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -254,8 +252,8 @@
 		122314E61D618B22003864BD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0810;
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Stamp;
 				TargetAttributes = {
 					12CB1A561D95184300E69000 = {
@@ -306,7 +304,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DDA53C11ED38684000C1F06 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,15 +395,11 @@
 				123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */,
 				12CB1A5C1D95184300E69000 /* ViewController.swift in Sources */,
 				12CB1A5A1D95184300E69000 /* AppDelegate.swift in Sources */,
-				12F6446E1E8CF49F0014CB4C /* Referenceable.swift in Sources */,
 				12C097E11E653F19001B2010 /* TransactionTestViewController.swift in Sources */,
 				123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */,
 				12C097DF1E653CEF001B2010 /* Item.swift in Sources */,
-				12F644701E8CF49F0014CB4C /* Salada+Datasource.swift in Sources */,
-				12F6446F1E8CF49F0014CB4C /* Salada.swift in Sources */,
 				12A4FE361DB5C987003A3104 /* User.swift in Sources */,
 				12A4FE351DB5C987003A3104 /* Group.swift in Sources */,
-				12F644711E8CF49F0014CB4C /* Salada+Relation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,13 +407,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12DA5D941EDC198B00D2A73D /* DataSource.swift in Sources */,
 				12523B8D1EDBB74A0074DACB /* Object.swift in Sources */,
 				12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */,
 				12DA5D621EDBE4E700D2A73D /* File.swift in Sources */,
 				12523B8F1EDBD5820074DACB /* Seed.swift in Sources */,
-				12D0BE231E6D1ADB008E9AD0 /* Salada+Datasource.swift in Sources */,
-				12D0BE221E6D1ADB008E9AD0 /* Salada.swift in Sources */,
-				12D0BE241E6D1ADB008E9AD0 /* Salada+Relation.swift in Sources */,
+				12DA5D641EDBF12600D2A73D /* Relation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

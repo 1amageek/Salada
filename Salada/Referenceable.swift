@@ -12,17 +12,18 @@ import Firebase
  Protocol that holds a reference Firebase
  */
 public protocol Referenceable: NSObjectProtocol {
+
     static var database: DatabaseReference { get }
+
     static var databaseRef: DatabaseReference { get }
+
     static var storage: StorageReference { get }
+
     static var storageRef: StorageReference { get }
+
     static var _path: String { get }
 
-    var id: String { get }
-    var snapshot: DataSnapshot? { get }
-    var createdAt: Date { get }
-    var value: [AnyHashable: Any] { get }
-    var ignore: [String] { get }
+    var key: String { get }
 
     init?(snapshot: DataSnapshot)
 }
@@ -32,4 +33,99 @@ public extension Referenceable {
     static var databaseRef: DatabaseReference { return self.database.child(self._path) }
     static var storage: StorageReference { return Storage.storage().reference() }
     static var storageRef: StorageReference { return self.storage.child(self._path) }
+}
+
+public extension Referenceable {
+
+    // MARK: - Observe
+
+    /**
+     A function that gets all data from DB whose name is model.
+     */
+    public static func observeSingle(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) {
+        self.databaseRef.observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Self] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: DataSnapshot = snapshot as? DataSnapshot {
+                        if let object: Self = Self(snapshot: snapshot) {
+                            children.append(object)
+                        }
+                    }
+                })
+                block(children)
+            } else {
+                block([])
+            }
+        })
+    }
+
+    /**
+     A function that gets data of ID within the variable form DB selected.
+     */
+    public static func observeSingle(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) {
+        self.databaseRef.child(id).observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                if let object: Self = Self(snapshot: snapshot) {
+                    block(object)
+                }
+            } else {
+                block(nil)
+            }
+        })
+    }
+
+    public static func observeSingle(child key: String, equal value: String, eventType: DataEventType, block: @escaping ([Self]) -> Void) {
+        self.databaseRef.queryOrdered(byChild: key).queryEqual(toValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Self] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: DataSnapshot = snapshot as? DataSnapshot {
+                        if let object: Self = Self(snapshot: snapshot) {
+                            children.append(object)
+                        }
+                    }
+                })
+                block(children)
+            } else {
+                block([])
+            }
+        })
+    }
+
+    /**
+     A function that gets all data from DB whenever DB has been changed.
+     */
+    public static func observe(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> UInt {
+        return self.databaseRef.observe(eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                var children: [Self] = []
+                snapshot.children.forEach({ (snapshot) in
+                    if let snapshot: DataSnapshot = snapshot as? DataSnapshot {
+                        if let object: Self = Self(snapshot: snapshot) {
+                            children.append(object)
+                        }
+                    }
+                })
+                block(children)
+            } else {
+                block([])
+            }
+        })
+    }
+
+    /**
+     A function that gets data of ID within the variable from DB whenever data of the ID has been changed.
+     */
+    public static func observe(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> UInt {
+        return self.databaseRef.child(id).observe(eventType, with: { (snapshot) in
+            if snapshot.exists() {
+                if let object: Self = Self(snapshot: snapshot) {
+                    block(object)
+                }
+            } else {
+                block(nil)
+            }
+        })
+    }
 }

@@ -8,6 +8,16 @@
 
 import Firebase
 
+public struct ObjectError: Error {
+    enum ErrorKind {
+        case invalidId
+        case invalidFile
+        case timeout
+    }
+    let kind: ErrorKind
+    let description: String
+}
+
 open class Seed: NSObject {
 
     enum ValueType {
@@ -231,51 +241,4 @@ open class Seed: NSObject {
         return "\(self._version)/\(self._modelName)"
     }
 
-    open var ignore: [String] {
-        return []
-    }
-
-    static var database: DatabaseReference { return Database.database().reference() }
-
-    static var databaseRef: DatabaseReference { return self.database.child(self._path) }
-
-    static var storage: StorageReference { return Storage.storage().reference() }
-
-    static var storageRef: StorageReference { return self.storage.child(self._path) }
-
-    public var value: [AnyHashable: Any] {
-        let mirror = Mirror(reflecting: self)
-        var object: [AnyHashable: Any] = [:]
-        mirror.children.forEach { (key, value) in
-            if let key: String = key {
-                if !self.ignore.contains(key) {
-                    if let newValue: Any = self.encode(key, value: value) {
-                        object[key] = newValue
-                        return
-                    }
-                    switch ValueType(key: key, value: value) {
-                    case .bool      (let key, let value):       object[key] = value
-                    case .int       (let key, let value):       object[key] = value
-                    case .uint      (let key, let value):       object[key] = value
-                    case .double    (let key, let value):       object[key] = value
-                    case .float     (let key, let value):       object[key] = value
-                    case .string    (let key, let value):       object[key] = value
-                    case .url       (let key, let value, _):    object[key] = value
-                    case .date      (let key, let value, _):    object[key] = value
-                    case .array     (let key, let value):       object[key] = value
-                    case .set       (let key, let value, _):    object[key] = value
-                    case .relation  (let key, let value, _):    object[key] = value
-                    case .file      (let key, let value):
-                        object[key] = value.name
-                        value.parent = self
-                        value.keyPath = key
-                    case .object(let key, let value): object[key] = value
-                    case .null: break
-                    }
-                    
-                }
-            }
-        }
-        return object
-    }
 }

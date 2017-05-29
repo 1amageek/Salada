@@ -13,7 +13,7 @@ public class File: NSObject {
     /// Save location
     public var ref: StorageReference? {
         if let parent: Object = self.parent {
-            return type(of: parent).storageRef.child(parent.id).child(self.name)
+            return type(of: parent).storageRef.child(parent.key).child(self.name)
         }
         return nil
     }
@@ -67,11 +67,11 @@ public class File: NSObject {
 
     // MARK: - Save
 
-    fileprivate func save(_ keyPath: String) -> StorageUploadTask? {
+    internal func save(_ keyPath: String) -> StorageUploadTask? {
         return self.save(keyPath, completion: nil)
     }
 
-    fileprivate func save(_ keyPath: String, completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
+    internal func save(_ keyPath: String, completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
         if let data: Data = self.data, let parent: Object = self.parent {
             self.uploadTask = self.ref?.putData(data, metadata: self.metadata) { (metadata, error) in
                 self.metadata = metadata
@@ -79,7 +79,7 @@ public class File: NSObject {
                     completion?(metadata, error)
                     return
                 }
-                if parent.hasObserve {
+                if parent.isObserved {
                     parent.updateValue(keyPath, child: nil, value: self.name)
                     completion?(metadata, error as Error?)
                 } else {
@@ -94,7 +94,7 @@ public class File: NSObject {
                     completion?(metadata, error)
                     return
                 }
-                if parent.hasObserve {
+                if parent.isObserved {
                     parent.updateValue(keyPath, child: nil, value: self.name)
                     completion?(metadata, error as Error?)
                 } else {

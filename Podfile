@@ -15,3 +15,8 @@ pod 'Firebase/Database'
 pod 'Firebase/Storage'
 end
 
+target 'Hooo' do
+pod 'Firebase/Database'
+pod 'Firebase/Storage'
+end
+
