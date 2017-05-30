@@ -40,6 +40,7 @@
 		12DA5DED1EDC2ACD00D2A73D /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D631EDBF12600D2A73D /* Relation.swift */; };
 		12DA5DEE1EDC2ACD00D2A73D /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
 		12DA5DF01EDC2B5100D2A73D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12DA5DEF1EDC2B5100D2A73D /* GoogleService-Info.plist */; };
+		12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DF11EDD17A400D2A73D /* TestFlow.swift */; };
 		393C0939A87D1D60572797B9 /* Pods_TestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0F3F6E9107CC397D09C8B8B /* Pods_TestApp.framework */; };
 		48A9AC77CEC2092A44A4CAAF /* Pods_TestAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 481C11F6E69EC5FD3CBD8ABC /* Pods_TestAppTests.framework */; };
 		9088C4FC448D53572D030044 /* Pods_SaladBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */; };
@@ -108,6 +109,7 @@
 		12DA5DDD1EDC29D300D2A73D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12DA5DE71EDC2A0C00D2A73D /* TestObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestObject.swift; sourceTree = "<group>"; };
 		12DA5DEF1EDC2B5100D2A73D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		12DA5DF11EDD17A400D2A73D /* TestFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestFlow.swift; sourceTree = "<group>"; };
 		12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		148106A1CEF7A4448F530DB1 /* Pods_SaladaTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D5576D8CC9B13C671F0A5B3 /* Pods_Sample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -262,6 +264,7 @@
 			children = (
 				12DA5DBB1EDC29D200D2A73D /* AppDelegate.swift */,
 				12DA5DBD1EDC29D200D2A73D /* ViewController.swift */,
+				12DA5DF11EDD17A400D2A73D /* TestFlow.swift */,
 				12DA5DE71EDC2A0C00D2A73D /* TestObject.swift */,
 				12DA5DBF1EDC29D200D2A73D /* Main.storyboard */,
 				12DA5DC21EDC29D200D2A73D /* Assets.xcassets */,
@@ -804,6 +807,7 @@
 				12DA5DEC1EDC2ACD00D2A73D /* File.swift in Sources */,
 				12DA5DEE1EDC2ACD00D2A73D /* DataSource.swift in Sources */,
 				12DA5DBE1EDC29D200D2A73D /* ViewController.swift in Sources */,
+				12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */,
 				12DA5DEA1EDC2ACD00D2A73D /* Seed.swift in Sources */,
 				12DA5DEB1EDC2ACD00D2A73D /* Object.swift in Sources */,
 				12DA5DBC1EDC29D200D2A73D /* AppDelegate.swift in Sources */,

@@ -15,12 +15,17 @@ import Firebase
 class ObjectTests: QuickSpec {
 
     override func spec() {
-        //FirebaseApp.configure()
+        FirebaseApp.configure()
         //var objectKey: String?
 
         describe("hoge") { 
             it("ww", closure: { 
                 expect("ww").to(equal("ww"))
+            })
+            let object: TestObject = TestObject()
+
+            it("hh", closure: { 
+                expect(object).toNot(beNil())
             })
         }
 

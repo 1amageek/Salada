@@ -12,10 +12,16 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        TestObject.observeSingle(.value) { (tests) in
-            print(tests)
+        let testFlow: TestFlow = TestFlow()
+
+        testFlow.write {
+            testFlow.read {
+                print("done")
+            }
         }
+
     }
+    
 
 }
 
