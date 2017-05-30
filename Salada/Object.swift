@@ -102,7 +102,6 @@ open class Object: Seed, Referenceable {
     public var snapshot: DataSnapshot? {
         didSet {
             if let snapshot: DataSnapshot = snapshot {
-                self.isObserved = true
                 guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
 
                 let createdAtTimestamp: TimeInterval = snapshot["_createdAt"] as! TimeInterval
@@ -144,6 +143,7 @@ open class Object: Seed, Referenceable {
                         }
                     }
                 }
+                self.isObserved = true
             }
         }
     }
