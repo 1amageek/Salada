@@ -10,10 +10,15 @@ import Firebase
 
 open class Object: Seed, Referenceable {
 
+    // MARK: -
+
+    /// Date the Object was created
     private(set) var createdAt: Date
 
+    /// Date when Object was updated
     private(set) var updatedAt: Date
 
+    /// Object monitors the properties as they are saved.
     private(set) var isObserved: Bool = false
 
     /// If all File savings do not end within this time, save will be canceled. default 20 seconds.
@@ -29,13 +34,13 @@ open class Object: Seed, Referenceable {
     /// It is Qeueu of File upload.
     public let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
 
-    // MARK: - Initialize
-
     /// The IndexKey of the Object.
     public var key: String
 
     /// A reference to Object.
     private(set) var ref: DatabaseReference
+
+    // MARK: - Initialize
 
     public override init() {
         self.createdAt = Date()
@@ -258,18 +263,23 @@ open class Object: Seed, Referenceable {
         }
     }
 
-    // update value & update timestamp
-    // Value will be deleted if the nil.
+    /** 
+     Update the data on Firebase.
+     When this function is called, updatedAt of Object is updated at the same time.
+     
+     - parameter keyPath: Target key path
+     - parameter child: Target child
+     - parameter value: Save to value. If you enter nil, the data will be deleted.
+     */
     internal func updateValue(_ keyPath: String, child: String?, value: Any?) {
         let reference: DatabaseReference = self.ref
-        let timestamp: AnyObject = ServerValue.timestamp() as AnyObject
+        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
 
         if let value: Any = value {
             var path: String = keyPath
             if let child: String = child {
                 path = "\(keyPath)/\(child)"
             }
-            //reference.updateChildValues([path: value, "_updatedAt": timestamp])
             reference.updateChildValues([path: value, "_updatedAt": timestamp], withCompletionBlock: { (error, ref) in
                 self.transactionBlock?(ref, error)
                 self.transactionBlock = nil
@@ -335,7 +345,7 @@ open class Object: Seed, Referenceable {
      - parameter value:
      - parameter completion: If successful reference will return. An error will return if it fails.
      */
-
+    // TODO: transaction functions
     private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
 
     public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {

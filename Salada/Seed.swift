@@ -254,4 +254,12 @@ open class Seed: NSObject {
         return "\(self._version)/\(self._modelName)"
     }
 
+    public static var database: DatabaseReference { return Database.database().reference() }
+
+    public static var databaseRef: DatabaseReference { return self.database.child(self._path) }
+
+    public static var storage: StorageReference { return Storage.storage().reference() }
+
+    public static var storageRef: StorageReference { return self.storage.child(self._path) }
+
 }
