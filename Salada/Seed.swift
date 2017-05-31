@@ -33,6 +33,8 @@ open class Seed: NSObject {
         case set(String, [String: Bool], Set<String>)
         case relation(String, [String: Bool], Relation)
         case file(String, File)
+        case nestedString(String, [String: String])
+        case nestedInt(String, [String: Int])
         case object(String, Any)
         case null
 
@@ -112,6 +114,16 @@ open class Seed: NSObject {
             case is File:
                 if let value: File = value as? File {
                     self = .file(key, value)
+                    return
+                }
+            case is [String: String]:
+                if let value: [String: String] = value as? [String: String] {
+                    self = .nestedString(key, value)
+                    return
+                }
+            case is [String: Int]:
+                if let value: [String: Int] = value as? [String: Int] {
+                    self = .nestedInt(key, value)
                     return
                 }
             case is [String: Any]:
@@ -197,6 +209,16 @@ open class Seed: NSObject {
                     self = .relation(key, [:], Relation())
                 }
                 return
+            } else if subjectType == [String: String].self || subjectType == [String: String]?.self {
+                if let value: [String: String] = snapshot[key] as? [String: String] {
+                    self = .nestedString(key, value)
+                    return
+                }
+            } else if subjectType == [String: Int].self || subjectType == [String: Int]?.self {
+                if let value: [String: Int] = snapshot[key] as? [String: Int] {
+                    self = .nestedInt(key, value)
+                    return
+                }
             } else if subjectType == [String: Any].self || subjectType == [String: Any]?.self {
                 if let value: [String: Any] = snapshot[key] as? [String: Any] {
                     self = .object(key, value)

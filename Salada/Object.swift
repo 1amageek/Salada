@@ -16,20 +16,25 @@ open class Object: Seed, Referenceable {
 
     private(set) var isObserved: Bool = false
 
+    /// If all File savings do not end within this time, save will be canceled. default 20 seconds.
     public var timeout: Int {
         return 20
     }
 
+    /// If propery is set with String, its property will not be written to Firebase.
     public var ignore: [String] {
         return []
     }
 
+    /// It is Qeueu of File upload.
     public let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
 
     // MARK: - Initialize
 
+    /// The IndexKey of the Object.
     public var key: String
 
+    /// A reference to Object.
     private(set) var ref: DatabaseReference
 
     public override init() {
@@ -87,10 +92,11 @@ open class Object: Seed, Referenceable {
                         object[key] = value.name
                         value.parent = self
                         value.keyPath = key
-                    case .object(let key, let value): object[key] = value
+                    case .nestedString(let key, let value):     object[key] = value
+                    case .nestedInt(let key, let value):        object[key] = value
+                    case .object(let key, let value):           object[key] = value
                     case .null: break
                     }
-
                 }
             }
         }
@@ -136,6 +142,8 @@ open class Object: Seed, Referenceable {
                                 file.parent = self
                                 file.keyPath = key
                                 self.setValue(file, forKey: key)
+                            case .nestedString(let key, let value): self.setValue(value, forKey: key)
+                            case .nestedInt(let key, let value): self.setValue(value, forKey: key)
                             case .object(let key, let value): self.setValue(value, forKey: key)
                             case .null: break
                             }
@@ -345,7 +353,10 @@ open class Object: Seed, Referenceable {
     // MARK: - File
 
     /**
-
+     Save the file set in the object.
+     
+     - parameter block: If saving succeeds or fails, this callback will be called.
+     - returns: Returns the StorageUploadTask set in the property.
     */
     private func saveFiles(block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
 
@@ -403,13 +414,6 @@ open class Object: Seed, Referenceable {
             }
         }
         return uploadTasks
-    }
-
-    /**
-     Remove the observer.
-     */
-    public class func removeObserver(with handle: UInt) {
-        self.databaseRef.removeObserver(withHandle: handle)
     }
 
     /**

@@ -10,9 +10,22 @@ import UIKit
 
 class TableViewController: UITableViewController {
 
+    var key: String? {
+        didSet {
+            self.tableView.reloadData()
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Test Start", style: .plain, target: self, action: #selector(test))
+    }
 
+    func test() {
+        let obj: TestObject = TestObject()
+        obj.save { (ref, error) in
+            self.key = ref!.key
+        }
     }
 
     // MARK: - Table view data source
@@ -27,10 +40,21 @@ class TableViewController: UITableViewController {
         return cell
     }
 
-
     func configure(cell: TableViewCell, at indexPath: IndexPath) {
         let property: TestProperty = TestProperty.list[indexPath.item]
         cell.titleLabel.text = property.toString()
+        guard let key: String = self.key else {
+            return
+        }
+        TestObject.observeSingle(key, eventType: .value) { (obj) in
+            guard let obj: TestObject = obj else {
+                return
+            }
+            cell.detailLabel.text = property.value(obj: obj)
+            cell.judgmentLabel.text = property.validation(obj: obj) ? "Pass" : "Fail"
+            cell.judgmentLabel.textColor = property.validation(obj: obj) ? UIColor.green : UIColor.red
+
+        }
     }
 
 }

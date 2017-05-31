@@ -41,6 +41,9 @@ public extension Referenceable {
 
     /**
      A function that gets all data from DB whose name is model.
+     
+     - parameter eventType: Set the event to be observed.
+     - parameter block: If the specified event fires, this callback is invoked.
      */
     public static func observeSingle(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) {
         self.databaseRef.observeSingleEvent(of: eventType, with: { (snapshot) in
@@ -61,10 +64,14 @@ public extension Referenceable {
     }
 
     /**
-     A function that gets data of ID within the variable form DB selected.
+     A function that gets data of key within the variable form DB selected.
+     
+     - parameter key: Observe the Object of the specified Key.
+     - parameter eventType: Set the event to be observed.
+     - parameter block: If the specified event fires, this callback is invoked.
      */
-    public static func observeSingle(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) {
-        self.databaseRef.child(id).observeSingleEvent(of: eventType, with: { (snapshot) in
+    public static func observeSingle(_ key: String, eventType: DataEventType, block: @escaping (Self?) -> Void) {
+        self.databaseRef.child(key).observeSingleEvent(of: eventType, with: { (snapshot) in
             if snapshot.exists() {
                 if let object: Self = Self(snapshot: snapshot) {
                     block(object)
@@ -75,8 +82,16 @@ public extension Referenceable {
         })
     }
 
-    public static func observeSingle(child key: String, equal value: String, eventType: DataEventType, block: @escaping ([Self]) -> Void) {
-        self.databaseRef.queryOrdered(byChild: key).queryEqual(toValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
+    /**
+     A functions that gets data whose property values match.
+     This property must be set to indexOn.
+     
+     - parameter property: Enter the property name to be scanned.
+     - parameter value: Enter the value to scan.
+     - parameter block: This is a callback when scanning is over. Matched data will be returned.
+     */
+    public static func observeSingle(child property: String, equal value: Any, eventType: DataEventType, block: @escaping ([Self]) -> Void) {
+        self.databaseRef.queryOrdered(byChild: property).queryEqual(toValue: value).observeSingleEvent(of: eventType, with: { (snapshot) in
             if snapshot.exists() {
                 var children: [Self] = []
                 snapshot.children.forEach({ (snapshot) in
@@ -95,6 +110,10 @@ public extension Referenceable {
 
     /**
      A function that gets all data from DB whenever DB has been changed.
+     
+     - parameter eventType: Set the event to be observed.
+     - parameter block: If the specified event fires, this callback is invoked.
+     - returns: A handle used to unregister this block later using removeObserverWithHandle:
      */
     public static func observe(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> UInt {
         return self.databaseRef.observe(eventType, with: { (snapshot) in
@@ -115,10 +134,15 @@ public extension Referenceable {
     }
 
     /**
-     A function that gets data of ID within the variable from DB whenever data of the ID has been changed.
+     A function that gets data of key within the variable from DB whenever data of the key has been changed.
+     
+     - parameter key: Observe the Object of the specified Key.
+     - parameter eventType: Set the event to be observed.
+     - parameter block: If the specified event fires, this callback is invoked.
+     - returns: A handle used to unregister this block later using removeObserverWithHandle:
      */
-    public static func observe(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> UInt {
-        return self.databaseRef.child(id).observe(eventType, with: { (snapshot) in
+    public static func observe(_ key: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> UInt {
+        return self.databaseRef.child(key).observe(eventType, with: { (snapshot) in
             if snapshot.exists() {
                 if let object: Self = Self(snapshot: snapshot) {
                     block(object)

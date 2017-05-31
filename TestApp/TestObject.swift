@@ -55,6 +55,36 @@ enum TestProperty: Int {
         }
     }
 
+    func value(obj: TestObject) -> String {
+        switch self {
+        case .bool:     return String(obj.bool)
+        case .int:      return String(obj.int)
+        case .int8:     return String(obj.int8)
+        case .int16:    return String(obj.int16)
+        case .int32:    return String(obj.int32)
+        case .int64:    return String(obj.int64)
+        case .string:   return obj.string
+        case .strings:  return String(describing: obj.strings)
+        case .values:   return String(describing: obj.values)
+        case .object:   return String(describing: obj.object)
+        }
+    }
+
+    func validation(obj: TestObject) -> Bool {
+        switch self {
+        case .bool:     return true == obj.bool
+        case .int:      return Int.max == obj.int
+        case .int8:     return Int8.max == obj.int8
+        case .int16:    return Int16.max == obj.int16
+        case .int32:    return Int32.max == obj.int32
+        case .int64:    return Int64.max == obj.int64
+        case .string:   return "String" == obj.string
+        case .strings:  return ["String", "String"] == obj.strings
+        case .values:   return [1, 2, 3, 4]  == obj.values
+        case .object:   return (obj.object["String"] as! String == "String") && (obj.object["Number"] as! Int == 0)
+        }
+    }
+
     func toString() -> String {
         switch self {
         case .bool:     return "Bool"
@@ -69,8 +99,6 @@ enum TestProperty: Int {
         case .object:   return "[String: Any]"
         }
     }
-
-
 }
 
 class TestObject: Object {
@@ -84,6 +112,6 @@ class TestObject: Object {
     dynamic var string: String = "String"
     dynamic var strings: [String] = ["String", "String"]
     dynamic var values: [Int] = [1, 2, 3, 4]
-    dynamic var object: [String: Any] = ["String": "String", "Number": 0]
+    dynamic var object: [AnyHashable: Any] = ["String": "String", "Number": 0]
 
 }
