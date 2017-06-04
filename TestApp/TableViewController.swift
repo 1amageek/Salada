@@ -165,8 +165,8 @@ class TableViewController: UITableViewController {
                     expect.object.removeValue(forKey: "\(expect.object.count - 1)")
                     obj.object.removeValue(forKey: "\(obj.object.count - 1)")
                 case .relation:
-                    expect.relation.remove(at: "\(expect.relation.count - 1)")
-                    obj.relation.remove(at: "\(obj.relation.count - 1)")
+                    expect.relation.remove("\(expect.relation.count - 1)")
+                    expect.relation.remove("\(expect.relation.count - 1)")
                 }
             }
         }
