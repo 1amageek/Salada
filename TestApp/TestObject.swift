@@ -85,7 +85,24 @@ enum TestProperty: Int {
         case .string:   return expect.string == obj.string
         case .strings:  return expect.strings == obj.strings
         case .values:   return expect.values == obj.values
-        case .object:   return (obj.object["String"] as! String == expect.object["String"] as! String) && (obj.object["Number"] as! Int == expect.object["Number"] as! Int)
+        case .object:
+            var valid: Bool = true
+            if expect.object.isEmpty, obj.object.isEmpty {
+                return true
+            }
+            obj.object.forEach({ (key, value) in
+                if let v0: Int = value as? Int, let v1: Int = expect.object[key] as? Int {
+                    if v0 != v1 {
+                        valid = false
+                    }
+                }
+                if let v0: String = value as? String, let v1: String = expect.object[key] as? String {
+                    if v0 != v1 {
+                        valid = false
+                    }
+                }
+            })
+            return valid
         case .relation: return expect.relation == obj.relation
         }
     }
@@ -115,25 +132,10 @@ class ExpectObject: NSObject {
     var int32: Int32 = Int32.max
     var int64: Int64 = Int64.max
     var string: String = "String"
-    var strings: [String] = ["String", "String"]
-    var values: [Int] = [1, 2, 3, 4]
+    var strings: [String] = ["0", "1"]
+    var values: [Int] = [0, 1, 2, 3, 4]
     var object: [AnyHashable: Any] = ["String": "String", "Number": 0]
-    var relation: Set<String> = ["relation0"]
-}
-
-class TestObject: Object {
-
-    dynamic var bool: Bool = true
-    dynamic var int: Int = Int.max
-    dynamic var int8: Int8 = Int8.max
-    dynamic var int16: Int16 = Int16.max
-    dynamic var int32: Int32 = Int32.max
-    dynamic var int64: Int64 = Int64.max
-    dynamic var string: String = "String"
-    dynamic var strings: [String] = ["String", "String"]
-    dynamic var values: [Int] = [1, 2, 3, 4]
-    dynamic var object: [AnyHashable: Any] = ["String": "String", "Number": 0]
-    dynamic var relation: Set<String> = ["relation0"]
+    var relation: Set<String> = ["-0"]
 
     func reset() {
         bool = false
@@ -148,5 +150,33 @@ class TestObject: Object {
         object = [:]
         relation = []
     }
+}
 
+class TestObject: Object {
+
+    dynamic var bool: Bool = true
+    dynamic var int: Int = Int.max
+    dynamic var int8: Int8 = Int8.max
+    dynamic var int16: Int16 = Int16.max
+    dynamic var int32: Int32 = Int32.max
+    dynamic var int64: Int64 = Int64.max
+    dynamic var string: String = "String"
+    dynamic var strings: [String] = ["0", "1"]
+    dynamic var values: [Int] = [0, 1, 2, 3, 4]
+    dynamic var object: [AnyHashable: Any] = ["String": "String", "Number": 0]
+    dynamic var relation: Set<String> = ["-0"]
+
+    func reset() {
+        bool = false
+        int = 0
+        int8 = 0
+        int16 = 0
+        int32 = 0
+        int64 = 0
+        string = ""
+        strings = []
+        values = []
+        object = [:]
+        relation = []
+    }
 }

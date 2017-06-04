@@ -166,17 +166,32 @@ class TableViewController: UITableViewController {
                     obj.object.removeValue(forKey: "\(obj.object.count - 1)")
                 case .relation:
                     expect.relation.remove("\(expect.relation.count - 1)")
-                    expect.relation.remove("\(expect.relation.count - 1)")
+                    obj.relation.remove("\(obj.relation.count - 1)")
                 }
             }
         }
+    }
+
+    override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        if indexPath.section == 0 {
+            return false
+        }
+        return true
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         defer {
             tableView.deselectRow(at: indexPath, animated: true)
         }
-        TestFlow.list[indexPath.item].action(key: self.key) { (key) in
+        let testFlow: TestFlow = TestFlow.list[indexPath.item]
+        switch testFlow {
+        case .write_read: break
+        case .update:
+            self.expect.reset()
+        case .delete: break
+        }
+
+        testFlow.action(key: self.key) { (key) in
             self.key = key
         }
     }

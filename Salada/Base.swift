@@ -154,6 +154,26 @@ open class Base: NSObject {
                     self = .int(key, Int(value))
                     return
                 }
+            } else if subjectType == Int8.self || subjectType == Int8?.self {
+                if let value: Int = snapshot[key] as? Int {
+                    self = .int(key, Int(value))
+                    return
+                }
+            } else if subjectType == Int16.self || subjectType == Int16?.self {
+                if let value: Int = snapshot[key] as? Int {
+                    self = .int(key, Int(value))
+                    return
+                }
+            } else if subjectType == Int32.self || subjectType == Int32?.self {
+                if let value: Int = snapshot[key] as? Int {
+                    self = .int(key, Int(value))
+                    return
+                }
+            } else if subjectType == Int64.self || subjectType == Int64?.self {
+                if let value: Int = snapshot[key] as? Int {
+                    self = .int(key, Int(value))
+                    return
+                }
             } else if subjectType == Float.self || subjectType == Float?.self {
                 if let value: Float = snapshot[key] as? Float {
                     self = .float(key, Float(value))
@@ -200,6 +220,23 @@ open class Base: NSObject {
             } else if subjectType == Set<String>.self || subjectType == Set<String>?.self {
                 if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
                     self = .set(key, value, Set<String>(value.keys))
+                    return
+                }
+                if let value: [Int: Bool] = snapshot[key] as? [Int: Bool], !value.isEmpty {
+                    let value: [String: Bool] = value.reduce([String: Bool](), { (result, obj) -> [String: Bool] in
+                        var result = result
+                        result[String(obj.key)] = obj.value
+                        return result
+                    })
+                    self = .set(key, value, Set<String>(value.keys))
+                    return
+                }
+                if let value: [Bool] = snapshot[key] as? [Bool], !value.isEmpty {
+                    var result: [String: Bool] = [:]
+                    for (i, v) in value.enumerated() {
+                        result[String(i)] = v
+                    }
+                    self = .set(key, result, Set<String>(result.keys))
                     return
                 }
             } else if subjectType == Relation.self || subjectType == Relation?.self {
