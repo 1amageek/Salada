@@ -8,7 +8,7 @@
 
 import Firebase
 
-open class Object: Seed, Referenceable {
+open class Object: Base, Referenceable {
 
     // MARK: -
 
@@ -113,6 +113,10 @@ open class Object: Seed, Referenceable {
     public var snapshot: DataSnapshot? {
         didSet {
             if let snapshot: DataSnapshot = snapshot {
+
+                self.ref = snapshot.ref
+                self.key = snapshot.key
+
                 guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
 
                 let createdAtTimestamp: TimeInterval = snapshot["_createdAt"] as! TimeInterval
@@ -281,8 +285,8 @@ open class Object: Seed, Referenceable {
                 path = "\(keyPath)/\(child)"
             }
             reference.updateChildValues([path: value, "_updatedAt": timestamp], withCompletionBlock: { (error, ref) in
-                self.transactionBlock?(ref, error)
-                self.transactionBlock = nil
+//                self.transactionBlock?(ref, error)
+//                self.transactionBlock = nil
             })
         } else {
             if let childKey: String = child {
@@ -346,12 +350,23 @@ open class Object: Seed, Referenceable {
      - parameter completion: If successful reference will return. An error will return if it fails.
      */
     // TODO: transaction functions
-    private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
-
-    public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {
-        self.transactionBlock = completion
-        self.setValue(value, forKey: key)
-    }
+//    private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
+//
+//    public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {
+//        self.transactionBlock = completion
+//        self.setValue(value, forKey: key)
+//    }
+//
+//    public func runTransaction(block: () -> Void) {
+//        self.ref.runTransactionBlock({ (currentData) -> TransactionResult in
+//
+//
+//
+//            return .success(withValue: currentData)
+//        }, andCompletionBlock: { (error, committed, snapshot) in
+//
+//        })
+//    }
 
     // MARK: - Remove
 
@@ -450,8 +465,13 @@ open class Object: Seed, Referenceable {
     // MARK: -
 
     override open var description: String {
-        let mirror: Mirror = Mirror(reflecting: self)
-        let values: String = mirror.children.reduce("") { (result, children) -> String in
+
+        let base: String =
+        "  key: \(self.key)\n" +
+        "  createdAt: \(self.createdAt)\n" +
+        "  updatedAt: \(self.updatedAt)\n"
+
+        let values: String = Mirror(reflecting: self).children.reduce(base) { (result, children) -> String in
             guard let label: String = children.0 else {
                 return result
             }

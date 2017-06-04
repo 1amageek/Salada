@@ -18,7 +18,7 @@ public struct ObjectError: Error {
     let description: String
 }
 
-open class Seed: NSObject {
+open class Base: NSObject {
 
     enum ValueType {
 
@@ -261,5 +261,4 @@ open class Seed: NSObject {
     public static var storage: StorageReference { return Storage.storage().reference() }
 
     public static var storageRef: StorageReference { return self.storage.child(self._path) }
-
 }
