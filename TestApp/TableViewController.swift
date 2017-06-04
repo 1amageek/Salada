@@ -18,7 +18,7 @@ class TableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Test Start", style: .plain, target: self, action: #selector(test))
+        //self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Test Start", style: .plain, target: self, action: #selector(test))
     }
 
     func test() {
@@ -30,13 +30,32 @@ class TableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return TestProperty.list.count
+        if section == 0 {
+            return TestProperty.list.count
+        }
+        return TestFlow.list.count
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Validation items"
+        }
+        return "Testflow"
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: TableViewCell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
-        configure(cell: cell, at: indexPath)
+        if indexPath.section == 0 {
+            let cell: TableViewCell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
+            configure(cell: cell, at: indexPath)
+            return cell
+        }
+        let cell: ActionCell = tableView.dequeueReusableCell(withIdentifier: "ActionCell", for: indexPath) as! ActionCell
+        cell.titleLabel.text = TestFlow.list[indexPath.item].toString()
         return cell
     }
 
@@ -54,6 +73,15 @@ class TableViewController: UITableViewController {
             cell.judgmentLabel.text = property.validation(obj: obj) ? "Pass" : "Fail"
             cell.judgmentLabel.textColor = property.validation(obj: obj) ? UIColor.green : UIColor.red
 
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        defer {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+        TestFlow.list[indexPath.item].action(key: self.key) { (key) in
+            self.key = key
         }
     }
 

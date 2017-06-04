@@ -8,32 +8,49 @@
 
 import Foundation
 
-class TestFlow: NSObject {
+enum TestFlow: Int {
+    case write_read
+    case update
+    case delete
 
-    var key: String!
-    
-    func write(block: @escaping () -> Void) {
-        let object: TestObject = TestObject()
-        self.key = object.key
-        object.save { (ref, error) in
-            block()
+    static var list: [TestFlow] {
+        return [.write_read, .update, delete]
+    }
+
+    func toString() -> String {
+        switch self {
+        case .write_read: return "write/read"
+        case .update: return "update"
+        case .delete: return "delete"
         }
     }
 
-    func read(block: () -> Void) {
-        TestObject.observeSingle(key, eventType: .value) { (object) in
+    func action(key: String?, block: @escaping (String) -> Void) {
+        switch self {
+        case .write_read:
 
-            assert(object!.bool == true,                    "Object bool sucess")
-            assert(object!.int == Int.max,                  "Object Int sucess")
-            assert(object!.int8 == Int8.max,                "Object Int8 sucess")
-            assert(object!.int16 == Int16.max,              "Object Int16 sucess")
-            assert(object!.int32 == Int32.max,              "Object Int32 sucess")
-            assert(object!.int64 == Int64.max,              "Object Int64 sucess")
-            assert(object!.string == "String",              "Object String sucess")
-            assert(object!.strings == ["String", "String"], "Object Strings sucess")
-            assert(object!.values == [1, 2, 3, 4],          "Object Strings sucess")
-            //assert(object!.object == ["String": "String", "Number": 0] as [AnyHashable, any],          "Object Strings sucess")
+            let obj: TestObject = TestObject()
+            obj.save { (ref, error) in
+                block(ref!.key)
+            }
+
+        case .update:
+            guard let key: String = key else {
+                return
+            }
+            TestObject.observeSingle(key, eventType: .value, block: { (obj) in
+                guard let obj: TestObject = obj else {
+                    return
+                }
+                print(obj)
+                obj.reset()
+                block(key)
+            })
+        case .delete: break
+            
+            
+            
         }
     }
-
 }
+

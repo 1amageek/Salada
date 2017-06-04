@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122BEDF81EE3E6430009123C /* ActionCell.swift */; };
 		123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A41E6696E100A2655F /* FileTestViewController.swift */; };
 		123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 123C27A61E66A3F600A2655F /* pexels-photo.jpg */; };
 		123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */; };
 		12523B8D1EDBB74A0074DACB /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8C1EDBB74A0074DACB /* Object.swift */; };
-		12523B8F1EDBD5820074DACB /* Seed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Seed.swift */; };
+		12523B8F1EDBD5820074DACB /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Base.swift */; };
 		126479601EDE8CF70097ED9E /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1264795F1EDE8CF70097ED9E /* TableViewController.swift */; };
 		126479621EDE92A90097ED9E /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126479611EDE92A90097ED9E /* TableViewCell.swift */; };
-		127500611EB05211007ACE6F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 127500601EB05211007ACE6F /* GoogleService-Info.plist */; };
 		12A4FE351DB5C987003A3104 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE321DB5C987003A3104 /* Group.swift */; };
 		12A4FE361DB5C987003A3104 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE331DB5C987003A3104 /* User.swift */; };
 		12C097DF1E653CEF001B2010 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C097DE1E653CEF001B2010 /* Item.swift */; };
@@ -35,7 +35,7 @@
 		12DA5DD11EDC29D300D2A73D /* TestAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DD01EDC29D300D2A73D /* TestAppTests.swift */; };
 		12DA5DE81EDC2A0C00D2A73D /* TestObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DE71EDC2A0C00D2A73D /* TestObject.swift */; };
 		12DA5DE91EDC2ACD00D2A73D /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
-		12DA5DEA1EDC2ACD00D2A73D /* Seed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Seed.swift */; };
+		12DA5DEA1EDC2ACD00D2A73D /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Base.swift */; };
 		12DA5DEB1EDC2ACD00D2A73D /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8C1EDBB74A0074DACB /* Object.swift */; };
 		12DA5DEC1EDC2ACD00D2A73D /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
 		12DA5DED1EDC2ACD00D2A73D /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D631EDBF12600D2A73D /* Relation.swift */; };
@@ -69,15 +69,15 @@
 
 /* Begin PBXFileReference section */
 		0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.release.xcconfig"; sourceTree = "<group>"; };
+		122BEDF81EE3E6430009123C /* ActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionCell.swift; sourceTree = "<group>"; };
 		123C27A41E6696E100A2655F /* FileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTestViewController.swift; sourceTree = "<group>"; };
 		123C27A61E66A3F600A2655F /* pexels-photo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "pexels-photo.jpg"; sourceTree = "<group>"; };
 		123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaladaFileTestViewController.swift; sourceTree = "<group>"; };
 		123C74841DB7D01C0079CF4A /* ObjectTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectTests.swift; sourceTree = "<group>"; };
 		12523B8C1EDBB74A0074DACB /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
-		12523B8E1EDBD5820074DACB /* Seed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seed.swift; sourceTree = "<group>"; };
+		12523B8E1EDBD5820074DACB /* Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base.swift; sourceTree = "<group>"; };
 		1264795F1EDE8CF70097ED9E /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		126479611EDE92A90097ED9E /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
-		127500601EB05211007ACE6F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1275E8291DB5CEE0004F74AC /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		12A4FE321DB5C987003A3104 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		12A4FE331DB5C987003A3104 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -118,6 +118,7 @@
 		265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		334D5EA5F2937224A1EF3EB5 /* Pods-Hooo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hooo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Hooo/Pods-Hooo.release.xcconfig"; sourceTree = "<group>"; };
 		358EA389C352FB0DBF611EBD /* Pods-SaladaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests.debug.xcconfig"; sourceTree = "<group>"; };
+		43F23D15750FEACCCFF886A2 /* Pods-Sample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sample/Pods-Sample.release.xcconfig"; sourceTree = "<group>"; };
 		481C11F6E69EC5FD3CBD8ABC /* Pods_TestAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DCD3C2BC8DB64A618CD3D2F /* Pods-TestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-TestApp/Pods-TestApp.release.xcconfig"; sourceTree = "<group>"; };
 		6183DCEAD3815B05EE187002 /* Pods-TestAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestAppUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestAppUITests/Pods-TestAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -137,6 +138,7 @@
 		D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E06963052D0D94CF68DFE11D /* Pods-SaladaTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.debug.xcconfig"; sourceTree = "<group>"; };
 		E45B8EB2B9B5BC22BC26AF38 /* Pods-Hooo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hooo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Hooo/Pods-Hooo.debug.xcconfig"; sourceTree = "<group>"; };
+		E4B4B74ACE4129B67C195D79 /* Pods-Sample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sample/Pods-Sample.debug.xcconfig"; sourceTree = "<group>"; };
 		F0F3F6E9107CC397D09C8B8B /* Pods_TestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F280B2CF5AEA83C54705FE92 /* Pods-TestAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestAppTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestAppTests/Pods-TestAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F312071B4A9C5964A18FEFA8 /* Pods-TestApp-TestAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestApp-TestAppTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestApp-TestAppTests/Pods-TestApp-TestAppTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -242,7 +244,6 @@
 				12CB1A621D95184300E69000 /* LaunchScreen.storyboard */,
 				123C27A61E66A3F600A2655F /* pexels-photo.jpg */,
 				12CB1A651D95184300E69000 /* Info.plist */,
-				127500601EB05211007ACE6F /* GoogleService-Info.plist */,
 			);
 			path = SaladBar;
 			sourceTree = "<group>";
@@ -252,7 +253,7 @@
 			children = (
 				8DDA53C01ED38684000C1F06 /* Info.plist */,
 				12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */,
-				12523B8E1EDBD5820074DACB /* Seed.swift */,
+				12523B8E1EDBD5820074DACB /* Base.swift */,
 				12523B8C1EDBB74A0074DACB /* Object.swift */,
 				12DA5D611EDBE4E700D2A73D /* File.swift */,
 				12DA5D631EDBF12600D2A73D /* Relation.swift */,
@@ -267,6 +268,7 @@
 				12DA5DBB1EDC29D200D2A73D /* AppDelegate.swift */,
 				1264795F1EDE8CF70097ED9E /* TableViewController.swift */,
 				126479611EDE92A90097ED9E /* TableViewCell.swift */,
+				122BEDF81EE3E6430009123C /* ActionCell.swift */,
 				12DA5DF11EDD17A400D2A73D /* TestFlow.swift */,
 				12DA5DE71EDC2A0C00D2A73D /* TestObject.swift */,
 				12F2EC641EDE8ABB00AF9A08 /* GoogleService-Info.plist */,
@@ -335,6 +337,8 @@
 				882025C16135759D4739B93F /* Pods-TestAppUITests.release.xcconfig */,
 				F312071B4A9C5964A18FEFA8 /* Pods-TestApp-TestAppTests.debug.xcconfig */,
 				88E7619F9898A24358906F63 /* Pods-TestApp-TestAppTests.release.xcconfig */,
+				E4B4B74ACE4129B67C195D79 /* Pods-Sample.debug.xcconfig */,
+				43F23D15750FEACCCFF886A2 /* Pods-Sample.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -519,7 +523,6 @@
 			files = (
 				12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */,
 				123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */,
-				127500611EB05211007ACE6F /* GoogleService-Info.plist in Resources */,
 				12CB1A611D95184300E69000 /* Assets.xcassets in Resources */,
 				12CB1A5F1D95184300E69000 /* Main.storyboard in Resources */,
 			);
@@ -796,7 +799,7 @@
 				12523B8D1EDBB74A0074DACB /* Object.swift in Sources */,
 				12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */,
 				12DA5D621EDBE4E700D2A73D /* File.swift in Sources */,
-				12523B8F1EDBD5820074DACB /* Seed.swift in Sources */,
+				12523B8F1EDBD5820074DACB /* Base.swift in Sources */,
 				12DA5D641EDBF12600D2A73D /* Relation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -812,8 +815,9 @@
 				12DA5DEE1EDC2ACD00D2A73D /* DataSource.swift in Sources */,
 				12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */,
 				126479621EDE92A90097ED9E /* TableViewCell.swift in Sources */,
-				12DA5DEA1EDC2ACD00D2A73D /* Seed.swift in Sources */,
+				12DA5DEA1EDC2ACD00D2A73D /* Base.swift in Sources */,
 				12DA5DEB1EDC2ACD00D2A73D /* Object.swift in Sources */,
+				122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */,
 				12DA5DBC1EDC29D200D2A73D /* AppDelegate.swift in Sources */,
 				12DA5DED1EDC2ACD00D2A73D /* Relation.swift in Sources */,
 			);

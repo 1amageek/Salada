@@ -14,13 +14,13 @@
         <scene sceneID="8N1-3W-AWg">
             <objects>
                 <tableViewController id="dYq-0s-u54" customClass="TableViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="tw1-pK-Qcf">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="tw1-pK-Qcf">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="TableViewCell" id="YF3-iX-JhW" customClass="TableViewCell" customModule="TestApp" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YF3-iX-JhW" id="NZo-b3-uLJ">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -59,6 +59,29 @@
                                     <outlet property="detailLabel" destination="fsB-TJ-wn5" id="Ggx-I3-1db"/>
                                     <outlet property="judgmentLabel" destination="fF0-ww-Uqh" id="Ezd-fN-mON"/>
                                     <outlet property="titleLabel" destination="4ea-9a-fVI" id="Eg1-Xc-ZP4"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActionCell" id="QLC-tJ-fME" customClass="ActionCell" customModule="TestApp" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="99.5" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QLC-tJ-fME" id="BaN-P1-ZVD">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VZJ-sy-Miz">
+                                            <rect key="frame" x="165.5" y="11" width="43.5" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="VZJ-sy-Miz" firstAttribute="centerY" secondItem="BaN-P1-ZVD" secondAttribute="centerY" id="iBH-QS-Qf4"/>
+                                        <constraint firstItem="VZJ-sy-Miz" firstAttribute="centerX" secondItem="BaN-P1-ZVD" secondAttribute="centerX" id="kpm-RF-uWH"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="titleLabel" destination="VZJ-sy-Miz" id="7MF-f3-Myb"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

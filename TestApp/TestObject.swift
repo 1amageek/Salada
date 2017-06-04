@@ -114,4 +114,17 @@ class TestObject: Object {
     dynamic var values: [Int] = [1, 2, 3, 4]
     dynamic var object: [AnyHashable: Any] = ["String": "String", "Number": 0]
 
+    func reset() {
+        bool = false
+        int = 0
+        int8 = 0
+        int16 = 0
+        int32 = 0
+        int64 = 0
+        string = ""
+        strings = []
+        values = []
+        object = [:]
+    }
+
 }
