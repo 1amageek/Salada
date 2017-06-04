@@ -13,6 +13,19 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var judgmentLabel: UILabel!
+    @IBOutlet weak var expectLabel: UILabel!
+
+    @IBAction func decrementAction(_ sender: Any) {
+        self.decrement?()
+    }
+
+    @IBAction func incrementAction(_ sender: Any) {
+        self.increment?()
+    }
+
+    var increment: (() -> Void)?
+
+    var decrement: (() -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()

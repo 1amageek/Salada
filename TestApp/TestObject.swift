@@ -20,9 +20,10 @@ enum TestProperty: Int {
     case strings
     case values
     case object
+    case relation
 
     static var list: [TestProperty] {
-        return [.bool, .int, .int8, .int16, .int32, .int64, .string, .strings, .values, .object]
+        return [.bool, .int, .int8, .int16, .int32, .int64, .string, .strings, .values, .object, .relation]
     }
 
     var type: Any.Type {
@@ -37,21 +38,23 @@ enum TestProperty: Int {
         case .strings:  return [String].self
         case .values:   return [Int].self
         case .object:   return [String: Any].self
+        case .relation: return Set<String>.self
         }
     }
 
-    var expect: Any {
+    func expect(obj: ExpectObject) -> Any {
         switch self {
-        case .bool:     return true
-        case .int:      return Int.max
-        case .int8:     return Int8.max
-        case .int16:    return Int16.max
-        case .int32:    return Int32.max
-        case .int64:    return Int64.max
-        case .string:   return "String"
-        case .strings:  return ["String", "String"]
-        case .values:   return [1, 2, 3, 4]
-        case .object:   return ["String": "String", "Number": 0]
+        case .bool:     return obj.bool
+        case .int:      return obj.int
+        case .int8:     return obj.int8
+        case .int16:    return obj.int16
+        case .int32:    return obj.int32
+        case .int64:    return obj.int64
+        case .string:   return obj.string
+        case .strings:  return obj.strings
+        case .values:   return obj.values
+        case .object:   return obj.object
+        case .relation: return obj.relation
         }
     }
 
@@ -67,21 +70,23 @@ enum TestProperty: Int {
         case .strings:  return String(describing: obj.strings)
         case .values:   return String(describing: obj.values)
         case .object:   return String(describing: obj.object)
+        case .relation: return String(describing: obj.relation)
         }
     }
 
-    func validation(obj: TestObject) -> Bool {
+    func validation(obj: TestObject, expect: ExpectObject) -> Bool {
         switch self {
-        case .bool:     return true == obj.bool
-        case .int:      return Int.max == obj.int
-        case .int8:     return Int8.max == obj.int8
-        case .int16:    return Int16.max == obj.int16
-        case .int32:    return Int32.max == obj.int32
-        case .int64:    return Int64.max == obj.int64
-        case .string:   return "String" == obj.string
-        case .strings:  return ["String", "String"] == obj.strings
-        case .values:   return [1, 2, 3, 4]  == obj.values
-        case .object:   return (obj.object["String"] as! String == "String") && (obj.object["Number"] as! Int == 0)
+        case .bool:     return expect.bool == obj.bool
+        case .int:      return expect.int == obj.int
+        case .int8:     return expect.int8 == obj.int8
+        case .int16:    return expect.int16 == obj.int16
+        case .int32:    return expect.int32 == obj.int32
+        case .int64:    return expect.int64 == obj.int64
+        case .string:   return expect.string == obj.string
+        case .strings:  return expect.strings == obj.strings
+        case .values:   return expect.values == obj.values
+        case .object:   return (obj.object["String"] as! String == expect.object["String"] as! String) && (obj.object["Number"] as! Int == expect.object["Number"] as! Int)
+        case .relation: return expect.relation == obj.relation
         }
     }
 
@@ -97,8 +102,23 @@ enum TestProperty: Int {
         case .strings:  return "[String]"
         case .values:   return "[Int]"
         case .object:   return "[String: Any]"
+        case .relation: return "Set<String>"
         }
     }
+}
+
+class ExpectObject: NSObject {
+    var bool: Bool = true
+    var int: Int = Int.max
+    var int8: Int8 = Int8.max
+    var int16: Int16 = Int16.max
+    var int32: Int32 = Int32.max
+    var int64: Int64 = Int64.max
+    var string: String = "String"
+    var strings: [String] = ["String", "String"]
+    var values: [Int] = [1, 2, 3, 4]
+    var object: [AnyHashable: Any] = ["String": "String", "Number": 0]
+    var relation: Set<String> = ["relation0"]
 }
 
 class TestObject: Object {
@@ -113,6 +133,7 @@ class TestObject: Object {
     dynamic var strings: [String] = ["String", "String"]
     dynamic var values: [Int] = [1, 2, 3, 4]
     dynamic var object: [AnyHashable: Any] = ["String": "String", "Number": 0]
+    dynamic var relation: Set<String> = ["relation0"]
 
     func reset() {
         bool = false
@@ -125,6 +146,7 @@ class TestObject: Object {
         strings = []
         values = []
         object = [:]
+        relation = []
     }
 
 }

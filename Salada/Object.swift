@@ -448,6 +448,13 @@ open class Object: Base, Referenceable {
         self.databaseRef.child(key).removeObserver(withHandle: handle)
     }
 
+    /**
+     Remove the observer.
+     */
+    public class func removeObserver(with handle: UInt) {
+        self.databaseRef.removeObserver(withHandle: handle)
+    }
+
     // MARK: - deinit
 
     deinit {
