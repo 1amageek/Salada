@@ -119,8 +119,11 @@ open class Object: Base, Referenceable {
 
                 guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
 
-                let createdAtTimestamp: TimeInterval = snapshot["_createdAt"] as! TimeInterval
-                let updatedAtTimestamp: TimeInterval = snapshot["_updatedAt"] as! TimeInterval
+                let createdAt: Double = snapshot["_createdAt"] as! Double
+                let updatedAt: Double = snapshot["_updatedAt"] as! Double
+
+                let createdAtTimestamp: TimeInterval = (createdAt / 1000)
+                let updatedAtTimestamp: TimeInterval = (updatedAt / 1000)
 
                 self.createdAt = Date(timeIntervalSince1970: createdAtTimestamp)
                 self.updatedAt = Date(timeIntervalSince1970: updatedAtTimestamp)
