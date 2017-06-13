@@ -40,7 +40,7 @@ public class SaladaOptions {
 
 /// DataSource class.
 /// Observe at a Firebase DataSource location.
-public class DataSource<Parent, Child> where Parent: Referenceable, Parent: Object, Child: Referenceable, Child: Object {
+public class DataSource<Parent, Child> where Parent: Object, Child: Object {
 
     /// DatabaseReference
     public var databaseRef: DatabaseReference { return Database.database().reference() }
@@ -350,7 +350,7 @@ public class DataSource<Parent, Child> where Parent: Referenceable, Parent: Obje
  */
 extension DataSource: Collection {
 
-    typealias Element = String
+    public typealias Element = String
 
     public var startIndex: Int {
         return 0

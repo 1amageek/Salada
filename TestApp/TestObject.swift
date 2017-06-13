@@ -20,10 +20,11 @@ enum TestProperty: Int {
     case strings
     case values
     case object
+    case set
     case relation
 
     static var list: [TestProperty] {
-        return [.bool, .int, .int8, .int16, .int32, .int64, .string, .strings, .values, .object, .relation]
+        return [.bool, .int, .int8, .int16, .int32, .int64, .string, .strings, .values, .object, .set, .relation]
     }
 
     var type: Any.Type {
@@ -38,7 +39,8 @@ enum TestProperty: Int {
         case .strings:  return [String].self
         case .values:   return [Int].self
         case .object:   return [String: Any].self
-        case .relation: return Set<String>.self
+        case .set:      return Set<String>.self
+        case .relation: return Relation.self
         }
     }
 
@@ -54,6 +56,7 @@ enum TestProperty: Int {
         case .strings:  return obj.strings
         case .values:   return obj.values
         case .object:   return obj.object
+        case .set:      return obj.set
         case .relation: return obj.relation
         }
     }
@@ -70,6 +73,7 @@ enum TestProperty: Int {
         case .strings:  return String(describing: obj.strings)
         case .values:   return String(describing: obj.values)
         case .object:   return String(describing: obj.object)
+        case .set:      return String(describing: obj.set)
         case .relation: return String(describing: obj.relation)
         }
     }
@@ -103,6 +107,7 @@ enum TestProperty: Int {
                 }
             })
             return valid
+        case .set: return expect.set == obj.set
         case .relation: return expect.relation == obj.relation
         }
     }
@@ -119,7 +124,8 @@ enum TestProperty: Int {
         case .strings:  return "[String]"
         case .values:   return "[Int]"
         case .object:   return "[String: Any]"
-        case .relation: return "Set<String>"
+        case .set: return "Set<String>"
+        case .relation: return "Relation"
         }
     }
 }
@@ -135,7 +141,8 @@ class ExpectObject: NSObject {
     var strings: [String] = ["0", "1"]
     var values: [Int] = [0, 1, 2, 3, 4]
     var object: [AnyHashable: Any] = ["String": "String", "Number": 0]
-    var relation: Set<String> = ["-0"]
+    var set: Set<String> = ["-0"]
+    var relation: Relation = ["-0"]
 
     func reset() {
         bool = false
@@ -148,6 +155,7 @@ class ExpectObject: NSObject {
         strings = []
         values = []
         object = [:]
+        set = []
         relation = []
     }
 }
@@ -164,7 +172,8 @@ class TestObject: Object {
     dynamic var strings: [String] = ["0", "1"]
     dynamic var values: [Int] = [0, 1, 2, 3, 4]
     dynamic var object: [AnyHashable: Any] = ["String": "String", "Number": 0]
-    dynamic var relation: Set<String> = ["-0"]
+    dynamic var set: Set<String> = ["-0"]
+    dynamic var relation: Relation = ["-0"]
 
     func reset() {
         bool = false
@@ -177,6 +186,7 @@ class TestObject: Object {
         strings = []
         values = []
         object = [:]
+        set = []
         relation = []
     }
 }

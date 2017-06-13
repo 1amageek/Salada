@@ -42,7 +42,7 @@ class SaladaTests: XCTestCase {
         object.float = 0.1
         
         // Relation
-        object.relation.insert("relation")
+        object.relation.insert("set")
         
         // Array
         object.array.append("array")
@@ -72,7 +72,7 @@ class SaladaTests: XCTestCase {
                 XCTAssertEqual(obj!.double, 0)
                 XCTAssertEqual(obj!.float, 0.1)
                 
-                XCTAssertEqual(obj!.relation, ["relation"])
+                XCTAssertEqual(obj!.relation, ["set"])
                 XCTAssertEqual(obj!.array, ["array"])
                 XCTAssertEqual(obj!.url?.absoluteString, "https://google.com")
                 

@@ -122,6 +122,9 @@ class TableViewController: UITableViewController {
                 case .object:
                     expect.object["\(expect.object.count)"] = "\(expect.object.count)"
                     obj.object["\(obj.object.count)"] = "\(obj.object.count)"
+                case .set:
+                    expect.set.insert("\(expect.set.count)")
+                    obj.set.insert("\(obj.set.count)")
                 case .relation:
                     expect.relation.insert("\(expect.relation.count)")
                     obj.relation.insert("\(obj.relation.count)")
@@ -164,6 +167,9 @@ class TableViewController: UITableViewController {
                 case .object:
                     expect.object.removeValue(forKey: "\(expect.object.count - 1)")
                     obj.object.removeValue(forKey: "\(obj.object.count - 1)")
+                case .set:
+                    expect.set.remove("\(expect.set.count - 1)")
+                    obj.set.remove("\(obj.set.count - 1)")
                 case .relation:
                     expect.relation.remove("\(expect.relation.count - 1)")
                     obj.relation.remove("\(obj.relation.count - 1)")
