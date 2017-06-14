@@ -7,10 +7,13 @@
 //
 
 import Foundation
+import Firebase
 
 public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
 
-    internal var _Self: [String] = []
+    private var _Self: [String] = []
+
+    internal var snapshot: DataSnapshot?
 
     public typealias Index = Int
 
@@ -31,8 +34,6 @@ public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
     }
 
     public var saved: Bool = false
-
-    public weak var owner: Object?
 
     public var keyPath: String?
 
@@ -79,20 +80,10 @@ public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
     // MARK: -
 
     public func insert(_ newMember: Element) {
-        if saved {
+        if !_Self.contains(newMember) {
 
-        } else {
-            if !_Self.contains(newMember) {
-                let indexes: IndexSet = IndexSet(integer: _Self.count)
-                print(indexes)
-                self.willChange(.insertion, valuesAt: indexes, forKey: keyPath!)
-                //                    owner?.willChangeValue(forKey: keyPath!)
-                _Self.append(newMember)
-                //                    owner?.didChangeValue(forKey: keyPath!)
-                self.didChange(.insertion, valuesAt: indexes, forKey: keyPath!)
-            }
+
         }
-
     }
 
     public func remove(_ member: Element) {
@@ -113,15 +104,6 @@ public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
         }
     }
 
-    public override func setValue(_ value: Any?, forKeyPath keyPath: String) {
-        super.setValue(value, forKeyPath: keyPath)
-    }
-
-    public override func mutableSetValue(forKeyPath keyPath: String) -> NSMutableSet {
-        let set = super.mutableSetValue(forKeyPath: keyPath)
-        return set
-    }
-
     // MARK: -
 
     override public var description: String {
@@ -130,5 +112,4 @@ public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
         }
         return "\(_Self.description)"
     }
-
 }

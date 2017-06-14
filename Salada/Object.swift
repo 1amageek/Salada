@@ -147,8 +147,6 @@ open class Object: Base, Referenceable {
                             case .array(let key, let value): self.setValue(value, forKey: key)
                             case .set(let key, _, let value): self.setValue(value, forKey: key)
                             case .relation(let key, _, let relation):
-                                relation.owner = self
-                                relation.keyPath = key
                                 self.setValue(relation, forKey: key)
                             case .file(let key, let file):
                                 file.parent = self
