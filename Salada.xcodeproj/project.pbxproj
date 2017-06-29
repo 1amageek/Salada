@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1208916A1F04E5C30004AF4C /* Nest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120891691F04E5C30004AF4C /* Nest.swift */; };
 		122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122BEDF81EE3E6430009123C /* ActionCell.swift */; };
 		123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A41E6696E100A2655F /* FileTestViewController.swift */; };
 		123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 123C27A61E66A3F600A2655F /* pexels-photo.jpg */; };
@@ -69,6 +70,7 @@
 
 /* Begin PBXFileReference section */
 		0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.release.xcconfig"; sourceTree = "<group>"; };
+		120891691F04E5C30004AF4C /* Nest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nest.swift; sourceTree = "<group>"; };
 		122BEDF81EE3E6430009123C /* ActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionCell.swift; sourceTree = "<group>"; };
 		123C27A41E6696E100A2655F /* FileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTestViewController.swift; sourceTree = "<group>"; };
 		123C27A61E66A3F600A2655F /* pexels-photo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "pexels-photo.jpg"; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 				12523B8C1EDBB74A0074DACB /* Object.swift */,
 				12DA5D611EDBE4E700D2A73D /* File.swift */,
 				12DA5D631EDBF12600D2A73D /* Relation.swift */,
+				120891691F04E5C30004AF4C /* Nest.swift */,
 				12DA5D931EDC198B00D2A73D /* DataSource.swift */,
 			);
 			path = Salada;
@@ -800,6 +803,7 @@
 				12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */,
 				12DA5D621EDBE4E700D2A73D /* File.swift in Sources */,
 				12523B8F1EDBD5820074DACB /* Base.swift in Sources */,
+				1208916A1F04E5C30004AF4C /* Nest.swift in Sources */,
 				12DA5D641EDBF12600D2A73D /* Relation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

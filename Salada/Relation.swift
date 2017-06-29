@@ -19,6 +19,12 @@ public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
 
     public typealias Element = String
 
+    /// Parent to hold the location where you want to save
+    public var parent: Object?
+
+    /// Property name to save
+    public var keyPath: String?
+
     override init() {
         super.init()
     }
@@ -34,8 +40,6 @@ public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
     }
 
     public var saved: Bool = false
-
-    public var keyPath: String?
 
     public var startIndex: Int {
         return _Self.startIndex
@@ -81,27 +85,18 @@ public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
 
     public func insert(_ newMember: Element) {
         if !_Self.contains(newMember) {
-
-
+            _Self.append(newMember)
         }
     }
 
     public func remove(_ member: Element) {
-        if saved {
-
-        } else {
-            if let index: Int = self.index(of: member) {
-                _Self.remove(at: index)
-            }
+        if let index: Int = _Self.index(of: member) {
+            _Self.remove(at: index)
         }
     }
 
     public func removeAll() {
-        if saved {
-
-        } else {
-            _Self = []
-        }
+        _Self = []
     }
 
     // MARK: -
