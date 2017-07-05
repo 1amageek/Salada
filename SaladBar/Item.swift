@@ -8,9 +8,8 @@
 
 import Foundation
 
-class Item: Salada.Object {
-    typealias Element = Item
+class Item: Object {
     dynamic var index: Int = 0
     dynamic var userID: String?
-    dynamic var file: Salada.File?
+    dynamic var file: File?
 }

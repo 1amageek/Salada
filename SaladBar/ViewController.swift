@@ -29,7 +29,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             Group.observeSingle(id, eventType: .value, block: { (group) in
                 
-                guard let group: Group = group as? Group else { return }
+                guard let group: Group = group else { return }
                 
                 let user: User = User()
 //                let image: UIImage = UIImage(named: "salada")!
@@ -66,7 +66,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return view
     }()
     
-    var datasource: Datasource<Group, User>?
+    var datasource: DataSource<Group, User>?
     
     override func loadView() {
         super.loadView()
@@ -117,7 +117,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         options.limit = 10
         options.ascending = false
 
-        self.datasource = Datasource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
+        self.datasource = DataSource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
             guard let tableView: UITableView = self?.tableView else { return }
 
             switch changes {

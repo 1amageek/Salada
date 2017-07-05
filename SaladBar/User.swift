@@ -14,9 +14,7 @@ import CoreLocation
     case second
 }
 
-class User: Salada.Object {
-    
-    typealias Element = User
+class User: Object {
     
     override class var _version: String {
         return "v1"
@@ -30,8 +28,8 @@ class User: Salada.Object {
     dynamic var location: CLLocation?
     dynamic var url: URL?
     dynamic var birth: Date?
-    dynamic var thumbnail: Salada.File?
-    dynamic var cover: Salada.File?
+    dynamic var thumbnail: File?
+    dynamic var cover: File?
     dynamic var type: UserType = .first
     dynamic var testItems: Set<String> = []
     

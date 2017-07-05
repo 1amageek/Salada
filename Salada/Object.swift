@@ -35,7 +35,7 @@ open class Object: Base, Referenceable {
     public let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
 
     /// The IndexKey of the Object.
-    public var key: String
+    public var id: String
 
     /// A reference to Object.
     private(set) var ref: DatabaseReference
@@ -46,7 +46,7 @@ open class Object: Base, Referenceable {
         self.createdAt = Date()
         self.updatedAt = Date()
         self.ref = type(of: self).databaseRef.childByAutoId()
-        self.key = self.ref.key
+        self.id = self.ref.key
     }
 
     convenience required public init?(snapshot: DataSnapshot) {
@@ -56,7 +56,7 @@ open class Object: Base, Referenceable {
 
     convenience required public init?(key: String) {
         self.init()
-        self.key = key
+        self.id = key
         self.ref = type(of: self).databaseRef.child(key)
     }
 
@@ -115,7 +115,7 @@ open class Object: Base, Referenceable {
             if let snapshot: DataSnapshot = snapshot {
 
                 self.ref = snapshot.ref
-                self.key = snapshot.key
+                self.id = snapshot.key
 
                 guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
 
@@ -477,7 +477,7 @@ open class Object: Base, Referenceable {
     override open var description: String {
 
         let base: String =
-        "  key: \(self.key)\n" +
+        "  key: \(self.id)\n" +
         "  createdAt: \(self.createdAt)\n" +
         "  updatedAt: \(self.updatedAt)\n"
 
@@ -503,12 +503,12 @@ open class Object: Base, Referenceable {
 
 extension Object {
     open override var hashValue: Int {
-        return self.key.hash
+        return self.id.hash
     }
 }
 
 public func == (lhs: Object, rhs: Object) -> Bool {
-    return lhs.key == rhs.key
+    return lhs.id == rhs.id
 }
 
 // MARK: -

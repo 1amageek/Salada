@@ -13,7 +13,7 @@ public class File: NSObject {
     /// Save location
     public var ref: StorageReference? {
         if let owner: Object = self.owner {
-            return type(of: owner).storageRef.child(owner.key).child(self.name)
+            return type(of: owner).storageRef.child(owner.id).child(self.name)
         }
         return nil
     }

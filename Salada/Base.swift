@@ -38,6 +38,7 @@ open class Base: NSObject {
         case object(String, Any)
         case null
 
+        // Object -> Firebase Snapshot
         init(key: String, value: Any) {
             switch value.self {
             case is Bool:
@@ -136,12 +137,14 @@ open class Base: NSObject {
                     self = .object(key, value)
                     return
                 }
-            default: self = .null
+            default:
+                self = .null
+                return
             }
-            print("Property: \(key)   \(value) is not valid Salada's Value type.")
             self = .null
         }
 
+        // Firebase Snapshot -> Object
         init(key: String, mirror: Mirror, snapshot: [AnyHashable: Any]) {
             let subjectType: Any.Type = mirror.subjectType
             if subjectType == Bool.self || subjectType == Bool?.self {

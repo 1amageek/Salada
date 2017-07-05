@@ -23,7 +23,7 @@ public protocol Referenceable: NSObjectProtocol {
 
     static var _path: String { get }
 
-    var key: String { get }
+    var id: String { get }
 
     init?(snapshot: DataSnapshot)
 }
@@ -66,12 +66,12 @@ public extension Referenceable {
     /**
      A function that gets data of key within the variable form DB selected.
      
-     - parameter key: Observe the Object of the specified Key.
+     - parameter id: Observe the Object of the specified Key.
      - parameter eventType: Set the event to be observed.
      - parameter block: If the specified event fires, this callback is invoked.
      */
-    public static func observeSingle(_ key: String, eventType: DataEventType, block: @escaping (Self?) -> Void) {
-        self.databaseRef.child(key).observeSingleEvent(of: eventType, with: { (snapshot) in
+    public static func observeSingle(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) {
+        self.databaseRef.child(id).observeSingleEvent(of: eventType, with: { (snapshot) in
             if snapshot.exists() {
                 if let object: Self = Self(snapshot: snapshot) {
                     block(object)
@@ -141,8 +141,8 @@ public extension Referenceable {
      - parameter block: If the specified event fires, this callback is invoked.
      - returns: A handle used to unregister this block later using removeObserverWithHandle:
      */
-    public static func observe(_ key: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> UInt {
-        return self.databaseRef.child(key).observe(eventType, with: { (snapshot) in
+    public static func observe(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> UInt {
+        return self.databaseRef.child(id).observe(eventType, with: { (snapshot) in
             if snapshot.exists() {
                 if let object: Self = Self(snapshot: snapshot) {
                     block(object)

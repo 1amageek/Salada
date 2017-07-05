@@ -34,7 +34,7 @@ class TransactionTestViewController: UIViewController {
             self.userID = ref!.key
             
             self.handle = User.observe(ref!.key, eventType: .value) { [weak self] (user) in
-                guard let user: User = user as? User else {
+                guard let user: User = user else {
                     return
                 }
                 self?.countLabel.text = String(user.testItems.count)
@@ -52,7 +52,7 @@ class TransactionTestViewController: UIViewController {
         }
         
         User.observeSingle(id, eventType: .value) { (user) in
-            guard let user: User = user as? User else {
+            guard let user: User = user else {
                 return
             }
             

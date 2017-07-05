@@ -8,8 +8,7 @@
 
 import Foundation
 
-class Group: Salada.Object {
-    typealias Element = Group
+class Group: Object {
     dynamic var name: String?
     dynamic var users: Set<String> = []
 }
