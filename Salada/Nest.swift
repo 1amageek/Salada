@@ -18,7 +18,7 @@ public class Nest<T: Object>: NSObject {
     public typealias Element = T
 
     /// Parent to hold the location where you want to save
-    public var parent: Object?
+    public var owner: Object?
 
     /// Property name to save
     public var keyPath: String?
@@ -30,9 +30,6 @@ public class Nest<T: Object>: NSObject {
     // MARK: -
 
     override public var description: String {
-        if _Self.isEmpty {
-            return "Relation([])"
-        }
-        return "\(_Self.description)"
+        return "\(self.description)"
     }
 }

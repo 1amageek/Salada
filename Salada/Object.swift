@@ -95,7 +95,7 @@ open class Object: Base, Referenceable {
                     case .relation  (let key, let value, _):    object[key] = value
                     case .file      (let key, let value):
                         object[key] = value.name
-                        value.parent = self
+                        value.owner = self
                         value.keyPath = key
                     case .nestedString(let key, let value):     object[key] = value
                     case .nestedInt(let key, let value):        object[key] = value
@@ -147,11 +147,11 @@ open class Object: Base, Referenceable {
                             case .array(let key, let value): self.setValue(value, forKey: key)
                             case .set(let key, _, let value): self.setValue(value, forKey: key)
                             case .relation(let key, _, let relation):
-                                relation.parent = self
+                                relation.owner = self
                                 relation.keyPath = key
                                 self.setValue(relation, forKey: key)
                             case .file(let key, let file):
-                                file.parent = self
+                                file.owner = self
                                 file.keyPath = key
                                 self.setValue(file, forKey: key)
                             case .nestedString(let key, let value): self.setValue(value, forKey: key)
@@ -197,7 +197,7 @@ open class Object: Base, Referenceable {
                     if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
                         guard let new: File = change[.newKey] as? File else {
                             if let old: File = change[.oldKey] as? File {
-                                old.parent = self
+                                old.owner = self
                                 old.keyPath = keyPath
                                 old.remove()
                             }
@@ -205,13 +205,13 @@ open class Object: Base, Referenceable {
                         }
                         if let old: File = change[.oldKey] as? File {
                             if old.name != new.name {
-                                new.parent = self
+                                new.owner = self
                                 new.keyPath = keyPath
-                                old.parent = self
+                                old.owner = self
                                 old.keyPath = keyPath
                             }
                         } else {
-                            new.parent = self
+                            new.owner = self
                             new.keyPath = keyPath
                         }
                     }

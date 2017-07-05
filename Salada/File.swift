@@ -12,8 +12,8 @@ public class File: NSObject {
 
     /// Save location
     public var ref: StorageReference? {
-        if let parent: Object = self.parent {
-            return type(of: parent).storageRef.child(parent.key).child(self.name)
+        if let owner: Object = self.owner {
+            return type(of: owner).storageRef.child(owner.key).child(self.name)
         }
         return nil
     }
@@ -31,7 +31,7 @@ public class File: NSObject {
     public var metadata: StorageMetadata?
 
     /// Parent to hold the location where you want to save
-    public var parent: Object?
+    public var owner: Object?
 
     /// Property name to save
     public var keyPath: String?
@@ -72,30 +72,30 @@ public class File: NSObject {
     }
 
     internal func save(_ keyPath: String, completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
-        if let data: Data = self.data, let parent: Object = self.parent {
+        if let data: Data = self.data, let owner: Object = self.owner {
             self.uploadTask = self.ref?.putData(data, metadata: self.metadata) { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
-                if parent.isObserved {
-                    parent.updateValue(keyPath, child: nil, value: self.name)
+                if owner.isObserved {
+                    owner.updateValue(keyPath, child: nil, value: self.name)
                     completion?(metadata, error as Error?)
                 } else {
                     completion?(metadata, error as Error?)
                 }
             }
             return self.uploadTask
-        } else if let url: URL = self.url, let parent: Object = self.parent {
+        } else if let url: URL = self.url, let owner: Object = self.owner {
             self.uploadTask = self.ref?.putFile(from: url, metadata: self.metadata, completion: { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
-                if parent.isObserved {
-                    parent.updateValue(keyPath, child: nil, value: self.name)
+                if owner.isObserved {
+                    owner.updateValue(keyPath, child: nil, value: self.name)
                     completion?(metadata, error as Error?)
                 } else {
                     completion?(metadata, error as Error?)
@@ -110,7 +110,7 @@ public class File: NSObject {
     }
 
     public func save(completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
-        guard let _: Object = self.parent, let keyPath: String = self.keyPath else {
+        guard let _: Object = self.owner, let keyPath: String = self.keyPath else {
             let error: ObjectError = ObjectError(kind: .invalidFile, description: "It requires data when you save the file")
             completion?(nil, error)
             return nil
@@ -142,7 +142,7 @@ public class File: NSObject {
     }
 
     deinit {
-        self.parent = nil
+        self.owner = nil
     }
 
     // MARK: -

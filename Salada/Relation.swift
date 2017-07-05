@@ -20,7 +20,7 @@ public class Relation: NSObject, Collection, ExpressibleByArrayLiteral {
     public typealias Element = String
 
     /// Parent to hold the location where you want to save
-    public var parent: Object?
+    public var owner: Object?
 
     /// Property name to save
     public var keyPath: String?
