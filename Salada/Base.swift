@@ -32,6 +32,7 @@ open class Base: NSObject {
         case array(String, [Any])
         case set(String, [String: Bool], Set<String>)
         case relation(String, [String: Bool], Relation)
+        case nest(String, [String: Any], Nestable)
         case file(String, File)
         case nestedString(String, [String: String])
         case nestedInt(String, [String: Int])
@@ -127,6 +128,11 @@ open class Base: NSObject {
                     self = .nestedInt(key, value)
                     return
                 }
+            case is Nestable:
+                if let nested: Nestable = value as? Nestable {
+                    self = .nest(key, nested.value, nested)
+                    return
+                }
             case is [String: Any]:
                 if let value: [String: Any] = value as? [String: Any] {
                     self = .object(key, value)
@@ -139,6 +145,7 @@ open class Base: NSObject {
                 }
             default:
                 self = .null
+                print(key, value, String(describing: type(of: value)))
                 return
             }
             self = .null
@@ -247,6 +254,14 @@ open class Base: NSObject {
                     self = .relation(key, value, Relation(value.keys))
                 } else {
                     self = .relation(key, [:], Relation())
+                }
+                return
+            } else if subjectType == Nest.self || subjectType == Nest?.self {
+                if let value: [String: Any] = snapshot[key] as? [String: Any], !value.isEmpty {
+                    print("!!!", subjectType)
+                    self = .nest(key, value, Nest())
+                } else {
+                    self = .nest(key, [:], Nest())
                 }
                 return
             } else if subjectType == [String: String].self || subjectType == [String: String]?.self {

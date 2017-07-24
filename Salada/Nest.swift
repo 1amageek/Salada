@@ -9,7 +9,13 @@
 import Foundation
 import Firebase
 
-public class Nest<T: Object>: NSObject, Collection, ExpressibleByArrayLiteral {
+protocol Nestable {
+    var value: [String: Any] { get }
+    var owner: Object? { get set }
+    var keyPath: String? { get set }
+}
+
+public class Nest<T: Object>: NSObject, Collection, ExpressibleByArrayLiteral, Nestable {
 
     public typealias Index = Int
 
@@ -24,6 +30,14 @@ public class Nest<T: Object>: NSObject, Collection, ExpressibleByArrayLiteral {
 
     /// Property name to save
     public var keyPath: String?
+
+    public var value: [String: Any] {
+        return _Self.reduce([:], { (result, obj) -> [String: Any] in
+            var result = result
+            result[obj.id] = obj.value
+            return result
+        })
+    }
 
     override init() {
         super.init()
@@ -83,7 +97,7 @@ public class Nest<T: Object>: NSObject, Collection, ExpressibleByArrayLiteral {
 
     // MARK: -
 
-    public func insert(_ newMember: Element) {
+    public func append(_ newMember: Element) {
         if !_Self.contains(newMember) {
             _Self.append(newMember)
         }
