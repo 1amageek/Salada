@@ -258,7 +258,12 @@ open class Base: NSObject {
                     return
                 }
             } else if subjectType == File.self || subjectType == File?.self {
-                if let value: String = snapshot[key] as? String {
+                if let value: [AnyHashable: String] = snapshot[key] as? [AnyHashable: String] {
+                    if let file: File = File(propery: value) {
+                        self = .file(key, file)
+                        return
+                    }
+                } else if let value: String = snapshot[key] as? String {
                     let file: File = File(name: value)
                     self = .file(key, file)
                     return

@@ -46,12 +46,32 @@ public class File: NSObject {
             case .custom(let type):      return type
             }
         }
+
+        init?(rawValue: String) {
+            switch rawValue {
+            case "text/plain":                  self = .plain
+            case "text/csv":                    self = .csv
+            case "text/html":                   self = .html
+            case "text/css":                    self = .css
+            case "text/javascript":             self = .javascript
+            case "application/octet-stream":    self = .octetStream
+            case "application/pdf":             self = .pdf
+            case "application/zip":             self = .zip
+            case "application/x-tar":           self = .tar
+            case "application/x-lzh":           self = .lzh
+            case "image/jpeg":                  self = .jpeg
+            case "image/png":                   self = .png
+            case "image/gif":                   self = .gif
+            case "video/mpeg":                  self = .mpeg
+            default:                            self = .custom(rawValue)
+            }
+        }
     }
 
     /// Save location
     public var ref: StorageReference? {
-        if let owner: Object = self.owner {
-            return type(of: owner).storageRef.child(owner.id).child(self.name)
+        if let owner: Object = self.owner, let keyPath: String = self.keyPath {
+            return type(of: owner).storageRef.child(owner.id).child(keyPath).child(self.name)
         }
         return nil
     }
@@ -79,8 +99,13 @@ public class File: NSObject {
 
     /// DownloadURL
     public var downloadURL: URL? {
+        if let url: URL = self._downloadURL {
+            return url
+        }
         return self.metadata?.downloadURL()
     }
+
+    private var _downloadURL: URL?
 
     /// File detail value
     public var value: [AnyHashable: Any] {
@@ -120,6 +145,17 @@ public class File: NSObject {
         self.init(name: name)
         self.mimeType = mimeType
         self.url = url
+    }
+
+    internal convenience init?(propery: [AnyHashable: String]) {
+        guard let name: String = propery["name"] else { return nil }
+        self.init(name: name)
+        if let mimeType: String = propery["mimeType"] {
+            self.mimeType = MIMEType(rawValue: mimeType)
+        }
+        if let downloadURL: String = propery["url"] {
+            self._downloadURL = URL(string: downloadURL)
+        }
     }
 
     // MARK: - Save
