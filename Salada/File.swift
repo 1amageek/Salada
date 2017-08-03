@@ -10,21 +10,42 @@ import Firebase
 
 public class File: NSObject {
 
-    public enum MIMEType: String {
-        case plain          = "text/plain"
-        case csv            = "text/csv"
-        case html           = "text/html"
-        case css            = "text/css"
-        case javascript     = "text/javascript"
-        case octetStream    = "application/octet-stream"
-        case pdf            = "application/pdf"
-        case zip            = "application/zip"
-        case tar            = "application/x-tar"
-        case lzh            = "application/x-lzh"
-        case jpeg           = "image/jpeg"
-        case png            = "image/png"
-        case gif            = "image/gif"
-        case mpeg           = "video/mpeg"
+    public enum MIMEType {
+        case plain
+        case csv
+        case html
+        case css
+        case javascript
+        case octetStream
+        case pdf
+        case zip
+        case tar
+        case lzh
+        case jpeg
+        case png
+        case gif
+        case mpeg
+        case custom(String)
+
+        var rawValue: String {
+            switch self {
+            case .plain:                 return "text/plain"
+            case .csv:                   return "text/csv"
+            case .html:                  return "text/html"
+            case .css:                   return "text/css"
+            case .javascript:            return "text/javascript"
+            case .octetStream:           return "application/octet-stream"
+            case .pdf:                   return "application/pdf"
+            case .zip:                   return "application/zip"
+            case .tar:                   return "application/x-tar"
+            case .lzh:                   return "application/x-lzh"
+            case .jpeg:                  return "image/jpeg"
+            case .png:                   return "image/png"
+            case .gif:                   return "image/gif"
+            case .mpeg:                  return "video/mpeg"
+            case .custom(let type):      return type
+            }
+        }
     }
 
     /// Save location
