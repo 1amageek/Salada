@@ -12,7 +12,8 @@ import Firebase
 class SaladaFileTestViewController: UIViewController {
 
     @IBAction func start(_ sender: Any) {
-        let image: UIImage = #imageLiteral(resourceName: "pexels-photo.jpg")
+//        let image: UIImage = #imageLiteral(resourceName: "pexels-photo.jpg")
+        let image: UIImage = #imageLiteral(resourceName: "salada")
         let data: Data = UIImageJPEGRepresentation(image, 1)!
         
         let tmpURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
@@ -32,20 +33,20 @@ class SaladaFileTestViewController: UIViewController {
             }
             print("Save")
             
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: { 
-//                let image: UIImage = #imageLiteral(resourceName: "salada")
-//                let data: Data = UIImageJPEGRepresentation(image, 1)!
-//                let file: File = File(data: data)
-//                item.file = file
-//                _ = item.file?.save(completion: { (metadata, error) in
-//                    if let error = error {
-//                        print(error)
-//                        return
-//                    }
-//                    print("SSSSS")
-//                    
-//                })
-//            })
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                let image: UIImage = #imageLiteral(resourceName: "salada")
+                let data: Data = UIImageJPEGRepresentation(image, 1)!
+                let file: File = File(data: data)
+                item.file = file
+                _ = item.file?.update(completion: { (metadata, error) in
+                    if let error = error {
+                        print(error)
+                        return
+                    }
+                    print("SSSSS")
+
+                })
+            })
         }["file"]!
         
         task.observe(.progress) { (snapshot) in

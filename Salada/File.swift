@@ -82,11 +82,11 @@ public class File: NSObject {
         return self.metadata?.downloadURL()
     }
 
-    ///
+    /// File detail value
     public var value: [AnyHashable: Any] {
         var value: [AnyHashable: Any] = ["name": self.name]
         if let downloadURL: URL = self.downloadURL {
-            value["url"] = downloadURL
+            value["url"] = downloadURL.absoluteString
         }
         if let mimeType: String = self.mimeType?.rawValue {
             value["mimeType"] = mimeType
@@ -122,24 +122,6 @@ public class File: NSObject {
         self.url = url
     }
 
-//
-//    public convenience init(name: String, data: Data) {
-//        self.init(name: name)
-//        self.data = data
-//    }
-//
-//    public convenience init(data: Data) {
-//        let name: String = "\(Int(Date().timeIntervalSince1970 * 1000))"
-//        self.init(name: name)
-//        self.data = data
-//    }
-//
-//    public convenience init(url: URL) {
-//        let name: String = "\(Int(Date().timeIntervalSince1970 * 1000))"
-//        self.init(name: name)
-//        self.url = url
-//    }
-
     // MARK: - Save
 
     internal func save(_ keyPath: String) -> StorageUploadTask? {
@@ -153,14 +135,14 @@ public class File: NSObject {
             metadata.contentType = mimeType.rawValue
         }
 
-        if let data: Data = self.data, let owner: Object = self.owner {
+        if let data: Data = self.data {
             self.uploadTask = self.ref?.putData(data, metadata: metadata) { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
-                if owner.isObserved {
+                if let owner: Object = self.owner, owner.isObserved {
                     owner.updateValue(keyPath, child: nil, value: self.value)
                     completion?(metadata, error as Error?)
                 } else {
@@ -168,14 +150,14 @@ public class File: NSObject {
                 }
             }
             return self.uploadTask
-        } else if let url: URL = self.url, let owner: Object = self.owner {
+        } else if let url: URL = self.url {
             self.uploadTask = self.ref?.putFile(from: url, metadata: metadata, completion: { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
-                if owner.isObserved {
+                if let owner: Object = self.owner, owner.isObserved {
                     owner.updateValue(keyPath, child: nil, value: self.value)
                     completion?(metadata, error as Error?)
                 } else {
@@ -190,7 +172,7 @@ public class File: NSObject {
         return nil
     }
 
-    public func save(completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
+    public func update(completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
         guard let _: Object = self.owner, let keyPath: String = self.keyPath else {
             let error: ObjectError = ObjectError(kind: .invalidFile, description: "It requires data when you save the file")
             completion?(nil, error)

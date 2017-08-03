@@ -40,6 +40,21 @@ open class Object: Base, Referenceable {
     /// A reference to Object.
     private(set) var ref: DatabaseReference
 
+    ///
+    private var hasFiles: Bool {
+        let mirror = Mirror(reflecting: self)
+        for (_, child) in mirror.children.enumerated() {
+            if let key: String = child.label {
+                switch ValueType(key: key, value: child.value) {
+                case .file(_, _): return true
+                default: break
+                }
+                return true
+            }
+        }
+        return false
+    }
+
     // MARK: - Initialize
 
     public override init() {
@@ -93,7 +108,7 @@ open class Object: Base, Referenceable {
                     case .array     (let key, let value):       object[key] = value
                     case .set       (let key, let value, _):    object[key] = value
                     case .file      (let key, let value):
-                        object[key] = value.name
+                        object[key] = value.value
                         value.owner = self
                         value.keyPath = key
                     case .nestedString(let key, let value):     object[key] = value
@@ -307,36 +322,70 @@ open class Object: Base, Referenceable {
     @discardableResult
     public func save(_ completion: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
 
-        var value: [AnyHashable: Any] = self.value
-        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-
-        value["_createdAt"] = timestamp
-        value["_updatedAt"] = timestamp
-
         let ref: DatabaseReference = self.ref
-
-        return self.saveFiles(block: { (error) in
-            if let error = error {
-                completion?(ref, error)
-                return
-            }
-
-            ref.runTransactionBlock({ (data) -> TransactionResult in
-                if data.value != nil {
-                    data.value = value
-                    return .success(withValue: data)
+        if self.hasFiles {
+            return self.saveFiles(block: { (error) in
+                if let error = error {
+                    completion?(ref, error)
+                    return
                 }
-                return .success(withValue: data)
-            }, andCompletionBlock: { (error, committed, snapshot) in
+                var value: [AnyHashable: Any] = self.value
+                let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+                value["_createdAt"] = timestamp
+                value["_updatedAt"] = timestamp
 
+                ref.setValue(value, withCompletionBlock: { (error, ref) in
+                    type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
+                        self.snapshot = snapshot
+                        completion?(ref, error)
+                    })
+                })
+            })
+        } else {
+            var value: [AnyHashable: Any] = self.value
+            let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+            value["_createdAt"] = timestamp
+            value["_updatedAt"] = timestamp
+            ref.setValue(value, withCompletionBlock: { (error, ref) in
                 type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
                     self.snapshot = snapshot
                     completion?(ref, error)
                 })
+            })
+            return [:]
+        }
 
-            }, withLocalEvents: false)
 
-        })
+//        var value: [AnyHashable: Any] = self.value
+//        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+//
+//        value["_createdAt"] = timestamp
+//        value["_updatedAt"] = timestamp
+//
+//        let ref: DatabaseReference = self.ref
+//
+//        return self.saveFiles(block: { (error) in
+//            if let error = error {
+//                completion?(ref, error)
+//                return
+//            }
+//
+//            ref.runTransactionBlock({ (data) -> TransactionResult in
+//                if data.value != nil {
+//                    data.value = value
+//                    return .success(withValue: data)
+//                }
+//                return .success(withValue: data)
+//            }, andCompletionBlock: { (error, committed, snapshot) in
+//
+//                type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
+//                    self.snapshot = snapshot
+//                    completion?(ref, error)
+//                })
+//
+//            }, withLocalEvents: false)
+//
+//        })
     }
 
     // MARK: - Transaction
@@ -388,20 +437,18 @@ open class Object: Base, Referenceable {
 
         var hasError: Error? = nil
 
-        for (key, value) in Mirror(reflecting: self).children {
+        for (_, child) in Mirror(reflecting: self).children.enumerated() {
 
-            guard let key: String = key else {
-                break
-            }
-
-            if self.ignore.contains(key) {
-                break
-            }
+            guard let key: String = child.label else { break }
+            if self.ignore.contains(key) { break }
+            let value = child.value
 
             let mirror: Mirror = Mirror(reflecting: value)
             let subjectType: Any.Type = mirror.subjectType
             if subjectType == File?.self || subjectType == File.self {
                 if let file: File = value as? File {
+                    file.owner = self
+                    file.keyPath = key
                     group.enter()
                     if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
                         if let error: Error = error {
@@ -409,7 +456,6 @@ open class Object: Base, Referenceable {
                             uploadTasks.forEach({ (_, task) in
                                 task.cancel()
                             })
-                            group.leave()
                             return
                         }
                         group.leave()
