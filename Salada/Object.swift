@@ -92,8 +92,6 @@ open class Object: Base, Referenceable {
                     case .date      (let key, let value, _):    object[key] = value
                     case .array     (let key, let value):       object[key] = value
                     case .set       (let key, let value, _):    object[key] = value
-                    case .relation  (let key, let value, _):    object[key] = value
-                    case .nest      (let key, let value, _):    object[key] = value
                     case .file      (let key, let value):
                         object[key] = value.name
                         value.owner = self
@@ -147,15 +145,6 @@ open class Object: Base, Referenceable {
                             case .date(let key, _, let value): self.setValue(value, forKey: key)
                             case .array(let key, let value): self.setValue(value, forKey: key)
                             case .set(let key, _, let value): self.setValue(value, forKey: key)
-                            case .relation(let key, _, let relation):
-                                relation.owner = self
-                                relation.keyPath = key
-                                self.setValue(relation, forKey: key)
-                            case .nest(let key, _, let nested):
-                                var nested: Nestable = nested
-                                nested.owner = self
-                                nested.keyPath = key
-                                self.setValue(nested, forKey: key)
                             case .file(let key, let file):
                                 file.owner = self
                                 file.keyPath = key

@@ -11,6 +11,6 @@ import Foundation
 class Room: Object {
 
     dynamic var name: String?
-    var messages: Nest<Message> = []
+    dynamic var messages: Set<String> = []
 
 }

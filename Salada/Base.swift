@@ -31,8 +31,6 @@ open class Base: NSObject {
         case url(String, String, URL)
         case array(String, [Any])
         case set(String, [String: Bool], Set<String>)
-        case relation(String, [String: Bool], Relation)
-        case nest(String, [String: Any], Nestable)
         case file(String, File)
         case nestedString(String, [String: String])
         case nestedInt(String, [String: Int])
@@ -108,11 +106,6 @@ open class Base: NSObject {
                     self = .set(key, value.toKeys(), value)
                     return
                 }
-            case is Relation:
-                if let value: Relation = value as? Relation {
-                    self = .relation(key, value.toKeys(), value)
-                    return
-                }
             case is File:
                 if let value: File = value as? File {
                     self = .file(key, value)
@@ -126,11 +119,6 @@ open class Base: NSObject {
             case is [String: Int]:
                 if let value: [String: Int] = value as? [String: Int] {
                     self = .nestedInt(key, value)
-                    return
-                }
-            case is Nestable:
-                if let nested: Nestable = value as? Nestable {
-                    self = .nest(key, nested.value, nested)
                     return
                 }
             case is [String: Any]:
@@ -249,21 +237,6 @@ open class Base: NSObject {
                     self = .set(key, result, Set<String>(result.keys))
                     return
                 }
-            } else if subjectType == Relation.self || subjectType == Relation?.self {
-                if let value: [String: Bool] = snapshot[key] as? [String: Bool], !value.isEmpty {
-                    self = .relation(key, value, Relation(value.keys))
-                } else {
-                    self = .relation(key, [:], Relation())
-                }
-                return
-            } else if subjectType == Nest.self || subjectType == Nest?.self {
-                if let value: [String: Any] = snapshot[key] as? [String: Any], !value.isEmpty {
-                    print("!!!", subjectType)
-                    self = .nest(key, value, Nest())
-                } else {
-                    self = .nest(key, [:], Nest())
-                }
-                return
             } else if subjectType == [String: String].self || subjectType == [String: String]?.self {
                 if let value: [String: String] = snapshot[key] as? [String: String] {
                     self = .nestedString(key, value)

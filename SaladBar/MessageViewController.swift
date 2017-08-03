@@ -70,7 +70,7 @@ class MessageViewController: ChatViewController {
         let message: Message = Message()
         message.userID = user.id
         message.text = text
-        room.messages.append(message)
+        room.messages.insert(message.id)
         room.save()
         self.toolBar.textView.text = ""
         self.layoutToolbar()

@@ -7,13 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1208916A1F04E5C30004AF4C /* Nest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120891691F04E5C30004AF4C /* Nest.swift */; };
 		1208916B1F04E89F0004AF4C /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
 		1208916C1F04E89F0004AF4C /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Base.swift */; };
 		1208916D1F04E89F0004AF4C /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8C1EDBB74A0074DACB /* Object.swift */; };
 		1208916E1F04E89F0004AF4C /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
-		1208916F1F04E89F0004AF4C /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D631EDBF12600D2A73D /* Relation.swift */; };
-		120891701F04E89F0004AF4C /* Nest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120891691F04E5C30004AF4C /* Nest.swift */; };
 		120891711F04E89F0004AF4C /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
 		122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122BEDF81EE3E6430009123C /* ActionCell.swift */; };
 		123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A41E6696E100A2655F /* FileTestViewController.swift */; };
@@ -45,7 +42,6 @@
 		12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A621D95184300E69000 /* LaunchScreen.storyboard */; };
 		12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
 		12DA5D621EDBE4E700D2A73D /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
-		12DA5D641EDBF12600D2A73D /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D631EDBF12600D2A73D /* Relation.swift */; };
 		12DA5D941EDC198B00D2A73D /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
 		12DA5DBC1EDC29D200D2A73D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DBB1EDC29D200D2A73D /* AppDelegate.swift */; };
 		12DA5DC11EDC29D200D2A73D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12DA5DBF1EDC29D200D2A73D /* Main.storyboard */; };
@@ -57,7 +53,6 @@
 		12DA5DEA1EDC2ACD00D2A73D /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Base.swift */; };
 		12DA5DEB1EDC2ACD00D2A73D /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8C1EDBB74A0074DACB /* Object.swift */; };
 		12DA5DEC1EDC2ACD00D2A73D /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
-		12DA5DED1EDC2ACD00D2A73D /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D631EDBF12600D2A73D /* Relation.swift */; };
 		12DA5DEE1EDC2ACD00D2A73D /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
 		12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DF11EDD17A400D2A73D /* TestFlow.swift */; };
 		12F2EC651EDE8ABB00AF9A08 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12F2EC641EDE8ABB00AF9A08 /* GoogleService-Info.plist */; };
@@ -88,7 +83,6 @@
 
 /* Begin PBXFileReference section */
 		0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.release.xcconfig"; sourceTree = "<group>"; };
-		120891691F04E5C30004AF4C /* Nest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nest.swift; sourceTree = "<group>"; };
 		122BEDF81EE3E6430009123C /* ActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionCell.swift; sourceTree = "<group>"; };
 		123C27A41E6696E100A2655F /* FileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTestViewController.swift; sourceTree = "<group>"; };
 		123C27A61E66A3F600A2655F /* pexels-photo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "pexels-photo.jpg"; sourceTree = "<group>"; };
@@ -125,7 +119,6 @@
 		12D0BE151E6D1ABD008E9AD0 /* Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Referenceable.swift; sourceTree = "<group>"; };
 		12DA5D611EDBE4E700D2A73D /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
-		12DA5D631EDBF12600D2A73D /* Relation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Relation.swift; sourceTree = "<group>"; };
 		12DA5D931EDC198B00D2A73D /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		12DA5DB91EDC29D200D2A73D /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		12DA5DBB1EDC29D200D2A73D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -312,8 +305,6 @@
 				12523B8E1EDBD5820074DACB /* Base.swift */,
 				12523B8C1EDBB74A0074DACB /* Object.swift */,
 				12DA5D611EDBE4E700D2A73D /* File.swift */,
-				12DA5D631EDBF12600D2A73D /* Relation.swift */,
-				120891691F04E5C30004AF4C /* Nest.swift */,
 				12DA5D931EDC198B00D2A73D /* DataSource.swift */,
 			);
 			path = Salada;
@@ -852,13 +843,11 @@
 				120891711F04E89F0004AF4C /* DataSource.swift in Sources */,
 				1208916C1F04E89F0004AF4C /* Base.swift in Sources */,
 				12CB1A5A1D95184300E69000 /* AppDelegate.swift in Sources */,
-				120891701F04E89F0004AF4C /* Nest.swift in Sources */,
 				1208916B1F04E89F0004AF4C /* Referenceable.swift in Sources */,
 				1272DA6E1F0C9A35000A094E /* ChatToolBar.swift in Sources */,
 				12C097E11E653F19001B2010 /* TransactionTestViewController.swift in Sources */,
 				1208916D1F04E89F0004AF4C /* Object.swift in Sources */,
 				123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */,
-				1208916F1F04E89F0004AF4C /* Relation.swift in Sources */,
 				12C097DF1E653CEF001B2010 /* Item.swift in Sources */,
 				12A4FE361DB5C987003A3104 /* User.swift in Sources */,
 				1272DA711F0C9A35000A094E /* ChatViewDataSource.swift in Sources */,
@@ -875,8 +864,6 @@
 				12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */,
 				12DA5D621EDBE4E700D2A73D /* File.swift in Sources */,
 				12523B8F1EDBD5820074DACB /* Base.swift in Sources */,
-				1208916A1F04E5C30004AF4C /* Nest.swift in Sources */,
-				12DA5D641EDBF12600D2A73D /* Relation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -895,7 +882,6 @@
 				12DA5DEB1EDC2ACD00D2A73D /* Object.swift in Sources */,
 				122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */,
 				12DA5DBC1EDC29D200D2A73D /* AppDelegate.swift in Sources */,
-				12DA5DED1EDC2ACD00D2A73D /* Relation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
