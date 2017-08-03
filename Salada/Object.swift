@@ -8,7 +8,7 @@
 
 import Firebase
 
-open class Object: Base, Referenceable {
+open class Object: Base, Referenceable, Decodable {
 
     // MARK: -
 
@@ -75,6 +75,16 @@ open class Object: Base, Referenceable {
     public var value: [AnyHashable: Any] {
         let mirror = Mirror(reflecting: self)
         var object: [AnyHashable: Any] = [:]
+
+        if isObserved {
+            object["_createdAt"] = self.createdAt.timeIntervalSince1970
+            object["_updatedAt"] = self.updatedAt.timeIntervalSince1970
+        } else {
+            let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+            object["_createdAt"] = timestamp
+            object["_updatedAt"] = timestamp
+        }
+
         mirror.children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
@@ -136,8 +146,8 @@ open class Object: Base, Referenceable {
                                 self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                                 return
                             }
-                            let mirror: Mirror = Mirror(reflecting: value)
-                            switch ValueType(key: key, mirror: mirror, snapshot: snapshot) {
+//                            let mirror: Mirror = Mirror(reflecting: value)
+                            switch ValueType(key: key, value: value, snapshot: snapshot) {
                             case .bool(let key, let value): self.setValue(value, forKey: key)
                             case .int(let key, let value): self.setValue(value, forKey: key)
                             case .float(let key, let value): self.setValue(value, forKey: key)
@@ -155,7 +165,9 @@ open class Object: Base, Referenceable {
                                 var nested: Nestable = nested
                                 nested.owner = self
                                 nested.keyPath = key
-                                self.setValue(nested, forKey: key)
+                                let ne: Nest<Message> = []
+                                print("!!!!!", ne, key, self)
+                                self.setValue(ne, forKeyPath: key)
                             case .file(let key, let file):
                                 file.owner = self
                                 file.keyPath = key
@@ -318,12 +330,7 @@ open class Object: Base, Referenceable {
     @discardableResult
     public func save(_ completion: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
 
-        var value: [AnyHashable: Any] = self.value
-        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-
-        value["_createdAt"] = timestamp
-        value["_updatedAt"] = timestamp
-
+        let value: [AnyHashable: Any] = self.value
         let ref: DatabaseReference = self.ref
 
         return self.saveFiles(block: { (error) in

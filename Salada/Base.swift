@@ -32,14 +32,17 @@ open class Base: NSObject {
         case array(String, [Any])
         case set(String, [String: Bool], Set<String>)
         case relation(String, [String: Bool], Relation)
-        case nest(String, [String: Any], Nestable)
+        case nest(String, [AnyHashable: Any], Nestable)
         case file(String, File)
         case nestedString(String, [String: String])
         case nestedInt(String, [String: Int])
         case object(String, Any)
         case null
 
-        // Object -> Firebase Snapshot
+        /**
+         This initializer is called when saving to Firebase.
+         Object -> Firebase Snapshot
+         */
         init(key: String, value: Any) {
             switch value.self {
             case is Bool:
@@ -152,7 +155,110 @@ open class Base: NSObject {
         }
 
         // Firebase Snapshot -> Object
-        init(key: String, mirror: Mirror, snapshot: [AnyHashable: Any]) {
+        init(key: String, value: Any, snapshot: [AnyHashable: Any]) {
+
+            if value is Bool {
+                if let data: Bool = snapshot[key] as? Bool {
+                    self = .bool(key, Bool(data))
+                    return
+                }
+            } else if value is Int {
+                if let data: Int = snapshot[key] as? Int {
+                    self = .int(key, Int(data))
+                    return
+                }
+            } else if value is Int8 {
+                if let data: Int = snapshot[key] as? Int {
+                    self = .int(key, Int(data))
+                    return
+                }
+            } else if value is Int16 {
+                if let data: Int = snapshot[key] as? Int {
+                    self = .int(key, Int(data))
+                    return
+                }
+            } else if value is Int32 {
+                if let data: Int = snapshot[key] as? Int {
+                    self = .int(key, Int(data))
+                    return
+                }
+            } else if value is Int64 {
+                if let data: Int = snapshot[key] as? Int {
+                    self = .int(key, Int(data))
+                    return
+                }
+            } else if value is Double {
+                if let data: Double = snapshot[key] as? Double {
+                    self = .double(key, Double(data))
+                    return
+                }
+            } else if value is String {
+                if let data: String = snapshot[key] as? String {
+                    self = .string(key, data)
+                    return
+                }
+            } else if value is URL {
+                if
+                    let data: String = snapshot[key] as? String,
+                    let url: URL = URL(string: data)  {
+                    self = .url(key, data, url)
+                    return
+                }
+            } else if value is Data {
+                if let data: Double = snapshot[key] as? Double {
+                    let date: Date = Date(timeIntervalSince1970: TimeInterval(data))
+                    self = .date(key, data, date)
+                    return
+                }
+            } else if value is [Int] {
+                if let data: [Int] = snapshot[key] as? [Int], !data.isEmpty {
+                    self = .array(key, data)
+                    return
+                }
+            } else if value is [String] {
+                if let data: [String] = snapshot[key] as? [String], !data.isEmpty {
+                    self = .array(key, data)
+                    return
+                }
+            } else if value is [Any] {
+                if let data: [Any] = snapshot[key] as? [Any], !data.isEmpty {
+                    self = .array(key, data)
+                    return
+                }
+            } else if value is Set<String> {
+                if let data: [String: Bool] = snapshot[key] as? [String: Bool], !data.isEmpty {
+                    self = .set(key, data, Set<String>(data.keys))
+                    return
+                }
+                if let data: [Int: Bool] = snapshot[key] as? [Int: Bool], !data.isEmpty {
+                    let data: [String: Bool] = data.reduce([String: Bool](), { (result, obj) -> [String: Bool] in
+                        var result = result
+                        result[String(obj.key)] = obj.value
+                        return result
+                    })
+                    self = .set(key, data, Set<String>(data.keys))
+                    return
+                }
+                if let data: [Bool] = snapshot[key] as? [Bool], !data.isEmpty {
+                    var result: [String: Bool] = [:]
+                    for (i, v) in data.enumerated() {
+                        result[String(i)] = v
+                    }
+                    self = .set(key, result, Set<String>(result.keys))
+                    return
+                }
+            } else if value is Nestable {
+                if let data: [String: Any] = snapshot[key] as? [String: Any], !data.isEmpty {
+                    print(key, value, data)
+                    self = .nest(key, data, value as! Nestable)
+                } else {
+                    self = .nest(key, [:], value as! Nestable)
+                }
+                return
+            }
+
+
+            let mirror: Mirror = Mirror(reflecting: value)
             let subjectType: Any.Type = mirror.subjectType
             if subjectType == Bool.self || subjectType == Bool?.self {
                 if let value: Bool = snapshot[key] as? Bool {
@@ -256,7 +362,12 @@ open class Base: NSObject {
                     self = .relation(key, [:], Relation())
                 }
                 return
+            } else if let _ = subjectType as? Nestable {
+                print("!!!!!!")
+            } else if subjectType is Nestable {
+                print("!!!!!!")
             } else if subjectType == Nest.self || subjectType == Nest?.self {
+                print("!!!!!!")
                 if let value: [String: Any] = snapshot[key] as? [String: Any], !value.isEmpty {
                     print("!!!", subjectType)
                     self = .nest(key, value, Nest())

@@ -10,9 +10,11 @@ import Foundation
 import Firebase
 
 protocol Nestable {
-    var value: [String: Any] { get }
+    var value: [AnyHashable: Any] { get }
     var owner: Object? { get set }
     var keyPath: String? { get set }
+    var shouldAttachedTimestamp: Bool { get }
+    init()
 }
 
 public class Nest<T: Object>: NSObject, Collection, ExpressibleByArrayLiteral, Nestable {
@@ -31,15 +33,19 @@ public class Nest<T: Object>: NSObject, Collection, ExpressibleByArrayLiteral, N
     /// Property name to save
     public var keyPath: String?
 
-    public var value: [String: Any] {
-        return _Self.reduce([:], { (result, obj) -> [String: Any] in
+    public var value: [AnyHashable: Any] {
+        return _Self.reduce([:], { (result, obj) -> [String: [AnyHashable: Any]] in
             var result = result
             result[obj.id] = obj.value
             return result
         })
     }
 
-    override init() {
+    public var shouldAttachedTimestamp: Bool {
+        return true
+    }
+
+    public required override init() {
         super.init()
     }
 
@@ -53,7 +59,9 @@ public class Nest<T: Object>: NSObject, Collection, ExpressibleByArrayLiteral, N
         _Self = elements
     }
 
-    public var saved: Bool = false
+    public var isSaved: Bool {
+        return self.owner?.isObserved ?? false
+    }
 
     public var startIndex: Int {
         return _Self.startIndex
@@ -100,6 +108,11 @@ public class Nest<T: Object>: NSObject, Collection, ExpressibleByArrayLiteral, N
     public func append(_ newMember: Element) {
         if !_Self.contains(newMember) {
             _Self.append(newMember)
+        }
+        if isSaved {
+            guard let keyPath: String = self.keyPath else { return }
+            let id: String = newMember.id
+            self.owner?.updateValue(keyPath, child: id, value: newMember.value)
         }
     }
 

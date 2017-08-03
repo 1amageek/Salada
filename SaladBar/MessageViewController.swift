@@ -62,7 +62,9 @@ class MessageViewController: ChatViewController {
         barButtonItem.isEnabled = true
         return barButtonItem
     }()
-    
+
+    var saved: Bool = false
+
     func send() {        
         guard let text: String = self.toolBar.textView.text else {
             return
@@ -71,7 +73,11 @@ class MessageViewController: ChatViewController {
         message.userID = user.id
         message.text = text
         room.messages.append(message)
-        room.save()
+        if !saved {
+            room.save()
+            self.saved = true
+        }
+
         self.toolBar.textView.text = ""
         self.layoutToolbar()
         self.sendBarButtonItem.isEnabled = false
