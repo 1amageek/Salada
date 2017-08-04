@@ -18,6 +18,11 @@
 		123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */; };
 		12523B8D1EDBB74A0074DACB /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8C1EDBB74A0074DACB /* Object.swift */; };
 		12523B8F1EDBD5820074DACB /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Base.swift */; };
+		1253BFA51F3455930078C5D1 /* SimpleModelViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1253BFA41F3455930078C5D1 /* SimpleModelViewController.storyboard */; };
+		1253BFA81F3465F20078C5D1 /* UserGroupRelationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253BFA71F3465F20078C5D1 /* UserGroupRelationViewController.swift */; };
+		1253BFAA1F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1253BFA91F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard */; };
+		125904191F3451D5004B271D /* SimpleModelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125904181F3451D5004B271D /* SimpleModelViewController.swift */; };
+		1259041B1F34522A004B271D /* SamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1259041A1F34522A004B271D /* SamplesViewController.swift */; };
 		126479601EDE8CF70097ED9E /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1264795F1EDE8CF70097ED9E /* TableViewController.swift */; };
 		126479621EDE92A90097ED9E /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126479611EDE92A90097ED9E /* TableViewCell.swift */; };
 		1272DA5F1F0C8D43000A094E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12F2EC641EDE8ABB00AF9A08 /* GoogleService-Info.plist */; };
@@ -90,6 +95,11 @@
 		123C74841DB7D01C0079CF4A /* ObjectTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectTests.swift; sourceTree = "<group>"; };
 		12523B8C1EDBB74A0074DACB /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		12523B8E1EDBD5820074DACB /* Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base.swift; sourceTree = "<group>"; };
+		1253BFA41F3455930078C5D1 /* SimpleModelViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SimpleModelViewController.storyboard; sourceTree = "<group>"; };
+		1253BFA71F3465F20078C5D1 /* UserGroupRelationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserGroupRelationViewController.swift; sourceTree = "<group>"; };
+		1253BFA91F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UserGroupRelationViewController.storyboard; sourceTree = "<group>"; };
+		125904181F3451D5004B271D /* SimpleModelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleModelViewController.swift; sourceTree = "<group>"; };
+		1259041A1F34522A004B271D /* SamplesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesViewController.swift; sourceTree = "<group>"; };
 		1264795F1EDE8CF70097ED9E /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		126479611EDE92A90097ED9E /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		1272DA621F0C97B8000A094E /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
@@ -240,6 +250,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1253BFA61F3465B30078C5D1 /* SampleCode */ = {
+			isa = PBXGroup;
+			children = (
+				125904181F3451D5004B271D /* SimpleModelViewController.swift */,
+				1253BFA41F3455930078C5D1 /* SimpleModelViewController.storyboard */,
+				1253BFA71F3465F20078C5D1 /* UserGroupRelationViewController.swift */,
+				1253BFA91F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard */,
+			);
+			name = SampleCode;
+			sourceTree = "<group>";
+		};
 		1272DA661F0C97CB000A094E /* Nested */ = {
 			isa = PBXGroup;
 			children = (
@@ -280,7 +301,9 @@
 			isa = PBXGroup;
 			children = (
 				12CB1A591D95184300E69000 /* AppDelegate.swift */,
+				1259041A1F34522A004B271D /* SamplesViewController.swift */,
 				12CB1A5B1D95184300E69000 /* ViewController.swift */,
+				1253BFA61F3465B30078C5D1 /* SampleCode */,
 				12C097E01E653F19001B2010 /* TransactionTestViewController.swift */,
 				123C27A41E6696E100A2655F /* FileTestViewController.swift */,
 				123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */,
@@ -570,10 +593,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */,
+				1253BFAA1F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard in Resources */,
 				123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */,
 				1272DA5F1F0C8D43000A094E /* GoogleService-Info.plist in Resources */,
 				12CB1A611D95184300E69000 /* Assets.xcassets in Resources */,
 				12CB1A5F1D95184300E69000 /* Main.storyboard in Resources */,
+				1253BFA51F3455930078C5D1 /* SimpleModelViewController.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -833,8 +858,10 @@
 				123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */,
 				1208916E1F04E89F0004AF4C /* File.swift in Sources */,
 				1272DA701F0C9A35000A094E /* ChatViewController.swift in Sources */,
+				125904191F3451D5004B271D /* SimpleModelViewController.swift in Sources */,
 				1272DA771F0C9A96000A094E /* ChatTextCell.swift in Sources */,
 				1272DA6D1F0C9A35000A094E /* Chat.swift in Sources */,
+				1259041B1F34522A004B271D /* SamplesViewController.swift in Sources */,
 				12CB1A5C1D95184300E69000 /* ViewController.swift in Sources */,
 				1272DA6F1F0C9A35000A094E /* ChatView.swift in Sources */,
 				1272DA651F0C97BF000A094E /* Message.swift in Sources */,
@@ -842,6 +869,7 @@
 				1272DA761F0C9A96000A094E /* MessageViewController.swift in Sources */,
 				120891711F04E89F0004AF4C /* DataSource.swift in Sources */,
 				1208916C1F04E89F0004AF4C /* Base.swift in Sources */,
+				1253BFA81F3465F20078C5D1 /* UserGroupRelationViewController.swift in Sources */,
 				12CB1A5A1D95184300E69000 /* AppDelegate.swift in Sources */,
 				1208916B1F04E89F0004AF4C /* Referenceable.swift in Sources */,
 				1272DA6E1F0C9A35000A094E /* ChatToolBar.swift in Sources */,

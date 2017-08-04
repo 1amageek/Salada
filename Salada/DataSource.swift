@@ -130,22 +130,22 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
 
             block(SaladaCollectionChange(change: nil, error: error))
 
-            guard let strongSelf = self else { return }
+            guard let `self` = self else { return }
 
             // add
-            var addReference: DatabaseQuery = strongSelf.reference
-            if let fiarstKey: String = strongSelf.pool.first {
+            var addReference: DatabaseQuery = self.reference
+            if let fiarstKey: String = self.pool.first {
                 addReference = addReference.queryOrderedByKey().queryStarting(atValue: fiarstKey)
             }
-            strongSelf.addReference = addReference
-            strongSelf.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
+            self.addReference = addReference
+            self.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
                 guard let `self` = self else { return }
                 objc_sync_enter(self)
                 let key: String = snapshot.key
-                if !strongSelf.pool.contains(key) {
-                    strongSelf.pool.append(key)
-                    strongSelf.pool = strongSelf.sortedPool
-                    if let i: Int = strongSelf.pool.index(of: key) {
+                if !self.pool.contains(key) {
+                    self.pool.append(key)
+                    self.pool = self.sortedPool
+                    if let i: Int = self.pool.index(of: key) {
                         block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                     }
                 }
@@ -155,8 +155,8 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             })
 
             // change
-            strongSelf.changedHandle = strongSelf.reference.observe(.childChanged, with: { (snapshot) in
-                if let i: Int = strongSelf.pool.index(of: snapshot.key) {
+            self.changedHandle = self.reference.observe(.childChanged, with: { (snapshot) in
+                if let i: Int = self.pool.index(of: snapshot.key) {
                     block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                 }
             }, withCancel: { (error) in
@@ -164,12 +164,12 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             })
 
             // remove
-            strongSelf.removedHandle = strongSelf.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
+            self.removedHandle = self.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
                 guard let `self` = self else { return }
                 objc_sync_enter(self)
-                if let i: Int = strongSelf.pool.index(of: snapshot.key) {
-                    strongSelf.removeObserver(at: i)
-                    strongSelf.pool.remove(at: i)
+                if let i: Int = self.pool.index(of: snapshot.key) {
+                    self.removeObserver(at: i)
+                    self.pool.remove(at: i)
                     block(SaladaCollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
                 objc_sync_exit(self)
@@ -184,8 +184,8 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      */
     public func prev() {
         self.prev(at: self.lastKey, toLast: self.limit) { [weak self](change, error) in
-            guard let strongSelf = self else { return }
-            strongSelf.changedBlock(SaladaCollectionChange(change: change, error: error))
+            guard let `self` = self else { return }
+            self.changedBlock(SaladaCollectionChange(change: change, error: error))
         }
     }
 
