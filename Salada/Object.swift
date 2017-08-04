@@ -355,37 +355,6 @@ open class Object: Base, Referenceable {
             return [:]
         }
 
-
-//        var value: [AnyHashable: Any] = self.value
-//        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-//
-//        value["_createdAt"] = timestamp
-//        value["_updatedAt"] = timestamp
-//
-//        let ref: DatabaseReference = self.ref
-//
-//        return self.saveFiles(block: { (error) in
-//            if let error = error {
-//                completion?(ref, error)
-//                return
-//            }
-//
-//            ref.runTransactionBlock({ (data) -> TransactionResult in
-//                if data.value != nil {
-//                    data.value = value
-//                    return .success(withValue: data)
-//                }
-//                return .success(withValue: data)
-//            }, andCompletionBlock: { (error, committed, snapshot) in
-//
-//                type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
-//                    self.snapshot = snapshot
-//                    completion?(ref, error)
-//                })
-//
-//            }, withLocalEvents: false)
-//
-//        })
     }
 
     // MARK: - Transaction

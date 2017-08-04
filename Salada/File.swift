@@ -22,6 +22,7 @@ public class File: NSObject {
         case tar
         case lzh
         case jpeg
+        case pjpeg
         case png
         case gif
         case mpeg
@@ -40,6 +41,7 @@ public class File: NSObject {
             case .tar:                   return "application/x-tar"
             case .lzh:                   return "application/x-lzh"
             case .jpeg:                  return "image/jpeg"
+            case .pjpeg:                 return "image/pjpeg"
             case .png:                   return "image/png"
             case .gif:                   return "image/gif"
             case .mpeg:                  return "video/mpeg"
@@ -60,6 +62,7 @@ public class File: NSObject {
             case "application/x-tar":           self = .tar
             case "application/x-lzh":           self = .lzh
             case "image/jpeg":                  self = .jpeg
+            case "image/pjpeg":                 self = .pjpeg
             case "image/png":                   self = .png
             case "image/gif":                   self = .gif
             case "video/mpeg":                  self = .mpeg
@@ -105,6 +108,7 @@ public class File: NSObject {
         return self.metadata?.downloadURL()
     }
 
+    /// private downloadURL
     private var _downloadURL: URL?
 
     /// File detail value

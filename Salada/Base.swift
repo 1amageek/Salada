@@ -133,7 +133,7 @@ open class Base: NSObject {
                 }
             default:
                 self = .null
-                print(key, value, String(describing: type(of: value)))
+                //print("[Salada.Base] This property(\(key) is null", value, String(describing: type(of: value)))
                 return
             }
             self = .null
