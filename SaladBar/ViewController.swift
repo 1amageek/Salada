@@ -89,6 +89,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             (0..<20).forEach({ (index) in
                 let user: User = User()
+                let image: UIImage = #imageLiteral(resourceName: "salada")
+                let data: Data = UIImageJPEGRepresentation(image, 1)!
+                user.thumbnail = File(data: data, mimeType: .jpeg)
                 user.tempName = "Test1_name"
                 user.name = "\(index)"
                 user.gender = "man"
@@ -147,9 +150,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
         self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+            cell.imageView?.image = nil
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user?.name
             cell.setNeedsLayout()
+
+            if let ref: StorageReference = user?.thumbnail?.ref {
+                ref.getData(maxSize: Int64(10e9), completion: { (data, error) in
+                    if let error = error {
+                        debugPrint(error)
+                        return
+                    }
+                    let image: UIImage = UIImage(data: data!)!
+                    cell.imageView?.image = image
+                    cell.imageView?.setNeedsDisplay()
+                    cell.setNeedsLayout()
+                })
+            }
+
         })
     }
     
