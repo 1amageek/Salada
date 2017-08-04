@@ -10,7 +10,7 @@ import Foundation
 
 class Message: Object {
 
-    dynamic var userID: String?
-    dynamic var text: String?
+    @objc dynamic var userID: String?
+    @objc dynamic var text: String?
 
 }

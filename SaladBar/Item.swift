@@ -9,7 +9,7 @@
 import Foundation
 
 class Item: Object {
-    dynamic var index: Int = 0
-    dynamic var userID: String?
-    dynamic var file: File?
+    @objc dynamic var index: Int = 0
+    @objc dynamic var userID: String?
+    @objc dynamic var file: File?
 }

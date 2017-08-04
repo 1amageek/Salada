@@ -139,6 +139,7 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             }
             strongSelf.addReference = addReference
             strongSelf.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
+                guard let `self` = self else { return }
                 objc_sync_enter(self)
                 let key: String = snapshot.key
                 if !strongSelf.pool.contains(key) {
@@ -164,6 +165,7 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
 
             // remove
             strongSelf.removedHandle = strongSelf.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
+                guard let `self` = self else { return }
                 objc_sync_enter(self)
                 if let i: Int = strongSelf.pool.index(of: snapshot.key) {
                     strongSelf.removeObserver(at: i)
@@ -208,21 +210,21 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
         }
         reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
 
-            guard let strongSelf = self else { return }
+            guard let `self` = self else { return }
 
             if snapshot.childrenCount < limit {
-                strongSelf.isFirst = true
+                self.isFirst = true
             }
 
             objc_sync_enter(self)
             var changes: [Int] = []
-            if strongSelf.ascending {
+            if self.ascending {
                 for (_, child) in snapshot.children.enumerated() {
                     let key: String = (child as AnyObject).key
-                    if !strongSelf.pool.contains(key) {
-                        strongSelf.pool.append(key)
-                        strongSelf.pool = strongSelf.sortedPool
-                        if let i: Int = strongSelf.pool.index(of: key) {
+                    if !self.pool.contains(key) {
+                        self.pool.append(key)
+                        self.pool = self.sortedPool
+                        if let i: Int = self.pool.index(of: key) {
                             changes.append(i)
                         }
                     }
@@ -230,10 +232,10 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             } else {
                 for (_, child) in snapshot.children.reversed().enumerated() {
                     let key: String = (child as AnyObject).key
-                    if !strongSelf.pool.contains(key) {
-                        strongSelf.pool.append(key)
-                        strongSelf.pool = strongSelf.sortedPool
-                        if let i: Int = strongSelf.pool.index(of: key) {
+                    if !self.pool.contains(key) {
+                        self.pool.append(key)
+                        self.pool = self.sortedPool
+                        if let i: Int = self.pool.index(of: key) {
                             changes.append(i)
                         }
                     }

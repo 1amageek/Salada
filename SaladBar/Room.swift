@@ -10,7 +10,7 @@ import Foundation
 
 class Room: Object {
 
-    dynamic var name: String?
-    dynamic var messages: Set<String> = []
+    @objc dynamic var name: String?
+    @objc dynamic var messages: Set<String> = []
 
 }

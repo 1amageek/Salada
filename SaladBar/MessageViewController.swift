@@ -63,7 +63,7 @@ class MessageViewController: ChatViewController {
         return barButtonItem
     }()
     
-    func send() {        
+    @objc func send() {        
         guard let text: String = self.toolBar.textView.text else {
             return
         }
@@ -77,14 +77,14 @@ class MessageViewController: ChatViewController {
         self.sendBarButtonItem.isEnabled = false
     }
 
-    func camera() {
+    @objc func camera() {
 //        let storyboard: UIStoryboard = UIStoryboard(name: "Camera", bundle: nil)
 //        let viewController: CameraViewController = storyboard.instantiateInitialViewController() as! CameraViewController
 //        viewController.room = self.room
 //        self.present(viewController, animated: true, completion: nil)
     }
     
-    func book() {
+    @objc func book() {
         
     }
     

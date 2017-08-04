@@ -20,18 +20,18 @@ class User: Object {
         return "v1"
     }
     
-    dynamic var name: String?
-    dynamic var age: Int = 0
-    dynamic var gender: String?
-    dynamic var groups: Set<String> = []
-    dynamic var items: [String] = []
-    dynamic var location: CLLocation?
-    dynamic var url: URL?
-    dynamic var birth: Date?
-    dynamic var thumbnail: File?
-    dynamic var cover: File?
-    dynamic var type: UserType = .first
-    dynamic var testItems: Set<String> = []
+    @objc dynamic var name: String?
+    @objc dynamic var age: Int = 0
+    @objc dynamic var gender: String?
+    @objc dynamic var groups: Set<String> = []
+    @objc dynamic var items: [String] = []
+    @objc dynamic var location: CLLocation?
+    @objc dynamic var url: URL?
+    @objc dynamic var birth: Date?
+    @objc dynamic var thumbnail: File?
+    @objc dynamic var cover: File?
+    @objc dynamic var type: UserType = .first
+    @objc dynamic var testItems: Set<String> = []
     
     var tempName: String? 
     

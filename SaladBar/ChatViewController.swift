@@ -66,11 +66,11 @@ class ChatViewController: UIViewController, UICollectionViewDelegate {
     
     private var keyboardHeight: CGFloat = 0
     
-    final func keyboardWillShow(notification: Notification) {
+    @objc final func keyboardWillShow(notification: Notification) {
         moveToolbar(up: true, notification: notification)
     }
     
-    final func keyboardWillHide(notification: Notification) {
+    @objc final func keyboardWillHide(notification: Notification) {
         moveToolbar(up: false, notification: notification)
     }
     

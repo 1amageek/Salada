@@ -9,6 +9,6 @@
 import Foundation
 
 class Group: Object {
-    dynamic var name: String?
-    dynamic var users: Set<String> = []
+    @objc dynamic var name: String?
+    @objc dynamic var users: Set<String> = []
 }
