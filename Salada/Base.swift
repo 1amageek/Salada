@@ -13,6 +13,7 @@ public struct ObjectError: Error {
         case invalidId
         case invalidFile
         case timeout
+        case offlineTransaction
     }
     let kind: ErrorKind
     let description: String

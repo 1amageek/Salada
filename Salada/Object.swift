@@ -249,21 +249,6 @@ open class Object: Base, Referenceable {
                     return
                 }
 
-                // Relation
-                // TODO:
-                /*
-                 if let _: Relation = value as? Relation {
-                 if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
-
-                 let new: Relation = change[.newKey] as! Relation
-                 let old: Relation = change[.oldKey] as! Relation
-
-                 // TODO:
-                 }
-                 return
-                 }*/
-
-
                 if let values: [Any] = value as? [Any] {
                     if values.isEmpty { return }
                     updateValue(keyPath, child: nil, value: value)
@@ -322,6 +307,18 @@ open class Object: Base, Referenceable {
     @discardableResult
     public func save(_ completion: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
 
+        // Is Persistenced
+        if Salada.isPersistenced {
+            if completion != nil {
+                debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
+            }
+            return self._save(completion)
+        } else {
+            return self._save(completion)
+        }
+    }
+
+    private func _save(_ completion: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         let ref: DatabaseReference = self.ref
         if self.hasFiles {
             return self.saveFiles(block: { (error) in
@@ -333,7 +330,6 @@ open class Object: Base, Referenceable {
                 let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
                 value["_createdAt"] = timestamp
                 value["_updatedAt"] = timestamp
-
                 ref.setValue(value, withCompletionBlock: { (error, ref) in
                     type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
                         self.snapshot = snapshot
@@ -354,10 +350,56 @@ open class Object: Base, Referenceable {
             })
             return [:]
         }
-
     }
 
     // MARK: - Transaction
+
+    /**
+     Save failing when offline
+     */
+    public func transactionSave(block: @escaping (DataSnapshot?, Error?) -> Void) -> [String: StorageUploadTask] {
+        return self._transactionSave(block: block)
+    }
+
+    private func _transactionSave(block: @escaping (DataSnapshot?, Error?) -> Void) -> [String: StorageUploadTask] {
+        let ref: DatabaseReference = self.ref
+        var value: [AnyHashable: Any] = self.value
+        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+        value["_createdAt"] = timestamp
+        value["_updatedAt"] = timestamp
+        if self.hasFiles {
+            return self.saveFiles(block: { (error) in
+                if let error = error {
+                    block(nil, error)
+                    return
+                }
+                ref.runTransactionBlock({ (currentData) -> TransactionResult in
+                    currentData.value = value
+                    return .success(withValue: currentData)
+                }, andCompletionBlock: { (error, committed, snapshot) in
+                    if committed {
+                        block(snapshot, nil)
+                    } else {
+                        let error: ObjectError = ObjectError(kind: .offlineTransaction, description: "A transaction can not be executed when it is offline.")
+                        block(snapshot, error)
+                    }
+                }, withLocalEvents: false)
+            })
+        } else {
+            ref.runTransactionBlock({ (currentData) -> TransactionResult in
+                currentData.value = value
+                return .success(withValue: currentData)
+            }, andCompletionBlock: { (error, committed, snapshot) in
+                if committed {
+                    block(snapshot, nil)
+                } else {
+                    let error: ObjectError = ObjectError(kind: .offlineTransaction, description: "A transaction can not be executed when it is offline.")
+                    block(snapshot, error)
+                }
+            }, withLocalEvents: false)
+            return [:]
+        }
+    }
 
     /**
      Set new value. Save will fail in the off-line.
@@ -365,24 +407,14 @@ open class Object: Base, Referenceable {
      - parameter value:
      - parameter completion: If successful reference will return. An error will return if it fails.
      */
-    // TODO: transaction functions
-//    private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
-//
-//    public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {
-//        self.transactionBlock = completion
-//        self.setValue(value, forKey: key)
-//    }
-//
-//    public func runTransaction(block: () -> Void) {
-//        self.ref.runTransactionBlock({ (currentData) -> TransactionResult in
-//
-//
-//
-//            return .success(withValue: currentData)
-//        }, andCompletionBlock: { (error, committed, snapshot) in
-//
-//        })
-//    }
+    private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
+
+    public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {
+        self.transactionBlock = completion
+        self.setValue(value, forKey: key)
+    }
+
+
 
     // MARK: - Remove
 

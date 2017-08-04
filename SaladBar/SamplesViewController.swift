@@ -53,7 +53,10 @@ class SamplesViewController: UITableViewController {
             let storyboard: UIStoryboard = UIStoryboard(name: "SimpleModelViewController", bundle: nil)
             let viewController: SimpleModelViewController = storyboard.instantiateInitialViewController() as! SimpleModelViewController
             self.navigationController?.pushViewController(viewController, animated: true)
-        case .relation: break
+        case .relation:
+            let storyboard: UIStoryboard = UIStoryboard(name: "UserGroupRelationViewController", bundle: nil)
+            let viewController: UserGroupRelationViewController = storyboard.instantiateInitialViewController() as! UserGroupRelationViewController
+            self.navigationController?.pushViewController(viewController, animated: true)
         case .dataSource: break
         default: break
         }

@@ -39,8 +39,32 @@ class UserGroupRelationViewController: UIViewController {
         group.users.insert(user.id)
         user.groups.insert(group.id)
 
-        group.save()
-        user.save()
+        /*
+         There are three Coding methods.
+         Behavior changes in off-line
+         */
+
+        // 1.
+//        group.save { (ref, error) in
+//            if let error = error {
+//                debugPrint(error)
+//                return
+//            }
+//            user.save()
+//        }
+
+        // 2.
+//        group.save()
+//        user.save()
+
+        // 3.
+        group.transactionSave { (snapshot, error) in
+            if let error = error {
+                debugPrint(error)
+                return
+            }
+            user.save()
+        }
 
     }
 }
