@@ -320,16 +320,16 @@ open class Object: Base, Referenceable {
 
     private func _save(_ completion: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         let ref: DatabaseReference = self.ref
+        var value: [AnyHashable: Any] = self.value
+        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+        value["_createdAt"] = timestamp
+        value["_updatedAt"] = timestamp
         if self.hasFiles {
             return self.saveFiles(block: { (error) in
                 if let error = error {
                     completion?(ref, error)
                     return
                 }
-                var value: [AnyHashable: Any] = self.value
-                let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-                value["_createdAt"] = timestamp
-                value["_updatedAt"] = timestamp
                 ref.setValue(value, withCompletionBlock: { (error, ref) in
                     type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
                         self.snapshot = snapshot
@@ -338,10 +338,6 @@ open class Object: Base, Referenceable {
                 })
             })
         } else {
-            var value: [AnyHashable: Any] = self.value
-            let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-            value["_createdAt"] = timestamp
-            value["_updatedAt"] = timestamp
             ref.setValue(value, withCompletionBlock: { (error, ref) in
                 type(of: self).databaseRef.child(ref.key).observeSingleEvent(of: .value, with: { (snapshot) in
                     self.snapshot = snapshot
@@ -413,8 +409,6 @@ open class Object: Base, Referenceable {
         self.transactionBlock = completion
         self.setValue(value, forKey: key)
     }
-
-
 
     // MARK: - Remove
 
