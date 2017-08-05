@@ -27,44 +27,29 @@ class UserGroupRelationViewController: UIViewController {
             return
         }
 
+        let image: UIImage = #imageLiteral(resourceName: "salada")
+        let data: Data = UIImageJPEGRepresentation(image, 0.3)!
         let group: Group = Group()
         group.name = groupName
-        let user: User = User()
-        user.name = userName
-        if let age: String = self.userAgeTextField.text {
-            user.age = Int(age) ?? 0
-        }
-
-        // Cross reference
-        group.users.insert(user.id)
-        user.groups.insert(group.id)
-
-        /*
-         There are three Coding methods.
-         Behavior changes in off-line
-         */
-
-        // 1.
+        group.cover = File(data: data, mimeType: .jpeg)
         group.save { (ref, error) in
             if let error = error {
                 debugPrint(error)
                 return
             }
-            user.save()
+            let user: User = User()
+            user.name = userName
+            user.groups.insert(group.id)
+            if let age: String = self.userAgeTextField.text {
+                user.age = Int(age) ?? 0
+            }
+            user.save({ (ref, error) in
+                if let error = error {
+                    debugPrint(error)
+                    return
+                }
+                group.users.insert(user.id)
+            })
         }
-
-        // 2.
-//        group.save()
-//        user.save()
-
-        // 3.
-//        group.transactionSave { (snapshot, error) in
-//            if let error = error {
-//                debugPrint(error)
-//                return
-//            }
-//            user.save()
-//        }
-
     }
 }

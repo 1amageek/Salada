@@ -18,7 +18,7 @@ public class SaladaApp: NSObject {
     private override init() {
         super.init()
         _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
-            debugPrint("[Salada] .info/connected", snapshot)
+            //debugPrint("[Salada] .info/connected", snapshot)
             self.isConnected = snapshot.value as? Bool ?? false
         }
     }
