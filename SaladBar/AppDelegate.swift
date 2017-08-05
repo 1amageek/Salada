@@ -16,7 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-        Salada.configure(isPersistenceEnabled: true)
+        Database.database().isPersistenceEnabled = true
+        SaladaApp.configure()
 
         let viewController: SamplesViewController = SamplesViewController()
         let navigationController: UINavigationController = UINavigationController(rootViewController: viewController)

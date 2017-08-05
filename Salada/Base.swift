@@ -283,7 +283,7 @@ open class Base: NSObject {
         super.init()
         _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
             debugPrint("[Salada.Base] .info/connected", snapshot)
-            self.isConnected = snapshot.value as? Bool ?? Salada.shared.isConnected
+            self.isConnected = snapshot.value as? Bool ?? SaladaApp.shared.isConnected
         }
     }
 

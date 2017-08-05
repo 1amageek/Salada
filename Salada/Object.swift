@@ -308,7 +308,7 @@ open class Object: Base, Referenceable {
     public func save(_ completion: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
 
         // Is Persistenced
-        if Salada.isPersistenced {
+        if SaladaApp.isPersistenced {
             if let completion = completion {
 //                debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
                 return self._transactionSave(completion)
