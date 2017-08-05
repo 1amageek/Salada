@@ -11,21 +11,35 @@ import Firebase
 
 class Salada: NSObject {
 
-    static let shared: Salada = Salada()
+    private(set) static var shared: Salada = Salada()
 
     private(set) var isConnected: Bool = false
 
-    class func configure(isPersistenceEnabled: Bool = false) {
-        let shared = Salada.shared
+    override init() {
+        super.init()
+    }
+
+    convenience init(isPersistenceEnabled: Bool = false) {
+        self.init()
         Database.database().isPersistenceEnabled = isPersistenceEnabled
-        Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
+        _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
             debugPrint("[Salada] .info/connected", snapshot)
-            shared.isConnected = snapshot.value as? Bool ?? false
+            self.isConnected = snapshot.value as? Bool ?? false
         }
+    }
+
+    class func configure(isPersistenceEnabled: Bool = false) {
+        self.shared = Salada(isPersistenceEnabled: isPersistenceEnabled)
     }
 
     class var isPersistenced: Bool {
         return Database.database().isPersistenceEnabled
+    }
+
+    private(set) var _connectedHandle: DatabaseHandle!
+
+    deinit {
+        Database.database().reference(withPath: ".info/connected").removeObserver(withHandle: _connectedHandle)
     }
 
 }

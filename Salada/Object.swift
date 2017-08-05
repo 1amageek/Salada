@@ -309,20 +309,9 @@ open class Object: Base, Referenceable {
 
         // Is Persistenced
         if Salada.isPersistenced {
-//            if completion != nil {
-//                debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
-//            }
-//            return self._save(completion)
-//            return self._transactionSave(block: completion)
             if let completion = completion {
-                if isConnected {
-                    return self._save(completion)
-                } else {
-                    debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
-                    let error: ObjectError = ObjectError(kind: .offlineTransaction, description: "Completion processing will be lost.")
-                    completion(nil, error)
-                    return [:]
-                }
+//                debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
+                return self._transactionSave(completion)
             }
             return self._save(nil)
         } else {
@@ -365,11 +354,11 @@ open class Object: Base, Referenceable {
     /**
      Save failing when offline
      */
-    public func transactionSave(block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
-        return self._transactionSave(block: block)
+    public func transactionSave(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
+        return self._transactionSave(block)
     }
 
-    private func _transactionSave(block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
+    private func _transactionSave(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         let ref: DatabaseReference = self.ref
         var value: [AnyHashable: Any] = self.value
         let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
