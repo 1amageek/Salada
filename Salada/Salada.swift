@@ -9,13 +9,19 @@
 import Foundation
 import Firebase
 
-class Salada {
+class Salada: NSObject {
 
     static let shared: Salada = Salada()
 
+    private(set) var isConnected: Bool = false
+
     class func configure(isPersistenceEnabled: Bool = false) {
-        _ = Salada.shared
+        let shared = Salada.shared
         Database.database().isPersistenceEnabled = isPersistenceEnabled
+        Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
+            debugPrint("[Salada] .info/connected", snapshot)
+            shared.isConnected = snapshot.value as? Bool ?? false
+        }
     }
 
     class var isPersistenced: Bool {

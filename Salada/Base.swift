@@ -14,6 +14,7 @@ public struct ObjectError: Error {
         case invalidFile
         case timeout
         case offlineTransaction
+        case lostCompletion
     }
     let kind: ErrorKind
     let description: String
@@ -276,6 +277,20 @@ open class Base: NSObject {
         }
     }
 
+    private(set) var _connectedHandle: DatabaseHandle!
+
+    public override init() {
+        super.init()
+        _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
+            debugPrint("[Salada.Base] .info/connected", snapshot)
+            self.isConnected = snapshot.value as? Bool ?? Salada.shared.isConnected
+        }
+    }
+
+    deinit {
+        Database.database().reference(withPath: ".info/connected").removeObserver(withHandle: _connectedHandle)
+    }
+
     open class var _version: String {
         return "v1"
     }
@@ -287,6 +302,8 @@ open class Base: NSObject {
     open class var _path: String {
         return "\(self._version)/\(self._modelName)"
     }
+
+    private(set) var isConnected: Bool = false
 
     public static var database: DatabaseReference { return Database.database().reference() }
 

@@ -309,10 +309,22 @@ open class Object: Base, Referenceable {
 
         // Is Persistenced
         if Salada.isPersistenced {
-            if completion != nil {
-                debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
+//            if completion != nil {
+//                debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
+//            }
+//            return self._save(completion)
+//            return self._transactionSave(block: completion)
+            if let completion = completion {
+                if isConnected {
+                    return self._save(completion)
+                } else {
+                    debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
+                    let error: ObjectError = ObjectError(kind: .offlineTransaction, description: "Completion processing will be lost.")
+                    completion(nil, error)
+                    return [:]
+                }
             }
-            return self._save(completion)
+            return self._save(nil)
         } else {
             return self._save(completion)
         }
@@ -353,11 +365,11 @@ open class Object: Base, Referenceable {
     /**
      Save failing when offline
      */
-    public func transactionSave(block: @escaping (DataSnapshot?, Error?) -> Void) -> [String: StorageUploadTask] {
+    public func transactionSave(block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         return self._transactionSave(block: block)
     }
 
-    private func _transactionSave(block: @escaping (DataSnapshot?, Error?) -> Void) -> [String: StorageUploadTask] {
+    private func _transactionSave(block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         let ref: DatabaseReference = self.ref
         var value: [AnyHashable: Any] = self.value
         let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
@@ -366,7 +378,7 @@ open class Object: Base, Referenceable {
         if self.hasFiles {
             return self.saveFiles(block: { (error) in
                 if let error = error {
-                    block(nil, error)
+                    block?(nil, error)
                     return
                 }
                 ref.runTransactionBlock({ (currentData) -> TransactionResult in
@@ -374,10 +386,10 @@ open class Object: Base, Referenceable {
                     return .success(withValue: currentData)
                 }, andCompletionBlock: { (error, committed, snapshot) in
                     if committed {
-                        block(snapshot, nil)
+                        block?(snapshot?.ref, nil)
                     } else {
                         let error: ObjectError = ObjectError(kind: .offlineTransaction, description: "A transaction can not be executed when it is offline.")
-                        block(snapshot, error)
+                        block?(nil, error)
                     }
                 }, withLocalEvents: false)
             })
@@ -387,10 +399,10 @@ open class Object: Base, Referenceable {
                 return .success(withValue: currentData)
             }, andCompletionBlock: { (error, committed, snapshot) in
                 if committed {
-                    block(snapshot, nil)
+                    block?(snapshot?.ref, nil)
                 } else {
                     let error: ObjectError = ObjectError(kind: .offlineTransaction, description: "A transaction can not be executed when it is offline.")
-                    block(snapshot, error)
+                    block?(nil, error)
                 }
             }, withLocalEvents: false)
             return [:]

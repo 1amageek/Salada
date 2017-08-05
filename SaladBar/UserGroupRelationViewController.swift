@@ -45,26 +45,26 @@ class UserGroupRelationViewController: UIViewController {
          */
 
         // 1.
-//        group.save { (ref, error) in
-//            if let error = error {
-//                debugPrint(error)
-//                return
-//            }
-//            user.save()
-//        }
-
-        // 2.
-//        group.save()
-//        user.save()
-
-        // 3.
-        group.transactionSave { (snapshot, error) in
+        group.save { (ref, error) in
             if let error = error {
                 debugPrint(error)
                 return
             }
             user.save()
         }
+
+        // 2.
+//        group.save()
+//        user.save()
+
+        // 3.
+//        group.transactionSave { (snapshot, error) in
+//            if let error = error {
+//                debugPrint(error)
+//                return
+//            }
+//            user.save()
+//        }
 
     }
 }
