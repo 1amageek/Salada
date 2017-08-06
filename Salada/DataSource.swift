@@ -35,6 +35,7 @@ public enum SaladaCollectionChange {
 public class SaladaOptions {
     public var limit: UInt = 30
     public var ascending: Bool = false
+    public var predicate: NSPredicate?
     public init() { }
 }
 
@@ -95,6 +96,12 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
 
     private var changedBlock: (SaladaCollectionChange) -> Void
 
+    public var pool: [Child] = []
+
+    public var sortedPool: [Child] {
+        return self.pool
+    }
+
     /**
      
      DataSource observes its value by defining a parent-child relationship.
@@ -140,25 +147,36 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             self.addReference = addReference
             self.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
                 guard let `self` = self else { return }
-                objc_sync_enter(self)
                 let key: String = snapshot.key
                 if !self.keys.contains(key) {
                     self.keys.append(key)
                     self.keys = self.sortedKeys
-                    if let i: Int = self.keys.index(of: key) {
-                        block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
-                    }
+                    Child.observeSingle(key, eventType: .value, block: { (child) in
+                        guard let child: Child = child else {
+                            return
+                        }
+                        self.pool.append(child)
+                        _ = self.pool.sort(sortDescriptors: [])
+                        if let i: Int = self.pool.index(of: child) {
+                            block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                        }
+                    })
                 }
-                objc_sync_exit(self)
                 }, withCancel: { (error) in
                     block(SaladaCollectionChange(change: nil, error: error))
             })
 
             // change
             self.changedHandle = self.reference.observe(.childChanged, with: { (snapshot) in
-                if let i: Int = self.keys.index(of: snapshot.key) {
-                    block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
-                }
+                let key: String = snapshot.key
+                Child.observeSingle(key, eventType: .value, block: { (child) in
+                    guard let child: Child = child else { return }
+                    self.pool.append(child)
+                    _ = self.pool.sort(sortDescriptors: [])
+                    if let i: Int = self.pool.index(of: child) {
+                        block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                    }
+                })
             }, withCancel: { (error) in
                 block(SaladaCollectionChange(change: nil, error: error))
             })
@@ -166,13 +184,14 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             // remove
             self.removedHandle = self.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
                 guard let `self` = self else { return }
-                objc_sync_enter(self)
-                if let i: Int = self.keys.index(of: snapshot.key) {
+                let key: String = snapshot.key
+                if let i: Int = self.keys.index(of: key) {
                     self.removeObserver(at: i)
                     self.keys.remove(at: i)
+                }
+                if let i: Int = self.pool.index(of: key) {
                     block(SaladaCollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
-                objc_sync_exit(self)
                 }, withCancel: { (error) in
                     block(SaladaCollectionChange(change: nil, error: error))
             })
@@ -383,5 +402,15 @@ extension DataSource: Collection {
     public subscript(index: Int) -> String {
         return self.keys[index]
     }
+}
 
+extension Array where Element: Object {
+
+    public var keys: [String] {
+        return self.flatMap { return $0.id }
+    }
+
+    public func index(of key: String) -> Int? {
+        return self.keys.index(of: key)
+    }
 }
