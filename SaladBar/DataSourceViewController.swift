@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  DataSourceViewController.swift
 //  SaladBar
 //
 //  Created by 1amageek on 2016/09/23.
@@ -11,52 +11,8 @@ import Firebase
 import FirebaseDatabase
 import CoreLocation
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
-    @IBAction func prev(_ sender: AnyObject) {
-        self.datasource?.prev()
-    }
-    @IBOutlet weak var addButton: UIBarButtonItem!
-    
-    var groupID: String? {
-        didSet {
-            self.addButton.isEnabled = true
-        }
-    }
-    
-    @IBAction func add(_ sender: AnyObject) {
-        if let id: String = self.groupID {
-            
-            Group.observeSingle(id, eventType: .value, block: { (group) in
-                
-                guard let group: Group = group else { return }
-                
-                let user: User = User()
-//                let image: UIImage = UIImage(named: "salada")!
-//                let data: Data = UIImagePNGRepresentation(image)!
-//                let thumbnail: Salada.File = Salada.File(name: "salada.png", data: data)
-//                thumbnail.data = data
-//                user.thumbnail = thumbnail
-                user.tempName = "Test1_name"
-                user.name = "Spider man"
-                user.gender = "man"
-                user.age = 22
-                user.url = URL(string: "https://www.google.co.jp/")
-                user.items = ["Book", "Pen"]
-                user.groups.insert(id)
-                user.location = CLLocation(latitude: 1, longitude: 1)
-                user.type = .second
-                user.birth = Date()
-                user.save({ (ref, error) in
-                    if let ref = ref {
-                        group.users.insert(ref.key)
-                    }
-                })
-            })
-            
-        }
-    }
-    
+class DataSourceViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
     lazy var tableView: UITableView = {
         let view: UITableView = UITableView(frame: self.view.bounds, style: .grouped)
         view.dataSource = self
@@ -78,12 +34,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        self.addButton.isEnabled = false
         let group: Group = Group()
         group.name = "iOS Development Team"
         group.save { [weak self](ref, error) in
-                    
-            self?.groupID = ref!.key
             
             self?.setupDatasource(key: ref!.key)
             

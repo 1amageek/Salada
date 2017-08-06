@@ -57,7 +57,9 @@ class SamplesViewController: UITableViewController {
             let storyboard: UIStoryboard = UIStoryboard(name: "UserGroupRelationViewController", bundle: nil)
             let viewController: UserGroupRelationViewController = storyboard.instantiateInitialViewController() as! UserGroupRelationViewController
             self.navigationController?.pushViewController(viewController, animated: true)
-        case .dataSource: break
+        case .dataSource:
+            let viewController: DataSourceViewController = DataSourceViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
         default: break
         }
     }

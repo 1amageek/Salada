@@ -49,6 +49,7 @@ class UserGroupRelationViewController: UIViewController {
                     return
                 }
                 group.users.insert(user.id)
+                self.messageLabel.text = "Success! Show your firebase console"
             })
         }
     }
