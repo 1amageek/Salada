@@ -31,45 +31,48 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(prev))
         self.view.backgroundColor = UIColor.white
-        let group: Group = Group()
-        group.name = "iOS Development Team"
-        group.save { [weak self](ref, error) in
-            
-            self?.setupDatasource(key: ref!.key)
-            
-            (0..<6).forEach({ (index) in
-                let user: User = User()
-                let image: UIImage = #imageLiteral(resourceName: "salada")
-                let data: Data = UIImageJPEGRepresentation(image, 1)!
-                user.thumbnail = File(data: data, mimeType: .jpeg)
-                user.tempName = "Test1_name"
-                user.name = "\(index)"
-                user.gender = "man"
-                user.age = index
-                user.url = URL(string: "https://www.google.co.jp/")
-                user.items = ["Book", "Pen"]
-                user.groups.insert(ref!.key)
-                user.location = CLLocation(latitude: 1, longitude: 1)
-                user.type = .second
-                user.birth = Date()
-                user.save({ (ref, error) in
-                    if let error: Error = error {
-                        print(error)
-                        return
-                    }
-                    group.users.insert(ref!.key)
-                    
-                })
-            })
 
-        }
+        self.setupDatasource(key: "-KqruHEZWpRX2Dh_6FXt")
+
+//        let group: Group = Group()
+//        group.name = "iOS Development Team"
+//        group.save { [weak self](ref, error) in
+//
+//            self?.setupDatasource(key: ref!.key)
+//
+//            (0..<30).forEach({ (index) in
+//                let user: User = User()
+//                let image: UIImage = #imageLiteral(resourceName: "salada")
+//                let data: Data = UIImageJPEGRepresentation(image, 1)!
+//                user.thumbnail = File(data: data, mimeType: .jpeg)
+//                user.tempName = "Test1_name"
+//                user.name = "\(index)"
+//                user.gender = "man"
+//                user.age = index
+//                user.url = URL(string: "https://www.google.co.jp/")
+//                user.items = ["Book", "Pen"]
+//                user.groups.insert(ref!.key)
+//                user.location = CLLocation(latitude: 1, longitude: 1)
+//                user.type = .second
+//                user.birth = Date()
+//                user.save({ (ref, error) in
+//                    if let error: Error = error {
+//                        print(error)
+//                        return
+//                    }
+//                    group.users.insert(ref!.key)
+//
+//                })
+//            })
+//
+//        }
     }
 
     func setupDatasource(key: String) {
         let options: SaladaOptions = SaladaOptions()
         options.limit = 10
-        options.ascending = false
 
         self.datasource = DataSource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
             guard let tableView: UITableView = self?.tableView else { return }
@@ -87,6 +90,10 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
                 print(error)
             }
         })
+    }
+
+    @objc func prev() {
+        self.datasource?.prev()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

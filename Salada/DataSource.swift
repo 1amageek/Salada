@@ -38,9 +38,6 @@ public class SaladaOptions {
     public var limit: UInt = 30
 
     /// Sort order
-    public var ascending: Bool = false
-
-    /// Sort order
     public var sortDescirptors: [NSSortDescriptor] = [NSSortDescriptor(key: "id", ascending: false)]
 
     public init() { }
@@ -85,19 +82,22 @@ public class DataSource<T, U> where T: Object, U: Object {
 
     private var isFirst: Bool = false
 
-    // Firebase firstKey
+    /// Firebase firstKey. Recently Created Key
     private var firstKey: String? {
-        return self.options.ascending ? self.keys.last : self.keys.first
+        //return self.options.ascending ? self.keys.last : self.keys.first
+        return self.keys.first
     }
 
-    // Firebase lastKey
+    /// Firebase lastKey. The oldest Key in keys
     private var lastKey: String? {
-        return self.options.ascending ? self.keys.first : self.keys.last
+        //return self.options.ascending ? self.keys.first : self.keys.last
+        return self.keys.last
     }
 
     // Sorted keys
     private var sortedKeys: [String] {
-        return self.keys.sorted { self.options.ascending ? $0 < $1 : $0 > $1 }
+        //return self.keys.sorted { self.options.ascending ? $0 < $1 : $0 > $1 }
+        return self.keys.sorted { $0 > $1 }
     }
 
     internal var keys: [String] = []
@@ -142,8 +142,8 @@ public class DataSource<T, U> where T: Object, U: Object {
 
             // add
             var addReference: DatabaseQuery = self.reference
-            if let fiarstKey: String = self.keys.first {
-                addReference = addReference.queryOrderedByKey().queryStarting(atValue: fiarstKey)
+            if let firstKey: String = self.keys.first {
+                addReference = addReference.queryOrderedByKey().queryStarting(atValue: firstKey)
             }
             self.addReference = addReference
             self.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
@@ -157,7 +157,7 @@ public class DataSource<T, U> where T: Object, U: Object {
                             return
                         }
                         self.pool.append(child)
-                        _ = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
+                        self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
                         if let i: Int = self.pool.index(of: child) {
                             block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                         }
@@ -173,7 +173,7 @@ public class DataSource<T, U> where T: Object, U: Object {
                 Child.observeSingle(key, eventType: .value, block: { (child) in
                     guard let child: Child = child else { return }
                     self.pool.append(child)
-                    _ = self.pool.sort(sortDescriptors: [])
+                    self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
                     if let i: Int = self.pool.index(of: child) {
                         block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                     }
@@ -238,7 +238,7 @@ public class DataSource<T, U> where T: Object, U: Object {
             }
 
             var changes: [Int] = []
-            if self.options.ascending {
+            //if self.options.ascending {
                 for (_, child) in snapshot.children.enumerated() {
                     let key: String = (child as AnyObject).key
                     if !self.keys.contains(key) {
@@ -249,18 +249,18 @@ public class DataSource<T, U> where T: Object, U: Object {
                         }
                     }
                 }
-            } else {
-                for (_, child) in snapshot.children.reversed().enumerated() {
-                    let key: String = (child as AnyObject).key
-                    if !self.keys.contains(key) {
-                        self.keys.append(key)
-                        self.keys = self.sortedKeys
-                        if let i: Int = self.keys.index(of: key) {
-                            changes.append(i)
-                        }
-                    }
-                }
-            }
+//            } else {
+//                for (_, child) in snapshot.children.reversed().enumerated() {
+//                    let key: String = (child as AnyObject).key
+//                    if !self.keys.contains(key) {
+//                        self.keys.append(key)
+//                        self.keys = self.sortedKeys
+//                        if let i: Int = self.keys.index(of: key) {
+//                            changes.append(i)
+//                        }
+//                    }
+//                }
+//            }
             block?((deletions: [], insertions: changes, modifications: []), nil)
         }) { (error) in
             block?(nil, error)
