@@ -29,8 +29,6 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         self.view.addSubview(tableView)
     }
     
-    var dbRef: DatabaseReference!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
@@ -40,7 +38,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
             
             self?.setupDatasource(key: ref!.key)
             
-            (0..<20).forEach({ (index) in
+            (0..<6).forEach({ (index) in
                 let user: User = User()
                 let image: UIImage = #imageLiteral(resourceName: "salada")
                 let data: Data = UIImageJPEGRepresentation(image, 1)!
@@ -102,30 +100,48 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
-        self.datasource?.observeObject(at: indexPath.item, block: { (user) in
-            cell.imageView?.image = nil
-            cell.imageView?.contentMode = .scaleAspectFill
-            cell.textLabel?.text = user?.name
-            cell.setNeedsLayout()
+        let user: User = self.datasource![indexPath.item]
+        cell.imageView?.contentMode = .scaleAspectFill
+        cell.textLabel?.text = user.name
+        cell.setNeedsLayout()
+//
+//        if let ref: StorageReference = user.thumbnail?.ref {
+//            ref.getData(maxSize: Int64(10e9), completion: { (data, error) in
+//                if let error = error {
+//                    debugPrint(error)
+//                    return
+//                }
+//                let image: UIImage = UIImage(data: data!)!
+//                cell.imageView?.image = image
+//                cell.imageView?.setNeedsDisplay()
+//                cell.setNeedsLayout()
+//            })
+//        }
 
-            if let ref: StorageReference = user?.thumbnail?.ref {
-                ref.getData(maxSize: Int64(10e9), completion: { (data, error) in
-                    if let error = error {
-                        debugPrint(error)
-                        return
-                    }
-                    let image: UIImage = UIImage(data: data!)!
-                    cell.imageView?.image = image
-                    cell.imageView?.setNeedsDisplay()
-                    cell.setNeedsLayout()
-                })
-            }
-
-        })
+//        self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+//            cell.imageView?.image = nil
+//            cell.imageView?.contentMode = .scaleAspectFill
+//            cell.textLabel?.text = user?.name
+//            cell.setNeedsLayout()
+//
+//            if let ref: StorageReference = user?.thumbnail?.ref {
+//                ref.getData(maxSize: Int64(10e9), completion: { (data, error) in
+//                    if let error = error {
+//                        debugPrint(error)
+//                        return
+//                    }
+//                    let image: UIImage = UIImage(data: data!)!
+//                    cell.imageView?.image = image
+//                    cell.imageView?.setNeedsDisplay()
+//                    cell.setNeedsLayout()
+//                })
+//            }
+//
+//        })
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        self.datasource?.removeObserver(at: indexPath.item)
+        //self.datasource?.removeObserver(at: indexPath.item)
     }
     
     func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {

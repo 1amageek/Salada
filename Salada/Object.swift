@@ -35,7 +35,7 @@ open class Object: Base, Referenceable {
     public let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
 
     /// The IndexKey of the Object.
-    public var id: String
+    @objc public var id: String
 
     /// A reference to Object.
     private(set) var ref: DatabaseReference

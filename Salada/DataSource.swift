@@ -33,9 +33,16 @@ public enum SaladaCollectionChange {
 }
 
 public class SaladaOptions {
+
+    /// Number to be referenced at one time
     public var limit: UInt = 30
+
+    /// Sort order
     public var ascending: Bool = false
-    public var predicate: NSPredicate?
+
+    /// Sort order
+    public var sortDescirptors: [NSSortDescriptor] = [NSSortDescriptor(key: "id", ascending: false)]
+
     public init() { }
 }
 
@@ -51,7 +58,7 @@ public class DataSource<T, U> where T: Object, U: Object {
     public var databaseRef: DatabaseReference { return Database.database().reference() }
 
     /// Count
-    public var count: Int { return keys.count }
+    public var count: Int { return pool.count }
 
     /// Reference of parent
     private(set) var parentRef: DatabaseReference
@@ -65,11 +72,8 @@ public class DataSource<T, U> where T: Object, U: Object {
     /// Key of the node to be reference
     private(set) var referenceKey: String
 
-    /// Number to be referenced at one time
-    private(set) var limit: UInt = 30
-
-    /// Sort order
-    private(set) var ascending: Bool = false
+    /// Options
+    private(set) var options: SaladaOptions
 
     private var addReference: DatabaseQuery?
 
@@ -83,17 +87,17 @@ public class DataSource<T, U> where T: Object, U: Object {
 
     // Firebase firstKey
     private var firstKey: String? {
-        return self.ascending ? self.keys.last : self.keys.first
+        return self.options.ascending ? self.keys.last : self.keys.first
     }
 
     // Firebase lastKey
     private var lastKey: String? {
-        return self.ascending ? self.keys.first : self.keys.last
+        return self.options.ascending ? self.keys.first : self.keys.last
     }
 
     // Sorted keys
     private var sortedKeys: [String] {
-        return self.keys.sorted { self.ascending ? $0 < $1 : $0 > $1 }
+        return self.keys.sorted { self.options.ascending ? $0 < $1 : $0 > $1 }
     }
 
     internal var keys: [String] = []
@@ -101,10 +105,6 @@ public class DataSource<T, U> where T: Object, U: Object {
     private var changedBlock: (SaladaCollectionChange) -> Void
 
     public var pool: [Child] = []
-
-    public var sortedPool: [Child] {
-        return self.pool
-    }
 
     /**
      
@@ -120,16 +120,13 @@ public class DataSource<T, U> where T: Object, U: Object {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-    public init(parentKey: String, referenceKey: String, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
-
-        if let options: SaladaOptions = options {
-            self.limit = options.limit
-            self.ascending = options.ascending
-        }
+    public init(parentKey: String, referenceKey: String, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
 
         self.parentKey = parentKey
 
         self.referenceKey = referenceKey
+
+        self.options = options
 
         self.parentRef = Parent.databaseRef.child(parentKey)
 
@@ -137,7 +134,7 @@ public class DataSource<T, U> where T: Object, U: Object {
 
         self.changedBlock = block
 
-        prev(at: nil, toLast: self.limit) { [weak self] (change, error) in
+        prev(at: nil, toLast: self.options.limit) { [weak self] (change, error) in
 
             block(SaladaCollectionChange(change: nil, error: error))
 
@@ -160,7 +157,7 @@ public class DataSource<T, U> where T: Object, U: Object {
                             return
                         }
                         self.pool.append(child)
-                        _ = self.pool.sort(sortDescriptors: [])
+                        _ = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
                         if let i: Int = self.pool.index(of: child) {
                             block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                         }
@@ -194,6 +191,7 @@ public class DataSource<T, U> where T: Object, U: Object {
                     self.keys.remove(at: i)
                 }
                 if let i: Int = self.pool.index(of: key) {
+                    self.pool.remove(at: i)
                     block(SaladaCollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
                 }, withCancel: { (error) in
@@ -206,7 +204,7 @@ public class DataSource<T, U> where T: Object, U: Object {
      It gets the oldest subsequent data of the data that are currently obtained.
      */
     public func prev() {
-        self.prev(at: self.lastKey, toLast: self.limit) { [weak self](change, error) in
+        self.prev(at: self.lastKey, toLast: self.options.limit) { [weak self](change, error) in
             guard let `self` = self else { return }
             self.changedBlock(SaladaCollectionChange(change: change, error: error))
         }
@@ -239,9 +237,8 @@ public class DataSource<T, U> where T: Object, U: Object {
                 self.isFirst = true
             }
 
-            objc_sync_enter(self)
             var changes: [Int] = []
-            if self.ascending {
+            if self.options.ascending {
                 for (_, child) in snapshot.children.enumerated() {
                     let key: String = (child as AnyObject).key
                     if !self.keys.contains(key) {
@@ -264,12 +261,10 @@ public class DataSource<T, U> where T: Object, U: Object {
                     }
                 }
             }
-            objc_sync_exit(self)
             block?((deletions: [], insertions: changes, modifications: []), nil)
         }) { (error) in
             block?(nil, error)
         }
-
     }
 
     /**
