@@ -46,7 +46,7 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
     public var databaseRef: DatabaseReference { return Database.database().reference() }
 
     /// Count
-    public var count: Int { return pool.count }
+    public var count: Int { return keys.count }
 
     /// Reference of parent
     private(set) var parentRef: DatabaseReference
@@ -78,20 +78,20 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
 
     // Firebase firstKey
     private var firstKey: String? {
-        return self.ascending ? self.pool.last : self.pool.first
+        return self.ascending ? self.keys.last : self.keys.first
     }
 
     // Firebase lastKey
     private var lastKey: String? {
-        return self.ascending ? self.pool.first : self.pool.last
+        return self.ascending ? self.keys.first : self.keys.last
     }
 
-    // Sorted pool
-    private var sortedPool: [String] {
-        return self.pool.sorted { self.ascending ? $0 < $1 : $0 > $1 }
+    // Sorted keys
+    private var sortedKeys: [String] {
+        return self.keys.sorted { self.ascending ? $0 < $1 : $0 > $1 }
     }
 
-    internal var pool: [String] = []
+    internal var keys: [String] = []
 
     private var changedBlock: (SaladaCollectionChange) -> Void
 
@@ -134,7 +134,7 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
 
             // add
             var addReference: DatabaseQuery = self.reference
-            if let fiarstKey: String = self.pool.first {
+            if let fiarstKey: String = self.keys.first {
                 addReference = addReference.queryOrderedByKey().queryStarting(atValue: fiarstKey)
             }
             self.addReference = addReference
@@ -142,10 +142,10 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
                 guard let `self` = self else { return }
                 objc_sync_enter(self)
                 let key: String = snapshot.key
-                if !self.pool.contains(key) {
-                    self.pool.append(key)
-                    self.pool = self.sortedPool
-                    if let i: Int = self.pool.index(of: key) {
+                if !self.keys.contains(key) {
+                    self.keys.append(key)
+                    self.keys = self.sortedKeys
+                    if let i: Int = self.keys.index(of: key) {
                         block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                     }
                 }
@@ -156,7 +156,7 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
 
             // change
             self.changedHandle = self.reference.observe(.childChanged, with: { (snapshot) in
-                if let i: Int = self.pool.index(of: snapshot.key) {
+                if let i: Int = self.keys.index(of: snapshot.key) {
                     block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                 }
             }, withCancel: { (error) in
@@ -167,9 +167,9 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             self.removedHandle = self.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
                 guard let `self` = self else { return }
                 objc_sync_enter(self)
-                if let i: Int = self.pool.index(of: snapshot.key) {
+                if let i: Int = self.keys.index(of: snapshot.key) {
                     self.removeObserver(at: i)
-                    self.pool.remove(at: i)
+                    self.keys.remove(at: i)
                     block(SaladaCollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
                 objc_sync_exit(self)
@@ -221,10 +221,10 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             if self.ascending {
                 for (_, child) in snapshot.children.enumerated() {
                     let key: String = (child as AnyObject).key
-                    if !self.pool.contains(key) {
-                        self.pool.append(key)
-                        self.pool = self.sortedPool
-                        if let i: Int = self.pool.index(of: key) {
+                    if !self.keys.contains(key) {
+                        self.keys.append(key)
+                        self.keys = self.sortedKeys
+                        if let i: Int = self.keys.index(of: key) {
                             changes.append(i)
                         }
                     }
@@ -232,10 +232,10 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             } else {
                 for (_, child) in snapshot.children.reversed().enumerated() {
                     let key: String = (child as AnyObject).key
-                    if !self.pool.contains(key) {
-                        self.pool.append(key)
-                        self.pool = self.sortedPool
-                        if let i: Int = self.pool.index(of: key) {
+                    if !self.keys.contains(key) {
+                        self.keys.append(key)
+                        self.keys = self.sortedKeys
+                        if let i: Int = self.keys.index(of: key) {
                             changes.append(i)
                         }
                     }
@@ -256,7 +256,7 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      - parameter block: block The block that should be called. If there is an error it returns an error.
      */
     public func removeObject(at index: Int, cascade: Bool, block: @escaping (String, Error?) -> Void) {
-        let key: String = self.pool[index]
+        let key: String = self.keys[index]
 
         if cascade {
             let parentPath: AnyHashable = "/\(Parent._path)/\(parentKey)/\(self.reference.key)/\(key)"
@@ -286,8 +286,8 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      - parameter index: Order of the data source
      */
     public func removeObserver(at index: Int) {
-        if index < self.pool.count {
-            let key: String = self.pool[index]
+        if index < self.keys.count {
+            let key: String = self.keys[index]
             Child.databaseRef.child(key).removeAllObservers()
         }
     }
@@ -298,7 +298,7 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      */
     public func object(at index: Int, block: @escaping (Child?) -> Void) {
-        let key: String = self.pool[index]
+        let key: String = self.keys[index]
         Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
             if snapshot.exists() {
                 if let tsp: Child = Child(snapshot: snapshot) {
@@ -318,7 +318,7 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      - see removeObserver
      */
     public func observeObject(at index: Int, block: @escaping (Child?) -> Void) {
-        let key: String = self.pool[index]
+        let key: String = self.keys[index]
         Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
             if snapshot.exists() {
                 if let tsp: Child = Child(snapshot: snapshot) {
@@ -359,7 +359,7 @@ extension DataSource: Collection {
     }
 
     public var endIndex: Int {
-        return self.pool.count
+        return self.keys.count
     }
 
     public func index(after i: Int) -> Int {
@@ -367,21 +367,21 @@ extension DataSource: Collection {
     }
 
     public var first: String? {
-        if 0 < self.pool.count {
-            return self.pool[startIndex]
+        if 0 < self.keys.count {
+            return self.keys[startIndex]
         }
         return nil
     }
 
     public var last: String? {
-        if 0 < self.pool.count {
-            return self.pool[endIndex - 1]
+        if 0 < self.keys.count {
+            return self.keys[endIndex - 1]
         }
         return nil
     }
 
     public subscript(index: Int) -> String {
-        return self.pool[index]
+        return self.keys[index]
     }
 
 }
