@@ -41,7 +41,11 @@ public class SaladaOptions {
 
 /// DataSource class.
 /// Observe at a Firebase DataSource location.
-public class DataSource<Parent, Child> where Parent: Object, Child: Object {
+public class DataSource<T, U> where T: Object, U: Object {
+
+    public typealias Parent = T
+
+    public typealias Child = U
 
     /// DatabaseReference
     public var databaseRef: DatabaseReference { return Database.database().reference() }
@@ -371,36 +375,36 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
  */
 extension DataSource: Collection {
 
-    public typealias Element = String
+    public typealias Element = DataSource.Child
 
     public var startIndex: Int {
         return 0
     }
 
     public var endIndex: Int {
-        return self.keys.count
+        return self.pool.count
     }
 
     public func index(after i: Int) -> Int {
         return i + 1
     }
 
-    public var first: String? {
-        if 0 < self.keys.count {
-            return self.keys[startIndex]
+    public var first: Element? {
+        if 0 < self.pool.count {
+            return self.pool[startIndex]
         }
         return nil
     }
 
-    public var last: String? {
-        if 0 < self.keys.count {
-            return self.keys[endIndex - 1]
+    public var last: Element? {
+        if 0 < self.pool.count {
+            return self.pool[endIndex - 1]
         }
         return nil
     }
 
-    public subscript(index: Int) -> String {
-        return self.keys[index]
+    public subscript(index: Int) -> Element {
+        return self.pool[index]
     }
 }
 
