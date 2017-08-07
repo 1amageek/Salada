@@ -15,6 +15,8 @@ public class SaladaApp: NSObject {
 
     private(set) var isConnected: Bool = false
 
+    public var timeout: Int = 20
+
     private override init() {
         super.init()
         _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in

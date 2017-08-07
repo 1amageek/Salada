@@ -33,20 +33,32 @@ public enum SaladaCollectionChange {
 }
 
 public class SaladaOptions {
+
+    /// Number to be referenced at one time
     public var limit: UInt = 30
-    public var ascending: Bool = false
+
+    /// Fetch timeout
+    public var timeout: Int = SaladaApp.shared.timeout
+
+    /// Sort order
+    public var sortDescirptors: [NSSortDescriptor] = [NSSortDescriptor(key: "id", ascending: false)]
+
     public init() { }
 }
 
 /// DataSource class.
 /// Observe at a Firebase DataSource location.
-public class DataSource<Parent, Child> where Parent: Object, Child: Object {
+public class DataSource<T, U> where T: Object, U: Object {
+
+    public typealias Parent = T
+
+    public typealias Child = U
 
     /// DatabaseReference
     public var databaseRef: DatabaseReference { return Database.database().reference() }
 
     /// Count
-    public var count: Int { return keys.count }
+    public var count: Int { return pool.count }
 
     /// Reference of parent
     private(set) var parentRef: DatabaseReference
@@ -60,11 +72,8 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
     /// Key of the node to be reference
     private(set) var referenceKey: String
 
-    /// Number to be referenced at one time
-    private(set) var limit: UInt = 30
-
-    /// Sort order
-    private(set) var ascending: Bool = false
+    /// Options
+    private(set) var options: SaladaOptions
 
     private var addReference: DatabaseQuery?
 
@@ -74,26 +83,39 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
 
     private var removedHandle: UInt?
 
-    private var isFirst: Bool = false
+    private var isFirst: Bool = true
 
-    // Firebase firstKey
+    /// Firebase firstKey. Recently Created Key
     private var firstKey: String? {
-        return self.ascending ? self.keys.last : self.keys.first
+        return self.keys.first
     }
 
-    // Firebase lastKey
+    /// Firebase lastKey. The oldest Key in keys
     private var lastKey: String? {
-        return self.ascending ? self.keys.first : self.keys.last
+        return self.keys.last
     }
 
     // Sorted keys
     private var sortedKeys: [String] {
-        return self.keys.sorted { self.ascending ? $0 < $1 : $0 > $1 }
+        //return self.keys.sorted { self.options.ascending ? $0 < $1 : $0 > $1 }
+        return self.keys.sorted { $0 > $1 }
     }
 
     internal var keys: [String] = []
 
     private var changedBlock: (SaladaCollectionChange) -> Void
+
+    public var pool: [Child] = [] {
+        didSet {
+            if oldValue.count < pool.count {
+
+            } else if oldValue.count > pool.count {
+
+            } else {
+
+            }
+        }
+    }
 
     /**
      
@@ -109,16 +131,13 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-    public init(parentKey: String, referenceKey: String, options: SaladaOptions?, block: @escaping (SaladaCollectionChange) -> Void ) {
-
-        if let options: SaladaOptions = options {
-            self.limit = options.limit
-            self.ascending = options.ascending
-        }
+    public init(parentKey: String, referenceKey: String, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
 
         self.parentKey = parentKey
 
         self.referenceKey = referenceKey
+
+        self.options = options
 
         self.parentRef = Parent.databaseRef.child(parentKey)
 
@@ -126,39 +145,52 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
 
         self.changedBlock = block
 
-        prev(at: nil, toLast: self.limit) { [weak self] (change, error) in
-
-            block(SaladaCollectionChange(change: nil, error: error))
+        prev(at: nil, toLast: self.options.limit) { [weak self] (change, error) in
 
             guard let `self` = self else { return }
 
+            // Called only once when initialized
+            // `changes` is always nil
+            block(SaladaCollectionChange(change: change, error: error))
+
             // add
             var addReference: DatabaseQuery = self.reference
-            if let fiarstKey: String = self.keys.first {
-                addReference = addReference.queryOrderedByKey().queryStarting(atValue: fiarstKey)
+            if let firstKey: String = self.keys.first {
+                addReference = addReference.queryOrderedByKey().queryStarting(atValue: firstKey)
             }
             self.addReference = addReference
             self.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
                 guard let `self` = self else { return }
-                objc_sync_enter(self)
                 let key: String = snapshot.key
                 if !self.keys.contains(key) {
                     self.keys.append(key)
                     self.keys = self.sortedKeys
-                    if let i: Int = self.keys.index(of: key) {
-                        block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
-                    }
+                    Child.observeSingle(key, eventType: .value, block: { (child) in
+                        guard let child: Child = child else {
+                            return
+                        }
+                        self.pool.append(child)
+                        self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
+                        if let i: Int = self.pool.index(of: child) {
+                            block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                        }
+                    })
                 }
-                objc_sync_exit(self)
                 }, withCancel: { (error) in
                     block(SaladaCollectionChange(change: nil, error: error))
             })
 
             // change
             self.changedHandle = self.reference.observe(.childChanged, with: { (snapshot) in
-                if let i: Int = self.keys.index(of: snapshot.key) {
-                    block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
-                }
+                let key: String = snapshot.key
+                Child.observeSingle(key, eventType: .value, block: { (child) in
+                    guard let child: Child = child else { return }
+                    self.pool.append(child)
+                    self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
+                    if let i: Int = self.pool.index(of: child) {
+                        block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                    }
+                })
             }, withCancel: { (error) in
                 block(SaladaCollectionChange(change: nil, error: error))
             })
@@ -166,13 +198,15 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             // remove
             self.removedHandle = self.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
                 guard let `self` = self else { return }
-                objc_sync_enter(self)
-                if let i: Int = self.keys.index(of: snapshot.key) {
+                let key: String = snapshot.key
+                if let i: Int = self.keys.index(of: key) {
                     self.removeObserver(at: i)
                     self.keys.remove(at: i)
+                }
+                if let i: Int = self.pool.index(of: key) {
+                    self.pool.remove(at: i)
                     block(SaladaCollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                 }
-                objc_sync_exit(self)
                 }, withCancel: { (error) in
                     block(SaladaCollectionChange(change: nil, error: error))
             })
@@ -183,11 +217,13 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      It gets the oldest subsequent data of the data that are currently obtained.
      */
     public func prev() {
-        self.prev(at: self.lastKey, toLast: self.limit) { [weak self](change, error) in
+        self.prev(at: self.lastKey, toLast: self.options.limit) { [weak self](change, error) in
             guard let `self` = self else { return }
             self.changedBlock(SaladaCollectionChange(change: change, error: error))
         }
     }
+
+    private let fetchQueue: DispatchQueue = DispatchQueue(label: "salada.datasource.fetch.queue")
 
     /**
      Load the previous data from the server.
@@ -196,12 +232,6 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      - parameter block: block The block that should be called. Change if successful will be returned. An error will return if it fails.
      */
     public func prev(at lastKey: String?, toLast limit: UInt, block: ((SaladaChange?, Error?) -> Void)?) {
-
-        if isFirst {
-            block?((deletions: [], insertions: [], modifications: []), nil)
-            return
-        }
-
         var reference: DatabaseQuery = self.reference.queryOrderedByKey()
         var limit: UInt = limit
         if let lastKey: String = lastKey {
@@ -209,44 +239,40 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
             limit = limit + 1
         }
         reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
-
             guard let `self` = self else { return }
 
-            if snapshot.childrenCount < limit {
-                self.isFirst = true
-            }
+            let group: DispatchGroup = DispatchGroup()
 
-            objc_sync_enter(self)
-            var changes: [Int] = []
-            if self.ascending {
-                for (_, child) in snapshot.children.enumerated() {
-                    let key: String = (child as AnyObject).key
-                    if !self.keys.contains(key) {
-                        self.keys.append(key)
-                        self.keys = self.sortedKeys
-                        if let i: Int = self.keys.index(of: key) {
-                            changes.append(i)
-                        }
-                    }
+            for (_, child) in snapshot.children.enumerated() {
+                let key: String = (child as AnyObject).key
+                if !self.keys.contains(key) {
+                    self.keys.append(key)
+                    self.keys = self.sortedKeys
+                    group.enter()
+                    Child.observeSingle(key, eventType: .value, block: { (child) in
+                        guard let child: Child = child else { return }
+                        self.pool.append(child)
+                        self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
+                        group.leave()
+                    })
                 }
-            } else {
-                for (_, child) in snapshot.children.reversed().enumerated() {
-                    let key: String = (child as AnyObject).key
-                    if !self.keys.contains(key) {
-                        self.keys.append(key)
-                        self.keys = self.sortedKeys
-                        if let i: Int = self.keys.index(of: key) {
-                            changes.append(i)
-                        }
+            }
+            self.fetchQueue.async {
+                switch group.wait(timeout: .now() + .seconds(self.options.timeout)) {
+                case .success:
+                    DispatchQueue.main.async {
+                        block?(nil, nil)
+                    }
+                case .timedOut:
+                    DispatchQueue.main.async {
+                        let error: ObjectError = ObjectError(kind: .timeout, description: "Data source acquisition exceeded \(self.options.timeout) seconds.")
+                        block?(nil, error)
                     }
                 }
             }
-            objc_sync_exit(self)
-            block?((deletions: [], insertions: changes, modifications: []), nil)
         }) { (error) in
             block?(nil, error)
         }
-
     }
 
     /**
@@ -297,12 +323,13 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      - parameter index: Order of the data source
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      */
+    @available(*, deprecated, message: "Don't use this function")
     public func object(at index: Int, block: @escaping (Child?) -> Void) {
         let key: String = self.keys[index]
         Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
             if snapshot.exists() {
-                if let tsp: Child = Child(snapshot: snapshot) {
-                    block(tsp)
+                if let child: Child = Child(snapshot: snapshot) {
+                    block(child)
                 }
             } else {
                 block(nil)
@@ -319,10 +346,17 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
      */
     public func observeObject(at index: Int, block: @escaping (Child?) -> Void) {
         let key: String = self.keys[index]
+        let child: Child = self[index]
+        var isFirst: Bool = true
+        block(child)
         Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
+            if isFirst {
+                isFirst = false
+                return
+            }
             if snapshot.exists() {
-                if let tsp: Child = Child(snapshot: snapshot) {
-                    block(tsp)
+                if let child: Child = Child(snapshot: snapshot) {
+                    block(child)
                 }
             } else {
                 block(nil)
@@ -352,36 +386,42 @@ public class DataSource<Parent, Child> where Parent: Object, Child: Object {
  */
 extension DataSource: Collection {
 
-    public typealias Element = String
+    public typealias Element = DataSource.Child
 
     public var startIndex: Int {
         return 0
     }
 
     public var endIndex: Int {
-        return self.keys.count
+        return self.pool.count
     }
 
     public func index(after i: Int) -> Int {
         return i + 1
     }
 
-    public var first: String? {
-        if 0 < self.keys.count {
-            return self.keys[startIndex]
-        }
-        return nil
+    public var first: Element? {
+        if self.pool.isEmpty { return nil }
+        return self.pool[startIndex]
     }
 
-    public var last: String? {
-        if 0 < self.keys.count {
-            return self.keys[endIndex - 1]
-        }
-        return nil
+    public var last: Element? {
+        if self.pool.isEmpty { return nil }
+        return self.pool[endIndex - 1]
     }
 
-    public subscript(index: Int) -> String {
-        return self.keys[index]
+    public subscript(index: Int) -> Element {
+        return self.pool[index]
+    }
+}
+
+extension Array where Element: Object {
+
+    public var keys: [String] {
+        return self.flatMap { return $0.id }
     }
 
+    public func index(of key: String) -> Int? {
+        return self.keys.index(of: key)
+    }
 }

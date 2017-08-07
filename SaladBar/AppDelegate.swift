@@ -15,8 +15,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+
+        NSSetUncaughtExceptionHandler { exception in
+            debugPrint(exception.name)
+            debugPrint(exception.reason ?? "")
+            debugPrint(exception.callStackSymbols)
+        }
+
         FirebaseApp.configure()
-        Database.database().isPersistenceEnabled = true
+        Database.database().isPersistenceEnabled = false
         SaladaApp.configure()
 
         let viewController: SamplesViewController = SamplesViewController()
