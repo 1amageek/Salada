@@ -328,7 +328,7 @@ public class Datasource<Parent, Child> where Parent: Referenceable, Parent: Sala
 
 extension Datasource: Collection {
     
-    typealias Element = String
+    public typealias Element = String
     
     public var startIndex: Int {
         return 0
@@ -342,21 +342,21 @@ extension Datasource: Collection {
         return i + 1
     }
     
-    public var first: String? {
+    public var first: Element? {
         if 0 < self.pool.count {
             return self.pool[startIndex]
         }
         return nil
     }
     
-    public var last: String? {
+    public var last: Element? {
         if 0 < self.pool.count {
             return self.pool[endIndex - 1]
         }
         return nil
     }
     
-    public subscript(index: Int) -> String {
+    public subscript(index: Int) -> Element {
         return self.pool[index]
     }
     
