@@ -139,16 +139,18 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
-        let user: User = self.datasource![indexPath.item]
-        cell.imageView?.contentMode = .scaleAspectFill
-        cell.textLabel?.text = user.name
-        cell.setNeedsLayout()
-//        self.datasource?.observeObject(at: indexPath.item, block: { (user) in
-//            guard let user: User = user else { return }
-//            cell.imageView?.contentMode = .scaleAspectFill
-//            cell.textLabel?.text = user.name
-//            cell.setNeedsLayout()
-//        })
+//        let user: User = self.datasource![indexPath.item]
+//        cell.imageView?.contentMode = .scaleAspectFill
+//        cell.textLabel?.text = user.name
+//        cell.setNeedsLayout()
+
+        //
+        self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+            guard let user: User = user else { return }
+            cell.imageView?.contentMode = .scaleAspectFill
+            cell.textLabel?.text = user.name
+            cell.setNeedsLayout()
+        })
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
