@@ -37,38 +37,38 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         ]
         self.view.backgroundColor = UIColor.white
 
-        self.setupDatasource(key: "-KquiCfl7kN0p-IWM9FX")
+//        self.setupDatasource(key: "-KquiCfl7kN0p-IWM9FX")
 
-//        let group: Group = Group()
-//        group.name = "iOS Development Team"
-//        group.save { [weak self](ref, error) in
-//
-//            self?.setupDatasource(key: ref!.key)
-//            (0..<30).forEach({ (index) in
-//                let user: User = User()
-//                let image: UIImage = #imageLiteral(resourceName: "salada")
-//                let data: Data = UIImageJPEGRepresentation(image, 1)!
-//                user.thumbnail = File(data: data, mimeType: .jpeg)
-//                user.tempName = "Test1_name"
-//                user.name = "\(index)"
-//                user.gender = "man"
-//                user.age = index
-//                user.url = URL(string: "https://www.google.co.jp/")
-//                user.items = ["Book", "Pen"]
-//                user.groups.insert(ref!.key)
-//                user.location = CLLocation(latitude: 1, longitude: 1)
-//                user.type = .second
-//                user.birth = Date()
-//                user.save({ (ref, error) in
-//                    if let error: Error = error {
-//                        print(error)
-//                        return
-//                    }
-//                    group.users.insert(ref!.key)
-//
-//                })
-//            })
-//        }
+        let group: Group = Group()
+        group.name = "iOS Development Team"
+        group.save { [weak self](ref, error) in
+
+            self?.setupDatasource(key: ref!.key)
+            (0..<30).forEach({ (index) in
+                let user: User = User()
+                let image: UIImage = #imageLiteral(resourceName: "salada")
+                let data: Data = UIImageJPEGRepresentation(image, 1)!
+                user.thumbnail = File(data: data, mimeType: .jpeg)
+                user.tempName = "Test1_name"
+                user.name = "\(index)"
+                user.gender = "man"
+                user.age = index
+                user.url = URL(string: "https://www.google.co.jp/")
+                user.items = ["Book", "Pen"]
+                user.groups.insert(ref!.key)
+                user.location = CLLocation(latitude: 1, longitude: 1)
+                user.type = .second
+                user.birth = Date()
+                user.save({ (ref, error) in
+                    if let error: Error = error {
+                        print(error)
+                        return
+                    }
+                    group.users.insert(ref!.key)
+
+                })
+            })
+        }
     }
 
     var groupKey: String?
@@ -76,6 +76,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         self.groupKey = key
         let options: SaladaOptions = SaladaOptions()
         options.limit = 10
+        options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
         self.datasource = DataSource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
             guard let tableView: UITableView = self?.tableView else { return }
 

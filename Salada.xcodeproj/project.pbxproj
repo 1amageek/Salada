@@ -7,11 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1208916B1F04E89F0004AF4C /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
-		1208916C1F04E89F0004AF4C /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Base.swift */; };
-		1208916D1F04E89F0004AF4C /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8C1EDBB74A0074DACB /* Object.swift */; };
-		1208916E1F04E89F0004AF4C /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
-		120891711F04E89F0004AF4C /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
 		122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122BEDF81EE3E6430009123C /* ActionCell.swift */; };
 		123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A41E6696E100A2655F /* FileTestViewController.swift */; };
 		123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 123C27A61E66A3F600A2655F /* pexels-photo.jpg */; };
@@ -21,9 +16,7 @@
 		1253BFA51F3455930078C5D1 /* SimpleModelViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1253BFA41F3455930078C5D1 /* SimpleModelViewController.storyboard */; };
 		1253BFA81F3465F20078C5D1 /* UserGroupRelationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253BFA71F3465F20078C5D1 /* UserGroupRelationViewController.swift */; };
 		1253BFAA1F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1253BFA91F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard */; };
-		1253BFAC1F34785D0078C5D1 /* CustomUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253BFAB1F34785D0078C5D1 /* CustomUser.swift */; };
 		1253BFAE1F3478AD0078C5D1 /* SaladaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253BFAD1F3478AD0078C5D1 /* SaladaApp.swift */; };
-		1253BFAF1F34796C0078C5D1 /* SaladaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253BFAD1F3478AD0078C5D1 /* SaladaApp.swift */; };
 		125904191F3451D5004B271D /* SimpleModelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125904181F3451D5004B271D /* SimpleModelViewController.swift */; };
 		1259041B1F34522A004B271D /* SamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1259041A1F34522A004B271D /* SamplesViewController.swift */; };
 		126479601EDE8CF70097ED9E /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1264795F1EDE8CF70097ED9E /* TableViewController.swift */; };
@@ -39,6 +32,13 @@
 		1272DA721F0C9A35000A094E /* ChatViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA6C1F0C9A35000A094E /* ChatViewCell.swift */; };
 		1272DA761F0C9A96000A094E /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA741F0C9A96000A094E /* MessageViewController.swift */; };
 		1272DA771F0C9A96000A094E /* ChatTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA751F0C9A96000A094E /* ChatTextCell.swift */; };
+		1274D1191F38369F0037D9F1 /* CustomUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253BFAB1F34785D0078C5D1 /* CustomUser.swift */; };
+		1274D1221F383C2E0037D9F1 /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
+		1274D1231F383C2E0037D9F1 /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Base.swift */; };
+		1274D1241F383C2E0037D9F1 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8C1EDBB74A0074DACB /* Object.swift */; };
+		1274D1251F383C2E0037D9F1 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
+		1274D1261F383C2E0037D9F1 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
+		1274D1271F383C2E0037D9F1 /* SaladaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253BFAD1F3478AD0078C5D1 /* SaladaApp.swift */; };
 		12A4FE351DB5C987003A3104 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE321DB5C987003A3104 /* Group.swift */; };
 		12A4FE361DB5C987003A3104 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE331DB5C987003A3104 /* User.swift */; };
 		12C097DF1E653CEF001B2010 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C097DE1E653CEF001B2010 /* Item.swift */; };
@@ -56,18 +56,13 @@
 		12DA5DC61EDC29D300D2A73D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12DA5DC41EDC29D300D2A73D /* LaunchScreen.storyboard */; };
 		12DA5DD11EDC29D300D2A73D /* TestAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DD01EDC29D300D2A73D /* TestAppTests.swift */; };
 		12DA5DE81EDC2A0C00D2A73D /* TestObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DE71EDC2A0C00D2A73D /* TestObject.swift */; };
-		12DA5DE91EDC2ACD00D2A73D /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
-		12DA5DEA1EDC2ACD00D2A73D /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Base.swift */; };
-		12DA5DEB1EDC2ACD00D2A73D /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8C1EDBB74A0074DACB /* Object.swift */; };
-		12DA5DEC1EDC2ACD00D2A73D /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
-		12DA5DEE1EDC2ACD00D2A73D /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
 		12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DF11EDD17A400D2A73D /* TestFlow.swift */; };
 		12F2EC651EDE8ABB00AF9A08 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12F2EC641EDE8ABB00AF9A08 /* GoogleService-Info.plist */; };
 		393C0939A87D1D60572797B9 /* Pods_TestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0F3F6E9107CC397D09C8B8B /* Pods_TestApp.framework */; };
 		48A9AC77CEC2092A44A4CAAF /* Pods_TestAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 481C11F6E69EC5FD3CBD8ABC /* Pods_TestAppTests.framework */; };
-		9088C4FC448D53572D030044 /* Pods_SaladBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */; };
+		9088C4FC448D53572D030044 /* Pods_SaladBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AC37D50C65C0E7BE62270B10 /* Pods_TestApp_TestAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC57E21B18E4CD7972B59B84 /* Pods_TestApp_TestAppTests.framework */; };
-		B2DAD0D9709B23A30CB0EE7E /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; };
+		B2DAD0D9709B23A30CB0EE7E /* Pods_Salada.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		DE228FC29B79CF85DB919668 /* Pods_TestAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D64FFD9F43F20406C7DEA64 /* Pods_TestAppUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -904,12 +899,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1274D1231F383C2E0037D9F1 /* Base.swift in Sources */,
 				1272DA721F0C9A35000A094E /* ChatViewCell.swift in Sources */,
 				123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */,
-				1208916E1F04E89F0004AF4C /* File.swift in Sources */,
+				1274D1261F383C2E0037D9F1 /* DataSource.swift in Sources */,
 				1272DA701F0C9A35000A094E /* ChatViewController.swift in Sources */,
 				125904191F3451D5004B271D /* SimpleModelViewController.swift in Sources */,
 				1272DA771F0C9A96000A094E /* ChatTextCell.swift in Sources */,
+				1274D1191F38369F0037D9F1 /* CustomUser.swift in Sources */,
 				1272DA6D1F0C9A35000A094E /* Chat.swift in Sources */,
 				1259041B1F34522A004B271D /* SamplesViewController.swift in Sources */,
 				12CB1A5C1D95184300E69000 /* DataSourceViewController.swift in Sources */,
@@ -917,19 +914,17 @@
 				1272DA651F0C97BF000A094E /* Message.swift in Sources */,
 				1272DA631F0C97B8000A094E /* Room.swift in Sources */,
 				1272DA761F0C9A96000A094E /* MessageViewController.swift in Sources */,
-				120891711F04E89F0004AF4C /* DataSource.swift in Sources */,
-				1208916C1F04E89F0004AF4C /* Base.swift in Sources */,
-				1253BFAC1F34785D0078C5D1 /* CustomUser.swift in Sources */,
 				1253BFA81F3465F20078C5D1 /* UserGroupRelationViewController.swift in Sources */,
 				12CB1A5A1D95184300E69000 /* AppDelegate.swift in Sources */,
-				1208916B1F04E89F0004AF4C /* Referenceable.swift in Sources */,
 				1272DA6E1F0C9A35000A094E /* ChatToolBar.swift in Sources */,
 				12C097E11E653F19001B2010 /* TransactionTestViewController.swift in Sources */,
-				1208916D1F04E89F0004AF4C /* Object.swift in Sources */,
 				123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */,
 				12C097DF1E653CEF001B2010 /* Item.swift in Sources */,
+				1274D1241F383C2E0037D9F1 /* Object.swift in Sources */,
 				12A4FE361DB5C987003A3104 /* User.swift in Sources */,
-				1253BFAF1F34796C0078C5D1 /* SaladaApp.swift in Sources */,
+				1274D1221F383C2E0037D9F1 /* Referenceable.swift in Sources */,
+				1274D1251F383C2E0037D9F1 /* File.swift in Sources */,
+				1274D1271F383C2E0037D9F1 /* SaladaApp.swift in Sources */,
 				1272DA711F0C9A35000A094E /* ChatViewDataSource.swift in Sources */,
 				12A4FE351DB5C987003A3104 /* Group.swift in Sources */,
 			);
@@ -953,14 +948,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				12DA5DE81EDC2A0C00D2A73D /* TestObject.swift in Sources */,
-				12DA5DE91EDC2ACD00D2A73D /* Referenceable.swift in Sources */,
-				12DA5DEC1EDC2ACD00D2A73D /* File.swift in Sources */,
 				126479601EDE8CF70097ED9E /* TableViewController.swift in Sources */,
-				12DA5DEE1EDC2ACD00D2A73D /* DataSource.swift in Sources */,
 				12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */,
 				126479621EDE92A90097ED9E /* TableViewCell.swift in Sources */,
-				12DA5DEA1EDC2ACD00D2A73D /* Base.swift in Sources */,
-				12DA5DEB1EDC2ACD00D2A73D /* Object.swift in Sources */,
 				122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */,
 				12DA5DBC1EDC29D200D2A73D /* AppDelegate.swift in Sources */,
 			);

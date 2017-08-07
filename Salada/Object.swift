@@ -13,21 +13,21 @@ open class Object: Base, Referenceable {
     // MARK: -
 
     /// Date the Object was created
-    private(set) var createdAt: Date
+    @objc private(set) var createdAt: Date
 
     /// Date when Object was updated
-    private(set) var updatedAt: Date
+    @objc private(set) var updatedAt: Date
 
     /// Object monitors the properties as they are saved.
     private(set) var isObserved: Bool = false
 
     /// If all File savings do not end within this time, save will be canceled. default 20 seconds.
-    public var timeout: Int {
+    open var timeout: Int {
         return SaladaApp.shared.timeout
     }
 
     /// If propery is set with String, its property will not be written to Firebase.
-    public var ignore: [String] {
+    open var ignore: [String] {
         return []
     }
 
@@ -282,9 +282,8 @@ open class Object: Base, Referenceable {
             if let child: String = child {
                 path = "\(keyPath)/\(child)"
             }
-            reference.updateChildValues([path: value, "_updatedAt": timestamp], withCompletionBlock: { (error, ref) in
-//                self.transactionBlock?(ref, error)
-//                self.transactionBlock = nil
+            reference.updateChildValues([path: value, "_updatedAt": timestamp], withCompletionBlock: {_,_ in 
+                // Nothing
             })
         } else {
             if let childKey: String = child {
@@ -401,18 +400,18 @@ open class Object: Base, Referenceable {
         }
     }
 
-    /**
-     Set new value. Save will fail in the off-line.
-     - parameter key:
-     - parameter value:
-     - parameter completion: If successful reference will return. An error will return if it fails.
-     */
-    private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
-
-    public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {
-        self.transactionBlock = completion
-        self.setValue(value, forKey: key)
-    }
+//    /**
+//     Set new value. Save will fail in the off-line.
+//     - parameter key:
+//     - parameter value:
+//     - parameter completion: If successful reference will return. An error will return if it fails.
+//     */
+//    private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
+//
+//    public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {
+//        self.transactionBlock = completion
+//        self.setValue(value, forKey: key)
+//    }
 
     // MARK: - Remove
 
@@ -531,7 +530,7 @@ open class Object: Base, Referenceable {
         return "\(_self) {\n\(values)}"
     }
 
-    subscript(key: String) -> Any? {
+    public subscript(key: String) -> Any? {
         get {
             return self.value(forKey: key)
         }
