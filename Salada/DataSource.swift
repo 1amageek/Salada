@@ -181,7 +181,8 @@ public class DataSource<T, U> where T: Object, U: Object {
             })
 
             // change
-            self.changedHandle = self.reference.observe(.childChanged, with: { (snapshot) in
+            self.changedHandle = self.reference.observe(.childChanged, with: { [weak self] (snapshot) in
+                guard let `self` = self else { return }
                 let key: String = snapshot.key
                 Child.observeSingle(key, eventType: .value, block: { (child) in
                     guard let child: Child = child else { return }
