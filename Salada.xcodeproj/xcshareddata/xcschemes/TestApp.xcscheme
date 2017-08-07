@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "12CB1A561D95184300E69000"
-               BuildableName = "SaladBar.app"
-               BlueprintName = "SaladBar"
+               BlueprintIdentifier = "12DA5DB81EDC29D200D2A73D"
+               BuildableName = "TestApp.app"
+               BlueprintName = "TestApp"
                ReferencedContainer = "container:Salada.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,19 +32,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "12CB1A691D95184300E69000"
-               BuildableName = "SaladBarTests.xctest"
-               BlueprintName = "SaladBarTests"
+               BlueprintIdentifier = "12DA5DCB1EDC29D300D2A73D"
+               BuildableName = "TestAppTests.xctest"
+               BlueprintName = "TestAppTests"
                ReferencedContainer = "container:Salada.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "12CB1A741D95184300E69000"
-               BuildableName = "SaladBarUITests.xctest"
-               BlueprintName = "SaladBarUITests"
+               BlueprintIdentifier = "12DA5DD61EDC29D300D2A73D"
+               BuildableName = "TestAppUITests.xctest"
+               BlueprintName = "TestAppUITests"
                ReferencedContainer = "container:Salada.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -52,9 +52,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "12CB1A561D95184300E69000"
-            BuildableName = "SaladBar.app"
-            BlueprintName = "SaladBar"
+            BlueprintIdentifier = "12DA5DB81EDC29D200D2A73D"
+            BuildableName = "TestApp.app"
+            BlueprintName = "TestApp"
             ReferencedContainer = "container:Salada.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -75,19 +75,12 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "12CB1A561D95184300E69000"
-            BuildableName = "SaladBar.app"
-            BlueprintName = "SaladBar"
+            BlueprintIdentifier = "12DA5DB81EDC29D200D2A73D"
+            BuildableName = "TestApp.app"
+            BlueprintName = "TestApp"
             ReferencedContainer = "container:Salada.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "OS_ACTIVITY_MODE"
-            value = "disable"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -101,9 +94,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "12CB1A561D95184300E69000"
-            BuildableName = "SaladBar.app"
-            BlueprintName = "SaladBar"
+            BlueprintIdentifier = "12DA5DB81EDC29D200D2A73D"
+            BuildableName = "TestApp.app"
+            BlueprintName = "TestApp"
             ReferencedContainer = "container:Salada.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

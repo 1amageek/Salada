@@ -1,21 +1,25 @@
 //
-//  User.swift
-//  Salada
+//  CustomUser.swift
+//  SaladBar
 //
-//  Created by 1amageek on 2016/08/15.
-//  Copyright © 2016年 Stamp. All rights reserved.
+//  Created by 1amageek on 2017/08/04.
+//  Copyright © 2017年 Stamp. All rights reserved.
 //
 
 import Foundation
 import CoreLocation
-import Salada
 
-class User: Object {
-    
+@objc enum UserType: Int {
+    case first
+    case second
+}
+
+class CustomUser: Object {
+
     override class var _version: String {
         return "v1"
     }
-    
+
     @objc dynamic var name: String?
     @objc dynamic var age: Int = 0
     @objc dynamic var gender: String?
@@ -28,13 +32,13 @@ class User: Object {
     @objc dynamic var cover: File?
     @objc dynamic var type: UserType = .first
     @objc dynamic var testItems: Set<String> = []
-    
-    var tempName: String? 
-    
+
+    var tempName: String?
+
     override var ignore: [String] {
         return ["tempName"]
     }
-    
+
     override func encode(_ key: String, value: Any?) -> Any? {
         if key == "location" {
             if let location = self.location {
@@ -45,7 +49,7 @@ class User: Object {
         }
         return nil
     }
-    
+
     override func decode(_ key: String, value: Any?) -> Any? {
         if key == "location" {
             if let location: [String: Double] = value as? [String: Double] {

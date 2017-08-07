@@ -1,17 +1,33 @@
-# Uncomment this line to define a global platform for your project
-platform :ios, '10.0'
-
-use_frameworks!
-
-# Pods for Salada
+platform :ios, '8.0'
 
 target 'Salada' do
-pod 'Firebase/Database'
-pod 'Firebase/Storage'
+  use_frameworks!
+  pod 'Firebase/Database'
+  pod 'Firebase/Storage'
 end
 
 target 'SaladBar' do
-pod 'Firebase/Database'
-pod 'Firebase/Storage'
+  use_frameworks!
+  pod 'Firebase/Database'
+  pod 'Firebase/Storage'
 end
 
+target 'TestApp' do
+  use_frameworks!
+  pod 'Firebase/Database'
+  pod 'Firebase/Storage'
+
+  target 'TestAppTests' do
+    inherit! :search_paths
+    pod 'Firebase/Database'
+    pod 'Firebase/Storage'
+    pod 'Quick'
+    pod 'Nimble'
+  end
+
+  target 'TestAppUITests' do
+    inherit! :search_paths
+    pod 'Firebase/Database'
+    pod 'Firebase/Storage'
+  end
+end
