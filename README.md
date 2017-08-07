@@ -64,9 +64,7 @@ To inherit the `Salada.Object`.
 
 ``` Swift 
 class User: Salada.Object {
-    
-    typealias Element = User
-    
+        
     dynamic var name: String?
     dynamic var age: Int = 0
     dynamic var gender: String?
@@ -84,7 +82,6 @@ When you want to create a property that you want to ignore.
 ``` Swift
 // Group
 class Group: Salada.Object {
-    typealias Element = Group
     dynamic var name: String?
     dynamic var users: Set<String> = []
 }
