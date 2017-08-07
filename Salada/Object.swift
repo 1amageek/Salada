@@ -23,7 +23,7 @@ open class Object: Base, Referenceable {
 
     /// If all File savings do not end within this time, save will be canceled. default 20 seconds.
     public var timeout: Int {
-        return 20
+        return SaladaApp.shared.timeout
     }
 
     /// If propery is set with String, its property will not be written to Firebase.

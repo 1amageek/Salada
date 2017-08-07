@@ -37,6 +37,9 @@ public class SaladaOptions {
     /// Number to be referenced at one time
     public var limit: UInt = 30
 
+    /// Fetch timeout
+    public var timeout: Int = SaladaApp.shared.timeout
+
     /// Sort order
     public var sortDescirptors: [NSSortDescriptor] = [NSSortDescriptor(key: "id", ascending: false)]
 
@@ -84,13 +87,11 @@ public class DataSource<T, U> where T: Object, U: Object {
 
     /// Firebase firstKey. Recently Created Key
     private var firstKey: String? {
-        //return self.options.ascending ? self.keys.last : self.keys.first
         return self.keys.first
     }
 
     /// Firebase lastKey. The oldest Key in keys
     private var lastKey: String? {
-        //return self.options.ascending ? self.keys.first : self.keys.last
         return self.keys.last
     }
 
@@ -104,7 +105,17 @@ public class DataSource<T, U> where T: Object, U: Object {
 
     private var changedBlock: (SaladaCollectionChange) -> Void
 
-    public var pool: [Child] = []
+    public var pool: [Child] = [] {
+        didSet {
+            if oldValue.count < pool.count {
+
+            } else if oldValue.count > pool.count {
+
+            } else {
+
+            }
+        }
+    }
 
     /**
      
@@ -136,9 +147,11 @@ public class DataSource<T, U> where T: Object, U: Object {
 
         prev(at: nil, toLast: self.options.limit) { [weak self] (change, error) in
 
-            block(SaladaCollectionChange(change: nil, error: error))
-
             guard let `self` = self else { return }
+
+            // Called only once when initialized
+            // `changes` is always nil
+            block(SaladaCollectionChange(change: change, error: error))
 
             // add
             var addReference: DatabaseQuery = self.reference
@@ -210,6 +223,8 @@ public class DataSource<T, U> where T: Object, U: Object {
         }
     }
 
+    private let fetchQueue: DispatchQueue = DispatchQueue(label: "salada.datasource.fetch.queue")
+
     /**
      Load the previous data from the server.
      - parameter lastKey: It gets the data after the Key
@@ -225,19 +240,34 @@ public class DataSource<T, U> where T: Object, U: Object {
         }
         reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
             guard let `self` = self else { return }
+
+            let group: DispatchGroup = DispatchGroup()
+
             for (_, child) in snapshot.children.enumerated() {
                 let key: String = (child as AnyObject).key
                 if !self.keys.contains(key) {
                     self.keys.append(key)
                     self.keys = self.sortedKeys
+                    group.enter()
                     Child.observeSingle(key, eventType: .value, block: { (child) in
                         guard let child: Child = child else { return }
                         self.pool.append(child)
                         self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
-                        if let i: Int = self.pool.index(of: child) {
-                            block?((deletions: [], insertions: [i], modifications: []), nil)
-                        }
+                        group.leave()
                     })
+                }
+            }
+            self.fetchQueue.async {
+                switch group.wait(timeout: .now() + .seconds(self.options.timeout)) {
+                case .success:
+                    DispatchQueue.main.async {
+                        block?(nil, nil)
+                    }
+                case .timedOut:
+                    DispatchQueue.main.async {
+                        let error: ObjectError = ObjectError(kind: .timeout, description: "Data source acquisition exceeded \(self.options.timeout) seconds.")
+                        block?(nil, error)
+                    }
                 }
             }
         }) { (error) in
