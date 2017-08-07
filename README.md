@@ -53,7 +53,7 @@ Note: CocoaPods 1.1.0 is required to install Salada.
  ```
  		 
  1. [Download this project](https://github.com/1amageek/Salada/archive/master.zip)
- 1. Put `Salada.swift`, `Referenceable.swift`, `Salada+Relation.swift`, `Salada+Datasource.swift` in your project.	
+ 1. Put `SaladaApp.swift`, `Referenceable.swift`, `Base.swift`, `Object.swift`, `File.swift`, `DataSource.swift` in your project.	
 
 ## Usage 👀
 
