@@ -31,17 +31,19 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(prev))
+        self.navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(add)),
+            UIBarButtonItem(title: "Prev", style: UIBarButtonItemStyle.plain, target: self, action: #selector(prev))
+        ]
         self.view.backgroundColor = UIColor.white
 
-        self.setupDatasource(key: "-KqruHEZWpRX2Dh_6FXt")
+        self.setupDatasource(key: "-KquiCfl7kN0p-IWM9FX")
 
 //        let group: Group = Group()
 //        group.name = "iOS Development Team"
 //        group.save { [weak self](ref, error) in
 //
 //            self?.setupDatasource(key: ref!.key)
-//
 //            (0..<30).forEach({ (index) in
 //                let user: User = User()
 //                let image: UIImage = #imageLiteral(resourceName: "salada")
@@ -66,14 +68,14 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
 //
 //                })
 //            })
-//
 //        }
     }
 
+    var groupKey: String?
     func setupDatasource(key: String) {
+        self.groupKey = key
         let options: SaladaOptions = SaladaOptions()
         options.limit = 10
-
         self.datasource = DataSource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
             guard let tableView: UITableView = self?.tableView else { return }
 
@@ -94,6 +96,36 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @objc func prev() {
         self.datasource?.prev()
+
+    }
+
+    @objc func add() {
+        guard let key: String = self.groupKey else {
+            return
+        }
+        Group.observeSingle(key, eventType: .value) { (group) in
+            guard let group: Group = group else { return }
+            let user: User = User()
+            let image: UIImage = #imageLiteral(resourceName: "salada")
+            let data: Data = UIImageJPEGRepresentation(image, 1)!
+            user.thumbnail = File(data: data, mimeType: .jpeg)
+            user.tempName = "Test1_name"
+            user.name = "ADD"
+            user.gender = "man"
+            user.url = URL(string: "https://www.google.co.jp/")
+            user.items = ["Book", "Pen"]
+            user.groups.insert(key)
+            user.location = CLLocation(latitude: 1, longitude: 1)
+            user.type = .second
+            user.birth = Date()
+            user.save({ (ref, error) in
+                if let error: Error = error {
+                    print(error)
+                    return
+                }
+                group.users.insert(ref!.key)
+            })
+        }
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -111,44 +143,16 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.imageView?.contentMode = .scaleAspectFill
         cell.textLabel?.text = user.name
         cell.setNeedsLayout()
-//
-//        if let ref: StorageReference = user.thumbnail?.ref {
-//            ref.getData(maxSize: Int64(10e9), completion: { (data, error) in
-//                if let error = error {
-//                    debugPrint(error)
-//                    return
-//                }
-//                let image: UIImage = UIImage(data: data!)!
-//                cell.imageView?.image = image
-//                cell.imageView?.setNeedsDisplay()
-//                cell.setNeedsLayout()
-//            })
-//        }
-
 //        self.datasource?.observeObject(at: indexPath.item, block: { (user) in
-//            cell.imageView?.image = nil
+//            guard let user: User = user else { return }
 //            cell.imageView?.contentMode = .scaleAspectFill
-//            cell.textLabel?.text = user?.name
+//            cell.textLabel?.text = user.name
 //            cell.setNeedsLayout()
-//
-//            if let ref: StorageReference = user?.thumbnail?.ref {
-//                ref.getData(maxSize: Int64(10e9), completion: { (data, error) in
-//                    if let error = error {
-//                        debugPrint(error)
-//                        return
-//                    }
-//                    let image: UIImage = UIImage(data: data!)!
-//                    cell.imageView?.image = image
-//                    cell.imageView?.setNeedsDisplay()
-//                    cell.setNeedsLayout()
-//                })
-//            }
-//
 //        })
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        //self.datasource?.removeObserver(at: indexPath.item)
+        self.datasource?.removeObserver(at: indexPath.item)
     }
     
     func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {

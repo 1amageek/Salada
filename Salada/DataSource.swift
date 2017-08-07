@@ -80,7 +80,7 @@ public class DataSource<T, U> where T: Object, U: Object {
 
     private var removedHandle: UInt?
 
-    private var isFirst: Bool = false
+    private var isFirst: Bool = true
 
     /// Firebase firstKey. Recently Created Key
     private var firstKey: String? {
@@ -217,12 +217,6 @@ public class DataSource<T, U> where T: Object, U: Object {
      - parameter block: block The block that should be called. Change if successful will be returned. An error will return if it fails.
      */
     public func prev(at lastKey: String?, toLast limit: UInt, block: ((SaladaChange?, Error?) -> Void)?) {
-
-        if isFirst {
-            block?((deletions: [], insertions: [], modifications: []), nil)
-            return
-        }
-
         var reference: DatabaseQuery = self.reference.queryOrderedByKey()
         var limit: UInt = limit
         if let lastKey: String = lastKey {
@@ -230,38 +224,22 @@ public class DataSource<T, U> where T: Object, U: Object {
             limit = limit + 1
         }
         reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
-
             guard let `self` = self else { return }
-
-            if snapshot.childrenCount < limit {
-                self.isFirst = true
-            }
-
-            var changes: [Int] = []
-            //if self.options.ascending {
-                for (_, child) in snapshot.children.enumerated() {
-                    let key: String = (child as AnyObject).key
-                    if !self.keys.contains(key) {
-                        self.keys.append(key)
-                        self.keys = self.sortedKeys
-                        if let i: Int = self.keys.index(of: key) {
-                            changes.append(i)
+            for (_, child) in snapshot.children.enumerated() {
+                let key: String = (child as AnyObject).key
+                if !self.keys.contains(key) {
+                    self.keys.append(key)
+                    self.keys = self.sortedKeys
+                    Child.observeSingle(key, eventType: .value, block: { (child) in
+                        guard let child: Child = child else { return }
+                        self.pool.append(child)
+                        self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
+                        if let i: Int = self.pool.index(of: child) {
+                            block?((deletions: [], insertions: [i], modifications: []), nil)
                         }
-                    }
+                    })
                 }
-//            } else {
-//                for (_, child) in snapshot.children.reversed().enumerated() {
-//                    let key: String = (child as AnyObject).key
-//                    if !self.keys.contains(key) {
-//                        self.keys.append(key)
-//                        self.keys = self.sortedKeys
-//                        if let i: Int = self.keys.index(of: key) {
-//                            changes.append(i)
-//                        }
-//                    }
-//                }
-//            }
-            block?((deletions: [], insertions: changes, modifications: []), nil)
+            }
         }) { (error) in
             block?(nil, error)
         }
@@ -315,12 +293,13 @@ public class DataSource<T, U> where T: Object, U: Object {
      - parameter index: Order of the data source
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      */
+    @available(*, deprecated, message: "Don't use this function")
     public func object(at index: Int, block: @escaping (Child?) -> Void) {
         let key: String = self.keys[index]
         Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
             if snapshot.exists() {
-                if let tsp: Child = Child(snapshot: snapshot) {
-                    block(tsp)
+                if let child: Child = Child(snapshot: snapshot) {
+                    block(child)
                 }
             } else {
                 block(nil)
@@ -337,10 +316,17 @@ public class DataSource<T, U> where T: Object, U: Object {
      */
     public func observeObject(at index: Int, block: @escaping (Child?) -> Void) {
         let key: String = self.keys[index]
+        let child: Child = self[index]
+        var isFirst: Bool = true
+        block(child)
         Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
+            if isFirst {
+                isFirst = false
+                return
+            }
             if snapshot.exists() {
-                if let tsp: Child = Child(snapshot: snapshot) {
-                    block(tsp)
+                if let child: Child = Child(snapshot: snapshot) {
+                    block(child)
                 }
             } else {
                 block(nil)
@@ -385,17 +371,13 @@ extension DataSource: Collection {
     }
 
     public var first: Element? {
-        if 0 < self.pool.count {
-            return self.pool[startIndex]
-        }
-        return nil
+        if self.pool.isEmpty { return nil }
+        return self.pool[startIndex]
     }
 
     public var last: Element? {
-        if 0 < self.pool.count {
-            return self.pool[endIndex - 1]
-        }
-        return nil
+        if self.pool.isEmpty { return nil }
+        return self.pool[endIndex - 1]
     }
 
     public subscript(index: Int) -> Element {
