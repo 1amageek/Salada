@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13178.6" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Jhd-hA-K8p">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13156.2"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Image Upload View Controller-->
+        <scene sceneID="8w7-F2-xNU">
+            <objects>
+                <viewController id="Jhd-hA-K8p" customClass="ImageUploadViewController" customModule="SaladBar" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Hdk-nN-Qvy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SMj-SM-BuL">
+                                <rect key="frame" x="16" y="80" width="343" height="200"/>
+                                <color key="backgroundColor" red="0.89794141049999998" green="0.89809560779999997" blue="0.89793163539999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="MRi-26-sPK"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wh3-r9-mrt">
+                                <rect key="frame" x="16" y="296" width="343" height="30"/>
+                                <state key="normal" title="Upload"/>
+                                <connections>
+                                    <action selector="uploadAction:" destination="Jhd-hA-K8p" eventType="touchUpInside" id="QI9-Uh-UNb"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="SMj-SM-BuL" firstAttribute="leading" secondItem="1b0-sn-Oax" secondAttribute="leading" constant="16" id="7y0-eL-ejw"/>
+                            <constraint firstItem="wh3-r9-mrt" firstAttribute="leading" secondItem="1b0-sn-Oax" secondAttribute="leading" constant="16" id="AKS-jr-Q6V"/>
+                            <constraint firstItem="1b0-sn-Oax" firstAttribute="trailing" secondItem="wh3-r9-mrt" secondAttribute="trailing" constant="16" id="I4S-Vq-hih"/>
+                            <constraint firstItem="wh3-r9-mrt" firstAttribute="top" secondItem="SMj-SM-BuL" secondAttribute="bottom" constant="16" id="KK1-5M-tia"/>
+                            <constraint firstItem="1b0-sn-Oax" firstAttribute="trailing" secondItem="SMj-SM-BuL" secondAttribute="trailing" constant="16" id="OHA-mj-8bd"/>
+                            <constraint firstItem="SMj-SM-BuL" firstAttribute="top" secondItem="1b0-sn-Oax" secondAttribute="top" constant="60" id="PZ6-8P-Y1V"/>
+                            <constraint firstItem="SMj-SM-BuL" firstAttribute="centerX" secondItem="Hdk-nN-Qvy" secondAttribute="centerX" id="hgY-mm-2J9"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="1b0-sn-Oax"/>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="SMj-SM-BuL" id="Hg7-nL-E6y"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xcw-w6-O9P" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="303" y="118"/>
+        </scene>
+    </scenes>
+</document>

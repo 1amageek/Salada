@@ -60,6 +60,10 @@ class SamplesViewController: UITableViewController {
         case .dataSource:
             let viewController: DataSourceViewController = DataSourceViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
+        case .file:
+            let storyboard: UIStoryboard = UIStoryboard(name: "ImageUploadViewController", bundle: nil)
+            let viewController: ImageUploadViewController = storyboard.instantiateInitialViewController() as! ImageUploadViewController
+            self.navigationController?.pushViewController(viewController, animated: true)
         default: break
         }
     }

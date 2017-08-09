@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		120281B11F3ACE1F00EABC5C /* ImageUploadViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 120281B01F3ACE1F00EABC5C /* ImageUploadViewController.storyboard */; };
+		120281B31F3ACE3100EABC5C /* ImageUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120281B21F3ACE3100EABC5C /* ImageUploadViewController.swift */; };
 		122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122BEDF81EE3E6430009123C /* ActionCell.swift */; };
 		123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A41E6696E100A2655F /* FileTestViewController.swift */; };
 		123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 123C27A61E66A3F600A2655F /* pexels-photo.jpg */; };
@@ -85,6 +87,8 @@
 
 /* Begin PBXFileReference section */
 		0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.release.xcconfig"; sourceTree = "<group>"; };
+		120281B01F3ACE1F00EABC5C /* ImageUploadViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ImageUploadViewController.storyboard; sourceTree = "<group>"; };
+		120281B21F3ACE3100EABC5C /* ImageUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadViewController.swift; sourceTree = "<group>"; };
 		122BEDF81EE3E6430009123C /* ActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionCell.swift; sourceTree = "<group>"; };
 		123C27A41E6696E100A2655F /* FileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTestViewController.swift; sourceTree = "<group>"; };
 		123C27A61E66A3F600A2655F /* pexels-photo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "pexels-photo.jpg"; sourceTree = "<group>"; };
@@ -256,6 +260,8 @@
 				1253BFA71F3465F20078C5D1 /* UserGroupRelationViewController.swift */,
 				1253BFA91F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard */,
 				12CB1A5B1D95184300E69000 /* DataSourceViewController.swift */,
+				120281B21F3ACE3100EABC5C /* ImageUploadViewController.swift */,
+				120281B01F3ACE1F00EABC5C /* ImageUploadViewController.storyboard */,
 			);
 			name = SampleCode;
 			sourceTree = "<group>";
@@ -593,6 +599,7 @@
 			files = (
 				12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */,
 				1253BFAA1F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard in Resources */,
+				120281B11F3ACE1F00EABC5C /* ImageUploadViewController.storyboard in Resources */,
 				123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */,
 				1272DA5F1F0C8D43000A094E /* GoogleService-Info.plist in Resources */,
 				12CB1A611D95184300E69000 /* Assets.xcassets in Resources */,
@@ -921,6 +928,7 @@
 				123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */,
 				12C097DF1E653CEF001B2010 /* Item.swift in Sources */,
 				1274D1241F383C2E0037D9F1 /* Object.swift in Sources */,
+				120281B31F3ACE3100EABC5C /* ImageUploadViewController.swift in Sources */,
 				12A4FE361DB5C987003A3104 /* User.swift in Sources */,
 				1274D1221F383C2E0037D9F1 /* Referenceable.swift in Sources */,
 				1274D1251F383C2E0037D9F1 /* File.swift in Sources */,
