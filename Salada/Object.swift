@@ -72,7 +72,7 @@ open class Object: Base, Referenceable {
     convenience required public init?(id: String) {
         self.init()
         self.id = id
-        self.ref = type(of: self).databaseRef.child(key)
+        self.ref = type(of: self).databaseRef.child(id)
     }
 
     // MARK: - Encode, Decode
