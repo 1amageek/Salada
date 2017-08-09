@@ -69,9 +69,9 @@ open class Object: Base, Referenceable {
         _setSnapshot(snapshot)
     }
 
-    convenience required public init?(key: String) {
+    convenience required public init?(id: String) {
         self.init()
-        self.id = key
+        self.id = id
         self.ref = type(of: self).databaseRef.child(key)
     }
 
