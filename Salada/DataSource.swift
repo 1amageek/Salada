@@ -29,7 +29,6 @@ public enum SaladaCollectionChange {
         }
         self = .initial
     }
-
 }
 
 public class SaladaOptions {
@@ -131,17 +130,17 @@ public class DataSource<T, U> where T: Object, U: Object {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-    public init(parentKey: String, referenceKey: String, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+    public init(parentKey: String, keyPath: KeyPath<T, Set<String>>, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
 
         self.parentKey = parentKey
 
-        self.referenceKey = referenceKey
+        self.referenceKey = keyPath._kvcKeyPathString!
 
         self.options = options
 
         self.parentRef = Parent.databaseRef.child(parentKey)
 
-        self.reference = self.parentRef.child(referenceKey)
+        self.reference = self.parentRef.child(self.referenceKey)
 
         self.changedBlock = block
 

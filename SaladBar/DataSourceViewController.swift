@@ -77,7 +77,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         let options: SaladaOptions = SaladaOptions()
         options.limit = 10
         options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
-        self.datasource = DataSource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
+        self.datasource = DataSource(parentKey: key, keyPath: \Group.users, options: options, block: { [weak self](changes) in
             guard let tableView: UITableView = self?.tableView else { return }
 
             switch changes {
