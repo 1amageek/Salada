@@ -321,9 +321,9 @@ var datasource: Datasource<Group, User>?
 let options: SaladaOptions = SaladaOptions()
 options.limit = 10
 options.ascending = false
-self.datasource = Datasource(parentKey: key, referenceKey: "users", options: options, block: { [weak self](changes) in
+self.datasource = DataSource(parentKey: key, keyPath: \Group.users, options: options, block: { [weak self](changes) in
     guard let tableView: UITableView = self?.tableView else { return }
-    
+
     switch changes {
     case .initial:
         tableView.reloadData()
