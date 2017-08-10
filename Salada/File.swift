@@ -16,7 +16,7 @@ public class File: NSObject {
         case html
         case css
         case javascript
-        case octetStream
+        case octetStream(String)
         case pdf
         case zip
         case tar
@@ -25,8 +25,8 @@ public class File: NSObject {
         case pjpeg
         case png
         case gif
-        case mpeg
-        case custom(String)
+        case mp4
+        case custom(String, String)
 
         var rawValue: String {
             switch self {
@@ -44,19 +44,40 @@ public class File: NSObject {
             case .pjpeg:                 return "image/pjpeg"
             case .png:                   return "image/png"
             case .gif:                   return "image/gif"
-            case .mpeg:                  return "video/mpeg"
-            case .custom(let type):      return type
+            case .mp4:                   return "video/mp4"
+            case .custom(let type, _):   return type
             }
         }
 
-        init?(rawValue: String) {
+        var fileExtension: String {
+            switch self {
+            case .plain:                 return "txt"
+            case .csv:                   return "csv"
+            case .html:                  return "html"
+            case .css:                   return "css"
+            case .javascript:            return "js"
+            case .octetStream(let ext):  return ext
+            case .pdf:                   return "pdf"
+            case .zip:                   return "zip"
+            case .tar:                   return "tar"
+            case .lzh:                   return "lzh"
+            case .jpeg:                  return "jpg"
+            case .pjpeg:                 return "jpg"
+            case .png:                   return "png"
+            case .gif:                   return "gif"
+            case .mp4:                   return "mp4"
+            case .custom(_, let ext):    return ext
+            }
+        }
+
+        init?(rawValue: String, ext: String? = nil) {
             switch rawValue {
             case "text/plain":                  self = .plain
             case "text/csv":                    self = .csv
             case "text/html":                   self = .html
             case "text/css":                    self = .css
             case "text/javascript":             self = .javascript
-            case "application/octet-stream":    self = .octetStream
+            case "application/octet-stream":    self = .octetStream(ext ?? "")
             case "application/pdf":             self = .pdf
             case "application/zip":             self = .zip
             case "application/x-tar":           self = .tar
@@ -65,8 +86,8 @@ public class File: NSObject {
             case "image/pjpeg":                 self = .pjpeg
             case "image/png":                   self = .png
             case "image/gif":                   self = .gif
-            case "video/mpeg":                  self = .mpeg
-            default:                            self = .custom(rawValue)
+            case "video/mp4":                   self = .mp4
+            default:                            self = .custom(rawValue, ext ?? "")
             }
         }
     }
@@ -111,6 +132,8 @@ public class File: NSObject {
     /// private downloadURL
     private var _downloadURL: URL?
 
+    private var hasExtension: Bool = true
+
     /// File detail value
     public var value: [AnyHashable: Any] {
         var value: [AnyHashable: Any] = ["name": self.name]
@@ -135,18 +158,20 @@ public class File: NSObject {
         self.name = name
     }
 
-    public convenience init(name: String = "\(Int(Date().timeIntervalSince1970 * 1000))",
-        data: Data? = nil,
+    public convenience init(name: String? = nil,
+        data: Data,
         mimeType: MIMEType? = nil) {
-        self.init(name: name)
+        let fileName: String = File.generateFileName(name ?? "\(Int(Date().timeIntervalSince1970 * 1000))", mimeType: mimeType)
+        self.init(name: fileName)
         self.mimeType = mimeType
         self.data = data
     }
 
-    public convenience init(name: String = "\(Int(Date().timeIntervalSince1970 * 1000))",
-        url: URL? = nil,
+    public convenience init(name: String? = nil,
+        url: URL,
         mimeType: MIMEType? = nil) {
-        self.init(name: name)
+        let fileName: String = File.generateFileName(name ?? "\(Int(Date().timeIntervalSince1970 * 1000))", mimeType: mimeType)
+        self.init(name: fileName)
         self.mimeType = mimeType
         self.url = url
     }
@@ -160,6 +185,15 @@ public class File: NSObject {
         if let downloadURL: String = propery["url"] {
             self._downloadURL = URL(string: downloadURL)
         }
+    }
+
+    class func generateFileName(_ name: String, mimeType: MIMEType?) -> String {
+        var fileName: String = name
+        if let mimeType: MIMEType = mimeType {
+            let url: URL = URL(string: name)!
+            fileName = url.pathExtension.isEmpty ? url.appendingPathExtension(mimeType.fileExtension).absoluteString : name
+        }
+        return fileName
     }
 
     // MARK: - Save
