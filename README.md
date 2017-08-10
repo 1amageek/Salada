@@ -60,7 +60,7 @@ Note: CocoaPods 1.1.0 is required to install Salada.
 ### Model
 
 Model of the definition is very simple.
-To inherit the `Salada.Object`.
+To inherit the `Object`.
 
 ``` Swift 
 class User: Object {
@@ -72,7 +72,7 @@ class User: Object {
     dynamic var items: [String] = []
     dynamic var url: URL?
     dynamic var birth: Date?
-    dynamic var thumbnail: Salada.File?
+    dynamic var thumbnail: File?
 
 }
 ```
