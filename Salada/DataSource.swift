@@ -126,7 +126,7 @@ public class DataSource<T, U> where T: Object, U: Object {
      this will normally only be the main thread.
 
      - parameter parentKey: Key of parent node to reference
-     - parameter referenceKey: Key of child node to reference
+     - parameter keyPath: Key of child node to reference
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
