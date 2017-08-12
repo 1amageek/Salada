@@ -60,10 +60,10 @@ Note: CocoaPods 1.1.0 is required to install Salada.
 ### Model
 
 Model of the definition is very simple.
-To inherit the `Salada.Object`.
+To inherit the `Object`.
 
 ``` Swift 
-class User: Salada.Object {
+class User: Object {
         
     dynamic var name: String?
     dynamic var age: Int = 0
@@ -72,7 +72,7 @@ class User: Salada.Object {
     dynamic var items: [String] = []
     dynamic var url: URL?
     dynamic var birth: Date?
-    dynamic var thumbnail: Salada.File?
+    dynamic var thumbnail: File?
 
 }
 ```
@@ -81,7 +81,7 @@ When you want to create a property that you want to ignore.
 
 ``` Swift
 // Group
-class Group: Salada.Object {
+class Group: Object {
     dynamic var name: String?
     dynamic var users: Set<String> = []
 }
@@ -202,8 +202,8 @@ class User: Salada.Object {
     dynamic var location: CLLocation?
     dynamic var url: URL?
     dynamic var birth: Date?
-    dynamic var thumbnail: Salada.File?
-    dynamic var cover: Salada.File?
+    dynamic var thumbnail: File?
+    dynamic var cover: File?
     dynamic var type: UserType = .first
     
     var tempName: String? 
@@ -251,7 +251,7 @@ File saves the File in FirebaseStorage.
 let user: User = User()
 let image: UIImage = UIImage(named: "Salada")!
 let data: NSData = UIImagePNGRepresentation(image)!
-let thumbnail: File = File(data: data)
+let thumbnail: File = File(data: data, mimeType: .jpeg)
 user.thumbnail = thumbnail
 user.save({ (error, ref) in
     // do something
@@ -261,7 +261,7 @@ user.save({ (error, ref) in
 ``` Swift
 let image: UIImage = #imageLiteral(resourceName: "salada")
 let data: Data = UIImageJPEGRepresentation(image, 1)!
-let file: Salada.File = Salada.File(data: data)
+let file: File = File(data: data, mimeType: .jpeg)
 item.file = file
 let task: FIRStorageUploadTask = item.file?.save(completion: { (metadata, error) in
     if let error = error {
