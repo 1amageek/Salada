@@ -6,7 +6,8 @@
 //  Copyright © 2017年 Stamp. All rights reserved.
 //
 
-import Firebase
+import FirebaseDatabase
+import FirebaseStorage
 
 public class File: NSObject {
 

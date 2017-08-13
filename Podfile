@@ -7,9 +7,9 @@ target 'Salada' do
 end
 
 target 'SaladBar' do
-  use_frameworks!
-  pod 'Firebase/Database'
-  pod 'Firebase/Storage'
+    use_frameworks!
+    pod 'Firebase/Database'
+    pod 'Firebase/Storage'
 end
 
 target 'TestApp' do
@@ -31,3 +31,4 @@ target 'TestApp' do
     pod 'Firebase/Storage'
   end
 end
+

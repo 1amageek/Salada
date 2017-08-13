@@ -6,8 +6,8 @@
 //  Copyright © 2017年 Stamp. All rights reserved.
 //
 
-import Foundation
-import Firebase
+import FirebaseDatabase
+import FirebaseStorage
 
 public class SaladaApp: NSObject {
 

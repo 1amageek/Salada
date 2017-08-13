@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		120281B11F3ACE1F00EABC5C /* ImageUploadViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 120281B01F3ACE1F00EABC5C /* ImageUploadViewController.storyboard */; };
 		120281B31F3ACE3100EABC5C /* ImageUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120281B21F3ACE3100EABC5C /* ImageUploadViewController.swift */; };
+		120282301F3FF70500EABC5C /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
+		120282311F3FF70500EABC5C /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8E1EDBD5820074DACB /* Base.swift */; };
+		120282321F3FF70500EABC5C /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12523B8C1EDBB74A0074DACB /* Object.swift */; };
+		120282331F3FF70500EABC5C /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
+		120282341F3FF70500EABC5C /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
+		120282351F3FF70500EABC5C /* SaladaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253BFAD1F3478AD0078C5D1 /* SaladaApp.swift */; };
 		122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122BEDF81EE3E6430009123C /* ActionCell.swift */; };
 		123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123C27A41E6696E100A2655F /* FileTestViewController.swift */; };
 		123C27A71E66A3F600A2655F /* pexels-photo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 123C27A61E66A3F600A2655F /* pexels-photo.jpg */; };
@@ -89,6 +95,7 @@
 		0E2E934795893137527588AD /* Pods-SaladaTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		120281B01F3ACE1F00EABC5C /* ImageUploadViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ImageUploadViewController.storyboard; sourceTree = "<group>"; };
 		120281B21F3ACE3100EABC5C /* ImageUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadViewController.swift; sourceTree = "<group>"; };
+		120281F61F3F64D800EABC5C /* Salada.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Salada.podspec; sourceTree = "<group>"; };
 		122BEDF81EE3E6430009123C /* ActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionCell.swift; sourceTree = "<group>"; };
 		123C27A41E6696E100A2655F /* FileTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTestViewController.swift; sourceTree = "<group>"; };
 		123C27A61E66A3F600A2655F /* pexels-photo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "pexels-photo.jpg"; sourceTree = "<group>"; };
@@ -155,8 +162,10 @@
 		358EA389C352FB0DBF611EBD /* Pods-SaladaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		43F23D15750FEACCCFF886A2 /* Pods-Sample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sample/Pods-Sample.release.xcconfig"; sourceTree = "<group>"; };
 		481C11F6E69EC5FD3CBD8ABC /* Pods_TestAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DAE42D034C39B7187004F96 /* Pods_FrameworkSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FrameworkSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DCD3C2BC8DB64A618CD3D2F /* Pods-TestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-TestApp/Pods-TestApp.release.xcconfig"; sourceTree = "<group>"; };
 		6183DCEAD3815B05EE187002 /* Pods-TestAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestAppUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestAppUITests/Pods-TestAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		6D446DDC11D251EC13B188EE /* Pods-FrameworkSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FrameworkSample.release.xcconfig"; path = "Pods/Target Support Files/Pods-FrameworkSample/Pods-FrameworkSample.release.xcconfig"; sourceTree = "<group>"; };
 		724982786F905F534F1D0144 /* Pods-TestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestApp/Pods-TestApp.debug.xcconfig"; sourceTree = "<group>"; };
 		788D92D6A77F55576E11BEF0 /* Pods-SaladaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTests/Pods-SaladaTests.release.xcconfig"; sourceTree = "<group>"; };
 		7B9402518CF51E7EAFB4ED63 /* Pods-SaladBar.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladBar.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaladBar/Pods-SaladBar.debug.xcconfig"; sourceTree = "<group>"; };
@@ -171,6 +180,7 @@
 		CC57E21B18E4CD7972B59B84 /* Pods_TestApp_TestAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestApp_TestAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCEC452FB1EFBC9CC71BD0AF /* Pods_Test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D56A6B69413A3755C5CDB62E /* Pods_Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D61100893DBA34D896483EAF /* Pods-FrameworkSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FrameworkSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FrameworkSample/Pods-FrameworkSample.debug.xcconfig"; sourceTree = "<group>"; };
 		E06963052D0D94CF68DFE11D /* Pods-SaladaTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaladaTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaladaTestApp/Pods-SaladaTestApp.debug.xcconfig"; sourceTree = "<group>"; };
 		E45B8EB2B9B5BC22BC26AF38 /* Pods-Hooo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hooo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Hooo/Pods-Hooo.debug.xcconfig"; sourceTree = "<group>"; };
 		E4B4B74ACE4129B67C195D79 /* Pods-Sample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sample/Pods-Sample.debug.xcconfig"; sourceTree = "<group>"; };
@@ -228,6 +238,7 @@
 		122314E51D618B22003864BD = {
 			isa = PBXGroup;
 			children = (
+				120281F61F3F64D800EABC5C /* Salada.podspec */,
 				12D0BE161E6D1ABD008E9AD0 /* Salada */,
 				12CB1A581D95184300E69000 /* SaladBar */,
 				12A4FE3C1DB5CA21003A3104 /* SaladaTests */,
@@ -388,6 +399,7 @@
 				481C11F6E69EC5FD3CBD8ABC /* Pods_TestAppTests.framework */,
 				8D64FFD9F43F20406C7DEA64 /* Pods_TestAppUITests.framework */,
 				CC57E21B18E4CD7972B59B84 /* Pods_TestApp_TestAppTests.framework */,
+				4DAE42D034C39B7187004F96 /* Pods_FrameworkSample.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -415,6 +427,8 @@
 				88E7619F9898A24358906F63 /* Pods-TestApp-TestAppTests.release.xcconfig */,
 				E4B4B74ACE4129B67C195D79 /* Pods-Sample.debug.xcconfig */,
 				43F23D15750FEACCCFF886A2 /* Pods-Sample.release.xcconfig */,
+				D61100893DBA34D896483EAF /* Pods-FrameworkSample.debug.xcconfig */,
+				6D446DDC11D251EC13B188EE /* Pods-FrameworkSample.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -540,7 +554,7 @@
 		122314E61D618B22003864BD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0830;
+				LastSwiftUpdateCheck = 0900;
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = Stamp;
 				TargetAttributes = {
@@ -583,8 +597,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				12CB1A561D95184300E69000 /* SaladBar */,
 				12D0BE141E6D1ABD008E9AD0 /* Salada */,
+				12CB1A561D95184300E69000 /* SaladBar */,
 				12DA5DB81EDC29D200D2A73D /* TestApp */,
 				12DA5DCB1EDC29D300D2A73D /* TestAppTests */,
 				12DA5DD61EDC29D300D2A73D /* TestAppUITests */,
@@ -955,11 +969,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				120282311F3FF70500EABC5C /* Base.swift in Sources */,
+				120282301F3FF70500EABC5C /* Referenceable.swift in Sources */,
 				12DA5DE81EDC2A0C00D2A73D /* TestObject.swift in Sources */,
 				126479601EDE8CF70097ED9E /* TableViewController.swift in Sources */,
+				120282321F3FF70500EABC5C /* Object.swift in Sources */,
+				120282351F3FF70500EABC5C /* SaladaApp.swift in Sources */,
+				120282331F3FF70500EABC5C /* File.swift in Sources */,
 				12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */,
 				126479621EDE92A90097ED9E /* TableViewCell.swift in Sources */,
 				122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */,
+				120282341F3FF70500EABC5C /* DataSource.swift in Sources */,
 				12DA5DBC1EDC29D200D2A73D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
