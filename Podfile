@@ -21,8 +21,6 @@ target 'TestApp' do
     inherit! :search_paths
     pod 'Firebase/Database'
     pod 'Firebase/Storage'
-    pod 'Quick'
-    pod 'Nimble'
   end
 
   target 'TestAppUITests' do

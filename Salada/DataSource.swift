@@ -40,6 +40,9 @@ public class SaladaOptions {
     /// Fetch timeout
     public var timeout: Int = SaladaApp.shared.timeout
 
+    /// Predicate
+    public var predicate: NSPredicate?
+
     /// Sort order
     public var sortDescirptors: [NSSortDescriptor] = [NSSortDescriptor(key: "id", ascending: false)]
 
@@ -105,16 +108,13 @@ public class DataSource<T, U> where T: Object, U: Object {
 
     private var changedBlock: (SaladaCollectionChange) -> Void
 
-    public var pool: [Child] = [] {
-        didSet {
-            if oldValue.count < pool.count {
+    public var pool: [Child] = []
 
-            } else if oldValue.count > pool.count {
-
-            } else {
-
-            }
+    private var filteredPool: [Child] {
+        if let predicate: NSPredicate = self.options.predicate {
+            return (self.pool as NSArray).filtered(using: predicate) as! [Child]
         }
+        return self.pool
     }
 
     /**
@@ -170,7 +170,7 @@ public class DataSource<T, U> where T: Object, U: Object {
                             return
                         }
                         self.pool.append(child)
-                        self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
+                        self.pool = self.filteredPool.sort(sortDescriptors: self.options.sortDescirptors)
                         if let i: Int = self.pool.index(of: child) {
                             block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                         }
@@ -187,7 +187,7 @@ public class DataSource<T, U> where T: Object, U: Object {
                 Child.observeSingle(key, eventType: .value, block: { (child) in
                     guard let child: Child = child else { return }
                     self.pool.append(child)
-                    self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
+                    self.pool = self.filteredPool.sort(sortDescriptors: self.options.sortDescirptors)
                     if let i: Int = self.pool.index(of: child) {
                         block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                     }
@@ -253,7 +253,7 @@ public class DataSource<T, U> where T: Object, U: Object {
                     Child.observeSingle(key, eventType: .value, block: { (child) in
                         guard let child: Child = child else { return }
                         self.pool.append(child)
-                        self.pool = self.pool.sort(sortDescriptors: self.options.sortDescirptors)
+                        self.pool = self.filteredPool.sort(sortDescriptors: self.options.sortDescirptors)
                         group.leave()
                     })
                 }
