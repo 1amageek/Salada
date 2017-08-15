@@ -110,6 +110,19 @@ public extension Referenceable {
     }
 
     /**
+     A functions that gets data whose property values match.
+     This property must be set to indexOn.
+
+     - parameter keypath: Keypath for property (ex. \Model.someProperty)
+     - parameter value: Enter the value to scan.
+     - parameter block: This is a callback when scanning is over. Matched data will be returned.
+     */
+    public static func observeSingle(child keypath: PartialKeyPath<Self>, equal value: Any, eventType: DataEventType, block: @escaping ([Self]) -> Void) {
+        self.observeSingle(child: keypath._kvcKeyPathString!, equal: value, eventType: eventType, block: block)
+    }
+
+
+    /**
      A function that gets all data from DB whenever DB has been changed.
      
      - parameter eventType: Set the event to be observed.
