@@ -66,6 +66,7 @@
 		12DA5DE81EDC2A0C00D2A73D /* TestObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DE71EDC2A0C00D2A73D /* TestObject.swift */; };
 		12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DF11EDD17A400D2A73D /* TestFlow.swift */; };
 		12F2EC651EDE8ABB00AF9A08 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12F2EC641EDE8ABB00AF9A08 /* GoogleService-Info.plist */; };
+		16F7D3F91F4AADAE00A43617 /* ObserveBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F7D3F81F4AADAE00A43617 /* ObserveBag.swift */; };
 		393C0939A87D1D60572797B9 /* Pods_TestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0F3F6E9107CC397D09C8B8B /* Pods_TestApp.framework */; };
 		48A9AC77CEC2092A44A4CAAF /* Pods_TestAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 481C11F6E69EC5FD3CBD8ABC /* Pods_TestAppTests.framework */; };
 		9088C4FC448D53572D030044 /* Pods_SaladBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -156,6 +157,7 @@
 		12DBD946A29B49B6DDF44E35 /* Pods_SaladaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12F2EC641EDE8ABB00AF9A08 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		148106A1CEF7A4448F530DB1 /* Pods_SaladaTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladaTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		16F7D3F81F4AADAE00A43617 /* ObserveBag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserveBag.swift; sourceTree = "<group>"; };
 		1D5576D8CC9B13C671F0A5B3 /* Pods_Sample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaladBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		334D5EA5F2937224A1EF3EB5 /* Pods-Hooo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hooo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Hooo/Pods-Hooo.release.xcconfig"; sourceTree = "<group>"; };
@@ -345,6 +347,7 @@
 				12DA5D611EDBE4E700D2A73D /* File.swift */,
 				12DA5D931EDC198B00D2A73D /* DataSource.swift */,
 				1253BFAD1F3478AD0078C5D1 /* SaladaApp.swift */,
+				16F7D3F81F4AADAE00A43617 /* ObserveBag.swift */,
 			);
 			path = Salada;
 			sourceTree = "<group>";
@@ -958,6 +961,7 @@
 			files = (
 				12DA5D941EDC198B00D2A73D /* DataSource.swift in Sources */,
 				12523B8D1EDBB74A0074DACB /* Object.swift in Sources */,
+				16F7D3F91F4AADAE00A43617 /* ObserveBag.swift in Sources */,
 				12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */,
 				12DA5D621EDBE4E700D2A73D /* File.swift in Sources */,
 				12523B8F1EDBD5820074DACB /* Base.swift in Sources */,
