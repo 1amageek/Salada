@@ -130,11 +130,11 @@ public final class NopObserveBag: ReferenceObserverDisposable {
 }
 
 extension Referenceable where Self: Object {
-    public static func addObserver(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> ObserveBag<Self> {
+    public static func observe(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> ObserveBag<Self> {
         return .init(.array(observe(eventType, block: block)))
     }
 
-    public static func addObserver(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> ObserveBag<Self> {
+    public static func observe(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> ObserveBag<Self> {
         return .init(.value(id, observe(id, eventType: eventType, block: block)))
     }
 }

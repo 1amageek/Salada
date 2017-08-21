@@ -12,7 +12,7 @@ import Firebase
 class TransactionTestViewController: UIViewController {
 
     var userID: String?
-    var handle: UInt?
+    private var observeBag = ObserveBag<User>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +33,7 @@ class TransactionTestViewController: UIViewController {
             }
             self.userID = ref!.key
             
-            self.handle = User.observe(ref!.key, eventType: .value) { [weak self] (user) in
+            self.observeBag = User.observe(ref!.key, eventType: .value) { [weak self] (user) in
                 guard let user: User = user else {
                     return
                 }
@@ -74,11 +74,5 @@ class TransactionTestViewController: UIViewController {
         
     }
     @IBOutlet weak var countLabel: UILabel!
-
-    deinit {
-        if let handle: UInt = self.handle {
-            User.removeObserver(with: handle)
-        }
-    }
 
 }

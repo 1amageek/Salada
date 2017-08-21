@@ -67,6 +67,8 @@
 		12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DF11EDD17A400D2A73D /* TestFlow.swift */; };
 		12F2EC651EDE8ABB00AF9A08 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12F2EC641EDE8ABB00AF9A08 /* GoogleService-Info.plist */; };
 		16F7D3F91F4AADAE00A43617 /* ObserveBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F7D3F81F4AADAE00A43617 /* ObserveBag.swift */; };
+		16F7D3FA1F4AB0CC00A43617 /* ObserveBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F7D3F81F4AADAE00A43617 /* ObserveBag.swift */; };
+		16F7D3FB1F4AB0CD00A43617 /* ObserveBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F7D3F81F4AADAE00A43617 /* ObserveBag.swift */; };
 		393C0939A87D1D60572797B9 /* Pods_TestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0F3F6E9107CC397D09C8B8B /* Pods_TestApp.framework */; };
 		48A9AC77CEC2092A44A4CAAF /* Pods_TestAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 481C11F6E69EC5FD3CBD8ABC /* Pods_TestAppTests.framework */; };
 		9088C4FC448D53572D030044 /* Pods_SaladBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 265B3FF55EA9541C849D9365 /* Pods_SaladBar.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -924,6 +926,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1274D1231F383C2E0037D9F1 /* Base.swift in Sources */,
+				16F7D3FA1F4AB0CC00A43617 /* ObserveBag.swift in Sources */,
 				1272DA721F0C9A35000A094E /* ChatViewCell.swift in Sources */,
 				123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */,
 				1274D1261F383C2E0037D9F1 /* DataSource.swift in Sources */,
@@ -977,6 +980,7 @@
 				120282301F3FF70500EABC5C /* Referenceable.swift in Sources */,
 				12DA5DE81EDC2A0C00D2A73D /* TestObject.swift in Sources */,
 				126479601EDE8CF70097ED9E /* TableViewController.swift in Sources */,
+				16F7D3FB1F4AB0CD00A43617 /* ObserveBag.swift in Sources */,
 				120282321F3FF70500EABC5C /* Object.swift in Sources */,
 				120282351F3FF70500EABC5C /* SaladaApp.swift in Sources */,
 				120282331F3FF70500EABC5C /* File.swift in Sources */,
