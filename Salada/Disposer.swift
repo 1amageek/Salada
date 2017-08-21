@@ -9,12 +9,20 @@
 import Foundation
 import Firebase
 
+/// A protocol for disposer
 public protocol ReferenceObservationDisposable {
+    /// Execute T.removeObserver()
     func dispose()
+
+    /// get observe id
     var observeID: UInt? { get }
+
+    /// get child_id
     var id: String? { get }
 }
 
+/// Disposer
+/// Handle removing observer using handle_id (and child_id) on `deinit` automatically.
 public final class Disposer<T: Object>: ReferenceObservationDisposable {
     public enum ObserveType {
         case none
@@ -92,6 +100,7 @@ public final class Disposer<T: Object>: ReferenceObservationDisposable {
     }
 }
 
+///  A type-erased `Disposer`.
 public final class AnyDisposer: ReferenceObservationDisposable {
 
     public let base: ReferenceObservationDisposable
@@ -117,9 +126,9 @@ public final class AnyDisposer: ReferenceObservationDisposable {
     }
 }
 
+/// A disposer that do nothing.
 public final class NoDisposer: ReferenceObservationDisposable {
     public init() {
-
     }
 
     public func dispose() {
@@ -128,14 +137,3 @@ public final class NoDisposer: ReferenceObservationDisposable {
     public let observeID: UInt? = nil
     public let id: String? = nil
 }
-
-extension Referenceable where Self: Object {
-    public static func observe(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> Disposer<Self> {
-        return .init(.array(observe(eventType, block: block)))
-    }
-
-    public static func observe(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> Disposer<Self> {
-        return .init(.value(id, observe(id, eventType: eventType, block: block)))
-    }
-}
-
