@@ -1,5 +1,5 @@
 //
-//  ObserveBag.swift
+//  Disposer.swift
 //  Salada
 //
 //  Created by suguru-kishimoto on 2017/08/21.
@@ -9,13 +9,13 @@
 import Foundation
 import Firebase
 
-public protocol ReferenceObserverDisposable {
+public protocol ReferenceObservationDisposable {
     func dispose()
     var observeID: UInt? { get }
     var id: String? { get }
 }
 
-public final class ObserveBag<T: Object>: ReferenceObserverDisposable {
+public final class Disposer<T: Object>: ReferenceObservationDisposable {
     public enum ObserveType {
         case none
         case array(UInt)
@@ -83,7 +83,7 @@ public final class ObserveBag<T: Object>: ReferenceObserverDisposable {
         return type.id
     }
 
-    public func toAny() -> AnyObserveBag {
+    public func toAny() -> AnyDisposer {
         return .init(self)
     }
 
@@ -92,11 +92,11 @@ public final class ObserveBag<T: Object>: ReferenceObserverDisposable {
     }
 }
 
-public final class AnyObserveBag: ReferenceObserverDisposable {
+public final class AnyDisposer: ReferenceObservationDisposable {
 
-    public let base: ReferenceObserverDisposable
+    public let base: ReferenceObservationDisposable
 
-    public init(_ base: ReferenceObserverDisposable = NopObserveBag()) {
+    public init(_ base: ReferenceObservationDisposable = NoDisposer()) {
         self.base = base
     }
 
@@ -117,7 +117,7 @@ public final class AnyObserveBag: ReferenceObserverDisposable {
     }
 }
 
-public final class NopObserveBag: ReferenceObserverDisposable {
+public final class NoDisposer: ReferenceObservationDisposable {
     public init() {
 
     }
@@ -130,11 +130,11 @@ public final class NopObserveBag: ReferenceObserverDisposable {
 }
 
 extension Referenceable where Self: Object {
-    public static func observe(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> ObserveBag<Self> {
+    public static func observe(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> Disposer<Self> {
         return .init(.array(observe(eventType, block: block)))
     }
 
-    public static func observe(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> ObserveBag<Self> {
+    public static func observe(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> Disposer<Self> {
         return .init(.value(id, observe(id, eventType: eventType, block: block)))
     }
 }

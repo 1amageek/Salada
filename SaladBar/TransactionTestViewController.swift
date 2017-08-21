@@ -12,7 +12,7 @@ import Firebase
 class TransactionTestViewController: UIViewController {
 
     var userID: String?
-    private var observeBag = ObserveBag<User>()
+    private var disposer = Disposer<User>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +33,7 @@ class TransactionTestViewController: UIViewController {
             }
             self.userID = ref!.key
             
-            self.observeBag = User.observe(ref!.key, eventType: .value) { [weak self] (user) in
+            self.disposer = User.observe(ref!.key, eventType: .value) { [weak self] (user) in
                 guard let user: User = user else {
                     return
                 }
