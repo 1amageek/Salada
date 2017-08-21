@@ -9,19 +9,19 @@
 import Foundation
 import Firebase
 
-protocol ReferenceObserverDisposable {
+public protocol ReferenceObserverDisposable {
     func dispose()
     var observeID: UInt? { get }
     var id: String? { get }
 }
 
-final class ObserveBag<T: Object>: ReferenceObserverDisposable {
-    enum ObserveType {
+public final class ObserveBag<T: Object>: ReferenceObserverDisposable {
+    public enum ObserveType {
         case none
         case array(UInt)
         case value(String, UInt)
 
-        var observeID: UInt? {
+        public var observeID: UInt? {
             switch self {
             case .array(let observeID):
                 return observeID
@@ -32,7 +32,7 @@ final class ObserveBag<T: Object>: ReferenceObserverDisposable {
             }
         }
 
-        var id: String? {
+        public var id: String? {
             switch self {
             case .value(let id, _):
                 return id
@@ -46,81 +46,69 @@ final class ObserveBag<T: Object>: ReferenceObserverDisposable {
     private var isDisposed = false
     private let lock = NSLock()
 
-    init(_ type: ObserveType = .none) {
+    public init(_ type: ObserveType = .none) {
         self.type = type
         if case .none = type {
             isDisposed = true
         }
     }
 
-    init(observeID: UInt) {
+    public init(observeID: UInt) {
         self.type = .array(observeID)
     }
 
-    init(id: String, observeID: UInt) {
+    public init(id: String, observeID: UInt) {
         self.type = .value(id, observeID)
     }
 
-    func dispose() {
+    public func dispose() {
         lock.lock(); defer { lock.unlock() }
         if isDisposed { return }
         switch type {
         case .array(let observeID):
             T.removeObserver(with: observeID)
-            assert({
-                print("disposed observer(array)", T.self, observeID)
-                return true
-                }())
         case .value(let id, let observeID):
             T.removeObserver(id, with: observeID)
-            assert({
-                print("disposed observer(value)", T.self, id, observeID)
-                return true
-                }())
         default:
             break
         }
         isDisposed = true
     }
 
-    var observeID: UInt? {
+    public var observeID: UInt? {
         return type.observeID
     }
 
-    var id: String? {
+    public var id: String? {
         return type.id
     }
 
-    func toAny() -> AnyObserveBag {
+    public func toAny() -> AnyObserveBag {
         return .init(self)
     }
 
     deinit {
-        assert({
-            if !isDisposed {
-                print("disposed on deinit")
-            }
-            return true
-            }())
         dispose()
     }
 }
 
-final class AnyObserveBag: ReferenceObserverDisposable {
+public final class AnyObserveBag: ReferenceObserverDisposable {
 
-    let base: ReferenceObserverDisposable
-    init(_ base: ReferenceObserverDisposable = NopObserveBag()) {
+    public let base: ReferenceObserverDisposable
+
+    public init(_ base: ReferenceObserverDisposable = NopObserveBag()) {
         self.base = base
     }
-    func dispose() {
+
+    public func dispose() {
         base.dispose()
     }
 
-    var observeID: UInt? {
+    public var observeID: UInt? {
         return base.observeID
     }
 
-    var id: String? {
+    public var id: String? {
         return base.id
     }
 
@@ -129,20 +117,24 @@ final class AnyObserveBag: ReferenceObserverDisposable {
     }
 }
 
-final class NopObserveBag: ReferenceObserverDisposable {
-    func dispose() {
+public final class NopObserveBag: ReferenceObserverDisposable {
+    public init() {
+
     }
 
-    let observeID: UInt? = nil
-    let id: String? = nil
+    public func dispose() {
+    }
+
+    public let observeID: UInt? = nil
+    public let id: String? = nil
 }
 
 extension Referenceable where Self: Object {
-    static func addObserver(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> ObserveBag<Self> {
+    public static func addObserver(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> ObserveBag<Self> {
         return .init(.array(observe(eventType, block: block)))
     }
 
-    static func addObserver(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> ObserveBag<Self> {
+    public static func addObserver(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> ObserveBag<Self> {
         return .init(.value(id, observe(id, eventType: eventType, block: block)))
     }
 }
