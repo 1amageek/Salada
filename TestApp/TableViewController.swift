@@ -10,15 +10,12 @@ import UIKit
 
 class TableViewController: UITableViewController {
 
-    var handle: UInt?
+    private var disposer = Disposer<TestObject>()
     var key: String? {
         didSet {
             self.tableView.reloadData()
             if let key: String = key {
-                if let handle: UInt = self.handle {
-                    TestObject.removeObserver(key, with: handle)
-                }
-                self.handle = TestObject.observe(key, eventType: .value, block: { _ in 
+                self.disposer = TestObject.observe(key, eventType: .value, block: { _ in
                     self.tableView.reloadData()
                 })
             }
