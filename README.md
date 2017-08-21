@@ -188,8 +188,6 @@ if let groupId: String = user.groups.first {
 ``` Swift
 class User: Salada.Object {
     
-    typealias Element = User
-    
     override class var _version: String {
         return "v1"
     }
