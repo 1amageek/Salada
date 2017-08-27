@@ -4,7 +4,7 @@
  [![Version](http://img.shields.io/cocoapods/v/Salada.svg)](http://cocoapods.org/?q=Salada)
  [![Platform](http://img.shields.io/cocoapods/p/Salada.svg)](http://cocoapods.org/?q=Salada)
  [![Downloads](https://img.shields.io/cocoapods/dt/Salada.svg?label=Total%20Downloads&colorB=28B9FE)](https://cocoapods.org/pods/Salada)
- 
+
 </div>
 
 # Salada 🍐
@@ -45,15 +45,15 @@ Note: CocoaPods 1.1.0 is required to install Salada.
 
 
  Add the following to the pod file, `Pods install`
- 		 
+
  ``` ruby
  pod 'Firebase'
  pod 'Firebase/Database'
  pod 'Firebase/Storage'
  ```
- 		 
+
  1. [Download this project](https://github.com/1amageek/Salada/archive/master.zip)
- 1. Put `SaladaApp.swift`, `Referenceable.swift`, `Base.swift`, `Object.swift`, `File.swift`, `DataSource.swift` in your project.	
+ 1. Put `SaladaApp.swift`, `Referenceable.swift`, `Base.swift`, `Object.swift`, `File.swift`, `DataSource.swift` in your project.
 
 ## Usage 👀
 
@@ -62,9 +62,9 @@ Note: CocoaPods 1.1.0 is required to install Salada.
 Model of the definition is very simple.
 To inherit the `Object`.
 
-``` Swift 
+``` Swift
 class User: Object {
-        
+
     dynamic var name: String?
     dynamic var age: Int = 0
     dynamic var gender: String?
@@ -124,7 +124,7 @@ It is updated automatically when you change the property Model that have already
 let group: Group = Group()
 group.name = "iOS Development Team"
 group.save { (error, ref) in
-    
+
     do {
         let user: User = User()
         user.name = "john appleseed"
@@ -136,7 +136,7 @@ group.save { (error, ref) in
             group.users.insert(ref.key) // It is updated automatically
         })
     }
-    
+
     do {
         let user: User = User()
         user.name = "Marilyn Monroe"
@@ -148,7 +148,7 @@ group.save { (error, ref) in
             group.users.insert(ref.key) // It is updated automatically
         })
     }
-    
+
 }
 ```
 
@@ -187,13 +187,11 @@ if let groupId: String = user.groups.first {
 ### Custom property
 ``` Swift
 class User: Salada.Object {
-    
-    typealias Element = User
-    
+
     override class var _version: String {
         return "v1"
     }
-    
+
     dynamic var name: String?
     dynamic var age: Int = 0
     dynamic var gender: String?
@@ -205,13 +203,13 @@ class User: Salada.Object {
     dynamic var thumbnail: File?
     dynamic var cover: File?
     dynamic var type: UserType = .first
-    
-    var tempName: String? 
-    
+
+    var tempName: String?
+
     override var ignore: [String] {
         return ["tempName"]
     }
-    
+
     override func encode(_ key: String, value: Any?) -> Any? {
         if key == "location" {
             if let location = self.location {
@@ -222,7 +220,7 @@ class User: Salada.Object {
         }
         return nil
     }
-    
+
     override func decode(_ key: String, value: Any?) -> Any? {
         if key == "location" {
             if let location: [String: Double] = value as? [String: Double] {
@@ -309,7 +307,7 @@ User.observeSingle(friend, eventType: .value, block: { (user) in
 
 see SaladBar
 
-For example 
+For example
 
 ``` Swift
 // in ViewController property
@@ -344,7 +342,7 @@ self.datasource = DataSource(parentKey: key, keyPath: \Group.users, options: opt
 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return self.datasource?.count ?? 0
 }
-    
+
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
     configure(cell, atIndexPath: indexPath)
@@ -376,3 +374,36 @@ func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEdi
     }
 }
 ```
+
+## Observe
+You can receive data changes through observation.  
+And easy to manage observation using `Disposer`.
+
+```swift
+class ViewController: UIViewController {
+    private var disposer: Disposer<User>?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        disposer = User.observe(userID, eventType: .value) { user in
+             //...
+        }
+    }
+
+    deinit {
+        // ... auto remove observe internal disposer when it deinitialized.
+        // or manually and clearly dispose
+        // disposer?.dispose()
+    }
+}
+```
+
+Salada has `Disposer`, `AnyDisposer` and `NoDisposer`.  
+See details: `Disposer.swift`
+
+
+# Reference
+
+- [Salada](https://github.com/1amageek/Salada) Firebase model framework.
+- [Tong](https://github.com/1amageek/Tong) Tong is library for using ElasticSearch with Swift.
+- [dressing](https://github.com/1amageek/dressing) Dressing provides the functionality of CloudFunctions to connect Firebase and ElasticSearch.
