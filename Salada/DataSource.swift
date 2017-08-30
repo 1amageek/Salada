@@ -219,7 +219,6 @@ public class DataSource<T, U> where T: Object, U: Object {
                 guard let `self` = self else { return }
                 let key: String = snapshot.key
                 if let i: Int = self.keys.index(of: key) {
-                    self.removeObserver(at: i)
                     self.keys.remove(at: i)
                 }
                 if let i: Int = self.pool.index(of: key) {
