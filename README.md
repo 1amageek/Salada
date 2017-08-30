@@ -344,20 +344,20 @@ func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> 
 }
 
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+    let cell: TableViewCell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
     configure(cell, atIndexPath: indexPath)
     return cell
 }
 
-func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
-    self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+func configure(_ cell: TableViewCell, atIndexPath indexPath: IndexPath) {
+    cell.disposer = self.datasource?.observeObject(at: indexPath.item, block: { (user) in
         cell.imageView?.contentMode = .scaleAspectFill
         cell.textLabel?.text = user?.name
     })
 }
 
-func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-    self.datasource?.removeObserver(at: indexPath.item)
+private func tableView(_ tableView: UITableView, didEndDisplaying cell: TableViewCell, forRowAt indexPath: IndexPath) {
+    cell.disposer?.dispose()
 }
 
 func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
