@@ -74,7 +74,7 @@ public extension Referenceable {
     public static func observeSingle(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) {
         let ref: DatabaseReference = self.databaseRef.child(id)
 
-        if let object: Self = SaladaApp.shared.cache.value(forKey: ref.url) as? Self {
+        if let object: Self = SaladaApp.cache?.object(forKey: ref.url as AnyObject) as? Self {
             block(object)
             return
         }
@@ -82,6 +82,7 @@ public extension Referenceable {
         ref.observeSingleEvent(of: eventType, with: { (snapshot) in
             if snapshot.exists() {
                 if let object: Self = Self(snapshot: snapshot) {
+                    SaladaApp.cache?.setObject(object, forKey: ref.url as AnyObject)
                     block(object)
                 }
             } else {

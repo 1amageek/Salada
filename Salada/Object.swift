@@ -421,6 +421,7 @@ open class Object: Base, Referenceable {
     // MARK: - Remove
 
     public func remove() {
+        SaladaApp.cache?.removeObject(forKey: ref.url as AnyObject)
         self.ref.removeValue()
         self.ref.removeAllObservers()
     }

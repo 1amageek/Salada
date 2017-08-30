@@ -18,7 +18,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         view.dataSource = self
         view.delegate = self
         view.alwaysBounceVertical = true
-        view.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+        view.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
         return view
     }()
     
@@ -76,7 +76,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         self.groupKey = key
         let options: SaladaOptions = SaladaOptions()
         options.limit = 10
-        options.predicate = NSPredicate(format: "age == 21")
+//        options.predicate = NSPredicate(format: "age == 21")
         options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
         self.datasource = DataSource(parentKey: key, keyPath: \Group.users, options: options, block: { [weak self](changes) in
             guard let tableView: UITableView = self?.tableView else { return }
@@ -135,19 +135,19 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+        let cell: TableViewCell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
         configure(cell, atIndexPath: indexPath)
         return cell
     }
     
-    func configure(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
+    func configure(_ cell: TableViewCell, atIndexPath indexPath: IndexPath) {
 //        let user: User = self.datasource![indexPath.item]
 //        cell.imageView?.contentMode = .scaleAspectFill
 //        cell.textLabel?.text = user.name
 //        cell.setNeedsLayout()
 
         //
-        self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+        cell.disposer = self.datasource?.observeObject(at: indexPath.item, block: { (user) in
             guard let user: User = user else { return }
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user.name
@@ -155,8 +155,9 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         })
     }
     
-    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        self.datasource?.removeObserver(at: indexPath.item)
+    private func tableView(_ tableView: UITableView, didEndDisplaying cell: TableViewCell, forRowAt indexPath: IndexPath) {
+        //self.datasource?.removeObserver(at: indexPath.item)
+        cell.disposer?.dispose()
     }
     
     func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {

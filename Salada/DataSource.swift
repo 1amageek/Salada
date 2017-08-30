@@ -330,6 +330,7 @@ public class DataSource<T, U> where T: Object, U: Object {
      Removes all observers at the reference of key
      - parameter index: Order of the data source
      */
+    @available(*, deprecated, message: "Use Disposer")
     public func removeObserver(at index: Int) {
         if index < self.keys.count {
             let key: String = self.keys[index]
@@ -363,25 +364,17 @@ public class DataSource<T, U> where T: Object, U: Object {
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      - see removeObserver
      */
-    public func observeObject(at index: Int, block: @escaping (Child?) -> Void) {
+    public func observeObject(at index: Int, block: @escaping (Child?) -> Void) -> Disposer<Child> {
         let key: String = self.keys[index]
         let child: Child = self[index]
         var isFirst: Bool = true
         block(child)
-        Child.databaseRef.child(key).observe(.value, with: { (snapshot) in
+        return Child.observe(key, eventType: .value) { (child) in
             if isFirst {
                 isFirst = false
                 return
             }
-            if snapshot.exists() {
-                if let child: Child = Child(snapshot: snapshot) {
-                    block(child)
-                }
-            } else {
-                block(nil)
-            }
-        }) { (error) in
-            block(nil)
+            block(child)
         }
     }
 

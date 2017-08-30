@@ -17,24 +17,25 @@ public class SaladaApp: NSObject, NSCacheDelegate {
 
     public var timeout: Int = 20
 
-    private(set) var cache: NSCache<AnyObject, Object>?
+    private var _cache: NSCache<AnyObject, AnyObject>?
 
     private override init() {
         super.init()
         _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
-            //debugPrint("[Salada] .info/connected", snapshot)
             self.isConnected = snapshot.value as? Bool ?? false
         }
     }
 
-
-
     public class func configure(_ isCacheEnabled: Bool = true) {
         let app: SaladaApp = SaladaApp.shared
         if isCacheEnabled {
-            app.cache = NSCache()
-            app.cache?.delegate = app
+            app._cache = NSCache()
+            app._cache?.delegate = app
         }
+    }
+
+    public class var cache: NSCache<AnyObject, AnyObject>? {
+        return shared._cache
     }
 
     public class var isPersistenced: Bool {
