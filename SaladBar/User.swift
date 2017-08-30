@@ -8,7 +8,7 @@
 
 import Foundation
 import CoreLocation
-import Salada
+
 
 class User: Object {
     

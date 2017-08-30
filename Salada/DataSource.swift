@@ -131,11 +131,29 @@ public class DataSource<T, U> where T: Object, U: Object {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-    public init(parentKey: String, keyPath: KeyPath<T, Set<String>>, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+    public convenience init(parentKey: String, keyPath: KeyPath<T, Set<String>>, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+        self.init(parentKey: parentKey, childKey: keyPath._kvcKeyPathString!, options: options, block: block)
+    }
+
+    /**
+
+     DataSource observes its value by defining a parent-child relationship.
+     If there is a change in the value, it will receive and notify you of the change.
+
+     Handler blocks are called on the same thread that they were added on, and may only be added on threads which are
+     currently within a run loop. Unless you are specifically creating and running a run loop on a background thread,
+     this will normally only be the main thread.
+
+     - parameter parentKey: Key of parent node to reference
+     - parameter childKey: Key of child node to reference
+     - parameter options: DataSource Options
+     - parameter block: A block which is called to process Firebase change evnet.
+     */
+    public init(parentKey: String, childKey: String, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
 
         self.parentKey = parentKey
 
-        self.referenceKey = keyPath._kvcKeyPathString!
+        self.referenceKey = childKey
 
         self.options = options
 
@@ -192,8 +210,8 @@ public class DataSource<T, U> where T: Object, U: Object {
                         block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                     }
                 })
-            }, withCancel: { (error) in
-                block(SaladaCollectionChange(change: nil, error: error))
+                }, withCancel: { (error) in
+                    block(SaladaCollectionChange(change: nil, error: error))
             })
 
             // remove
