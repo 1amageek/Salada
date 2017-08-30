@@ -9,7 +9,7 @@
 import FirebaseDatabase
 import FirebaseStorage
 
-public class SaladaApp: NSObject {
+public class SaladaApp: NSObject, NSCacheDelegate {
 
     static let shared: SaladaApp = SaladaApp()
 
@@ -17,16 +17,25 @@ public class SaladaApp: NSObject {
 
     public var timeout: Int = 20
 
+    private var _cache: NSCache<AnyObject, AnyObject>?
+
     private override init() {
         super.init()
         _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
-            //debugPrint("[Salada] .info/connected", snapshot)
             self.isConnected = snapshot.value as? Bool ?? false
         }
     }
 
-    public class func configure() {
-        _ = SaladaApp.shared
+    public class func configure(_ isCacheEnabled: Bool = true) {
+        let app: SaladaApp = SaladaApp.shared
+        if isCacheEnabled {
+            app._cache = NSCache()
+            app._cache?.delegate = app
+        }
+    }
+
+    public class var cache: NSCache<AnyObject, AnyObject>? {
+        return shared._cache
     }
 
     public class var isPersistenced: Bool {

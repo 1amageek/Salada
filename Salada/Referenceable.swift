@@ -72,9 +72,17 @@ public extension Referenceable {
      - parameter block: If the specified event fires, this callback is invoked.
      */
     public static func observeSingle(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) {
-        self.databaseRef.child(id).observeSingleEvent(of: eventType, with: { (snapshot) in
+        let ref: DatabaseReference = self.databaseRef.child(id)
+
+        if let object: Self = SaladaApp.cache?.object(forKey: ref.url as AnyObject) as? Self {
+            block(object)
+            return
+        }
+
+        ref.observeSingleEvent(of: eventType, with: { (snapshot) in
             if snapshot.exists() {
                 if let object: Self = Self(snapshot: snapshot) {
+                    SaladaApp.cache?.setObject(object, forKey: ref.url as AnyObject)
                     block(object)
                 }
             } else {
