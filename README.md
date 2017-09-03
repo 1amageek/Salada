@@ -407,3 +407,10 @@ See details: `Disposer.swift`
 - [Salada](https://github.com/1amageek/Salada) Firebase model framework.
 - [Tong](https://github.com/1amageek/Tong) Tong is library for using ElasticSearch with Swift.
 - [dressing](https://github.com/1amageek/dressing) Dressing provides the functionality of CloudFunctions to connect Firebase and ElasticSearch.
+
+
+# Contributing
+
+We welcome any contributions. See the CONTRIBUTING file for how to get involved.
+Saladaは日本製です。日本人のコントリビューター大歓迎🎉
+
