@@ -277,7 +277,7 @@ open class Object: Base, Referenceable {
     internal func updateValue(_ keyPath: String, child: String?, value: Any?) {
         let reference: DatabaseReference = self.ref
         let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-
+        SaladaApp.cache?.removeObject(forKey: reference.url as AnyObject)
         if let value: Any = value {
             var path: String = keyPath
             if let child: String = child {
