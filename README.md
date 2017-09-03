@@ -411,6 +411,6 @@ See details: `Disposer.swift`
 
 # Contributing
 
-We welcome any contributions. See the CONTRIBUTING file for how to get involved.
+We welcome any contributions. See the [CONTRIBUTING](https://github.com/1amageek/Salada/blob/master/CONTRIBUTING.md) file for how to get involved.
 Saladaは日本製です。日本人のコントリビューター大歓迎🎉
 
