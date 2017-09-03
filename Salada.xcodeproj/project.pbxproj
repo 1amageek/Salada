@@ -38,7 +38,6 @@
 		1272DA701F0C9A35000A094E /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA6A1F0C9A35000A094E /* ChatViewController.swift */; };
 		1272DA711F0C9A35000A094E /* ChatViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA6B1F0C9A35000A094E /* ChatViewDataSource.swift */; };
 		1272DA721F0C9A35000A094E /* ChatViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA6C1F0C9A35000A094E /* ChatViewCell.swift */; };
-		1272DA761F0C9A96000A094E /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA741F0C9A96000A094E /* MessageViewController.swift */; };
 		1272DA771F0C9A96000A094E /* ChatTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA751F0C9A96000A094E /* ChatTextCell.swift */; };
 		1274D1191F38369F0037D9F1 /* CustomUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253BFAB1F34785D0078C5D1 /* CustomUser.swift */; };
 		1274D1221F383C2E0037D9F1 /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
@@ -57,6 +56,7 @@
 		12CB1A611D95184300E69000 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A601D95184300E69000 /* Assets.xcassets */; };
 		12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A621D95184300E69000 /* LaunchScreen.storyboard */; };
 		12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
+		12DA17F91F5C146800749224 /* UserDataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA17F81F5C146800749224 /* UserDataSourceViewController.swift */; };
 		12DA5D621EDBE4E700D2A73D /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
 		12DA5D941EDC198B00D2A73D /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
 		12DA5DBC1EDC29D200D2A73D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DBB1EDC29D200D2A73D /* AppDelegate.swift */; };
@@ -142,6 +142,7 @@
 		12CB1A651D95184300E69000 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12D0BE151E6D1ABD008E9AD0 /* Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Referenceable.swift; sourceTree = "<group>"; };
+		12DA17F81F5C146800749224 /* UserDataSourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataSourceViewController.swift; sourceTree = "<group>"; };
 		12DA5D611EDBE4E700D2A73D /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		12DA5D931EDC198B00D2A73D /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		12DA5DB91EDC29D200D2A73D /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -277,6 +278,7 @@
 				1253BFA71F3465F20078C5D1 /* UserGroupRelationViewController.swift */,
 				1253BFA91F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard */,
 				12CB1A5B1D95184300E69000 /* DataSourceViewController.swift */,
+				12DA17F81F5C146800749224 /* UserDataSourceViewController.swift */,
 				12A3CFF01F56BDA3007238D9 /* TableViewCell.swift */,
 				120281B21F3ACE3100EABC5C /* ImageUploadViewController.swift */,
 				120281B01F3ACE1F00EABC5C /* ImageUploadViewController.storyboard */,
@@ -930,6 +932,7 @@
 				1272DA721F0C9A35000A094E /* ChatViewCell.swift in Sources */,
 				123C27A91E66B95E00A2655F /* SaladaFileTestViewController.swift in Sources */,
 				1274D1261F383C2E0037D9F1 /* DataSource.swift in Sources */,
+				12DA17F91F5C146800749224 /* UserDataSourceViewController.swift in Sources */,
 				1272DA701F0C9A35000A094E /* ChatViewController.swift in Sources */,
 				125904191F3451D5004B271D /* SimpleModelViewController.swift in Sources */,
 				1272DA771F0C9A96000A094E /* ChatTextCell.swift in Sources */,
@@ -940,7 +943,6 @@
 				1272DA6F1F0C9A35000A094E /* ChatView.swift in Sources */,
 				1272DA651F0C97BF000A094E /* Message.swift in Sources */,
 				1272DA631F0C97B8000A094E /* Room.swift in Sources */,
-				1272DA761F0C9A96000A094E /* MessageViewController.swift in Sources */,
 				1253BFA81F3465F20078C5D1 /* UserGroupRelationViewController.swift in Sources */,
 				12CB1A5A1D95184300E69000 /* AppDelegate.swift in Sources */,
 				1272DA6E1F0C9A35000A094E /* ChatToolBar.swift in Sources */,

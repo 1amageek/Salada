@@ -51,11 +51,9 @@ public class SaladaOptions {
 
 /// DataSource class.
 /// Observe at a Firebase DataSource location.
-public class DataSource<T, U> where T: Object, U: Object {
+public class DataSource<T: Object> {
 
-    public typealias Parent = T
-
-    public typealias Child = U
+    public typealias Element = T
 
     /// DatabaseReference
     public var databaseRef: DatabaseReference { return Database.database().reference() }
@@ -63,20 +61,13 @@ public class DataSource<T, U> where T: Object, U: Object {
     /// Count
     public var count: Int { return pool.count }
 
-    /// Reference of parent
-    private(set) var parentRef: DatabaseReference
-
-    /// Reference of child
+    /// Reference of element
     private(set) var reference: DatabaseReference
-
-    /// Key of parent of reference node
-    private(set) var parentKey: String
-
-    /// Key of the node to be reference
-    private(set) var referenceKey: String
 
     /// Options
     private(set) var options: SaladaOptions
+
+    private let fetchQueue: DispatchQueue = DispatchQueue(label: "salada.datasource.fetch.queue")
 
     private var addReference: DatabaseQuery?
 
@@ -98,9 +89,10 @@ public class DataSource<T, U> where T: Object, U: Object {
         return self.keys.last
     }
 
+    private var previousLastKey: String?
+
     // Sorted keys
     private var sortedKeys: [String] {
-        //return self.keys.sorted { self.options.ascending ? $0 < $1 : $0 > $1 }
         return self.keys.sorted { $0 > $1 }
     }
 
@@ -108,11 +100,11 @@ public class DataSource<T, U> where T: Object, U: Object {
 
     private var changedBlock: (SaladaCollectionChange) -> Void
 
-    public var pool: [Child] = []
+    public var pool: [Element] = []
 
-    private var filteredPool: [Child] {
+    private var filteredPool: [Element] {
         if let predicate: NSPredicate = self.options.predicate {
-            return (self.pool as NSArray).filtered(using: predicate) as! [Child]
+            return (self.pool as NSArray).filtered(using: predicate) as! [Element]
         }
         return self.pool
     }
@@ -131,35 +123,44 @@ public class DataSource<T, U> where T: Object, U: Object {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-    public convenience init(parentKey: String, keyPath: KeyPath<T, Set<String>>, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
-        self.init(parentKey: parentKey, childKey: keyPath._kvcKeyPathString!, options: options, block: block)
-    }
+//    public convenience init(parentKey: String, keyPath: KeyPath<T, Set<String>>, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+//        self.init(parentKey: parentKey, childKey: keyPath._kvcKeyPathString!, options: options, block: block)
+//    }
+//
+//    /**
+//
+//     DataSource observes its value by defining a parent-child relationship.
+//     If there is a change in the value, it will receive and notify you of the change.
+//
+//     Handler blocks are called on the same thread that they were added on, and may only be added on threads which are
+//     currently within a run loop. Unless you are specifically creating and running a run loop on a background thread,
+//     this will normally only be the main thread.
+//
+//     - parameter parentKey: Key of parent node to reference
+//     - parameter childKey: Key of child node to reference
+//     - parameter options: DataSource Options
+//     - parameter block: A block which is called to process Firebase change evnet.
+//     */
+//    public convenience init(parentKey: String, childKey: String, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+//
+//        self.parentKey = parentKey
+//
+//        self.referenceKey = childKey
+//
+//        self.options = options
+//
+//        self.parentRef = Parent.databaseRef.child(parentKey)
+//
+//        self.reference = self.parentRef.child(self.referenceKey)
+//
+//        self.changedBlock = block
+//    }
 
-    /**
+    public init(_ reference: DatabaseReference, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
 
-     DataSource observes its value by defining a parent-child relationship.
-     If there is a change in the value, it will receive and notify you of the change.
-
-     Handler blocks are called on the same thread that they were added on, and may only be added on threads which are
-     currently within a run loop. Unless you are specifically creating and running a run loop on a background thread,
-     this will normally only be the main thread.
-
-     - parameter parentKey: Key of parent node to reference
-     - parameter childKey: Key of child node to reference
-     - parameter options: DataSource Options
-     - parameter block: A block which is called to process Firebase change evnet.
-     */
-    public init(parentKey: String, childKey: String, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
-
-        self.parentKey = parentKey
-
-        self.referenceKey = childKey
+        self.reference = reference
 
         self.options = options
-
-        self.parentRef = Parent.databaseRef.child(parentKey)
-
-        self.reference = self.parentRef.child(self.referenceKey)
 
         self.changedBlock = block
 
@@ -183,13 +184,13 @@ public class DataSource<T, U> where T: Object, U: Object {
                 if !self.keys.contains(key) {
                     self.keys.append(key)
                     self.keys = self.sortedKeys
-                    Child.observeSingle(key, eventType: .value, block: { (child) in
-                        guard let child: Child = child else {
+                    Element.observeSingle(key, eventType: .value, block: { (element) in
+                        guard let element: Element = element else {
                             return
                         }
-                        self.pool.append(child)
+                        self.pool.append(element)
                         self.pool = self.filteredPool.sort(sortDescriptors: self.options.sortDescirptors)
-                        if let i: Int = self.pool.index(of: child) {
+                        if let i: Int = self.pool.index(of: element) {
                             block(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                         }
                     })
@@ -202,11 +203,11 @@ public class DataSource<T, U> where T: Object, U: Object {
             self.changedHandle = self.reference.observe(.childChanged, with: { [weak self] (snapshot) in
                 guard let `self` = self else { return }
                 let key: String = snapshot.key
-                Child.observeSingle(key, eventType: .value, block: { (child) in
-                    guard let child: Child = child else { return }
-                    self.pool.append(child)
+                Element.observeSingle(key, eventType: .value, block: { (element) in
+                    guard let element: Element = element else { return }
+                    self.pool.append(element)
                     self.pool = self.filteredPool.sort(sortDescriptors: self.options.sortDescirptors)
-                    if let i: Int = self.pool.index(of: child) {
+                    if let i: Int = self.pool.index(of: element) {
                         block(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                     }
                 })
@@ -241,8 +242,6 @@ public class DataSource<T, U> where T: Object, U: Object {
         }
     }
 
-    private let fetchQueue: DispatchQueue = DispatchQueue(label: "salada.datasource.fetch.queue")
-
     /**
      Load the previous data from the server.
      - parameter lastKey: It gets the data after the Key
@@ -253,23 +252,29 @@ public class DataSource<T, U> where T: Object, U: Object {
         var reference: DatabaseQuery = self.reference.queryOrderedByKey()
         var limit: UInt = limit
         if let lastKey: String = lastKey {
+            if previousLastKey == lastKey {
+                block?(nil, nil)
+                return
+            }
+            previousLastKey = lastKey
             reference = reference.queryEnding(atValue: lastKey)
             limit = limit + 1
         }
+
         reference.queryLimited(toLast: limit).observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
             guard let `self` = self else { return }
 
             let group: DispatchGroup = DispatchGroup()
 
-            for (_, child) in snapshot.children.enumerated() {
-                let key: String = (child as AnyObject).key
+            for (_, element) in snapshot.children.enumerated() {
+                let key: String = (element as AnyObject).key
                 if !self.keys.contains(key) {
                     self.keys.append(key)
                     self.keys = self.sortedKeys
                     group.enter()
-                    Child.observeSingle(key, eventType: .value, block: { (child) in
-                        guard let child: Child = child else { return }
-                        self.pool.append(child)
+                    Element.observeSingle(key, eventType: .value, block: { (element) in
+                        guard let element: Element = element else { return }
+                        self.pool.append(element)
                         self.pool = self.filteredPool.sort(sortDescriptors: self.options.sortDescirptors)
                         group.leave()
                     })
@@ -296,17 +301,22 @@ public class DataSource<T, U> where T: Object, U: Object {
     /**
      Remove object
      - parameter index: Order of the data source
-     - parameter cascade: Also deletes the data of the reference case of `true`.
+     - parameter parent: Also deletes the data of the reference case of `true`.
      - parameter block: block The block that should be called. If there is an error it returns an error.
      */
-    public func removeObject(at index: Int, cascade: Bool, block: @escaping (String, Error?) -> Void) {
+    public func removeObject<T: Referenceable>(at index: Int, parent: T.Type? = nil, block: @escaping (String, Error?) -> Void) {
         let key: String = self.keys[index]
 
-        if cascade {
-            let parentPath: AnyHashable = "/\(Parent._path)/\(parentKey)/\(self.reference.key)/\(key)"
-            let childPath: AnyHashable = "/\(Child._path)/\(key)"
-
-            self.databaseRef.updateChildValues([parentPath : NSNull(), childPath: NSNull()]) { (error, ref) in
+        if let parent = parent {
+            // TODO: ここの処理の検証
+            var values: [AnyHashable: Any] = [:]
+            if let parentKey: String = self.reference.parent?.parent?.key {
+                let parentPath: AnyHashable = "/\(parent._path)/\(parentKey)/\(self.reference.key)/\(key)"
+                values[parentPath] = NSNull()
+            }
+            let childPath: AnyHashable = "/\(Element._path)/\(key)"
+            values[childPath] = NSNull()
+            self.databaseRef.updateChildValues(values) { (error, ref) in
                 if let error: Error = error {
                     block(key, error)
                     return
@@ -322,38 +332,6 @@ public class DataSource<T, U> where T: Object, U: Object {
                 block(key, nil)
             })
         }
-
-    }
-
-    /**
-     Removes all observers at the reference of key
-     - parameter index: Order of the data source
-     */
-    @available(*, deprecated, message: "Use Disposer")
-    public func removeObserver(at index: Int) {
-        if index < self.keys.count {
-            let key: String = self.keys[index]
-            Child.databaseRef.child(key).removeAllObservers()
-        }
-    }
-
-    /**
-     Get an object from a data source
-     - parameter index: Order of the data source
-     - parameter block: block The block that should be called.  It is passed the data as a Tsp.
-     */
-    @available(*, deprecated, message: "Don't use this function")
-    public func object(at index: Int, block: @escaping (Child?) -> Void) {
-        let key: String = self.keys[index]
-        Child.databaseRef.child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.exists() {
-                if let child: Child = Child(snapshot: snapshot) {
-                    block(child)
-                }
-            } else {
-                block(nil)
-            }
-        })
     }
 
     /**
@@ -363,17 +341,17 @@ public class DataSource<T, U> where T: Object, U: Object {
      - parameter block: block The block that should be called.  It is passed the data as a Tsp.
      - see removeObserver
      */
-    public func observeObject(at index: Int, block: @escaping (Child?) -> Void) -> Disposer<Child> {
+    public func observeObject(at index: Int, block: @escaping (Element?) -> Void) -> Disposer<Element> {
         let key: String = self.keys[index]
-        let child: Child = self[index]
+        let element: Element = self[index]
         var isFirst: Bool = true
-        block(child)
-        return Child.observe(key, eventType: .value) { (child) in
+        block(element)
+        return Element.observe(key, eventType: .value) { (element) in
             if isFirst {
                 isFirst = false
                 return
             }
-            block(child)
+            block(element)
         }
     }
 
@@ -396,8 +374,6 @@ public class DataSource<T, U> where T: Object, U: Object {
  DataSource conforms to Collection
  */
 extension DataSource: Collection {
-
-    public typealias Element = DataSource.Child
 
     public var startIndex: Int {
         return 0

@@ -177,6 +177,11 @@ public extension Referenceable {
 }
 
 extension Referenceable where Self: Object {
+
+    public func propertyRef<T>(_ property: KeyPath<Self, T>) -> DatabaseReference {
+        return self.ref.child(property._kvcKeyPathString!)
+    }
+
     /**
      A function that gets all data from DB whenever DB has been changed.
 

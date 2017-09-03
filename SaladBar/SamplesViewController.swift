@@ -14,10 +14,11 @@ class SamplesViewController: UITableViewController {
         case simple     = "Simple Model"
         case relation   = "Relation"
         case dataSource = "DataSource(TableView or CollectionView)"
+        case allUsers   = "Get all users"
         case file       = "Upload Image file"
 
         static var values: [Sample] {
-            return [.simple, .relation, .dataSource, .file]
+            return [.simple, .relation, .dataSource, .allUsers, .file]
         }
     }
 
@@ -59,6 +60,9 @@ class SamplesViewController: UITableViewController {
             self.navigationController?.pushViewController(viewController, animated: true)
         case .dataSource:
             let viewController: DataSourceViewController = DataSourceViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        case . allUsers:
+            let viewController: UserDataSourceViewController = UserDataSourceViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         case .file:
             let storyboard: UIStoryboard = UIStoryboard(name: "ImageUploadViewController", bundle: nil)
