@@ -7,8 +7,6 @@ If you are having difficulties using Salada or have a question about usage, plea
 
 # Core Team
 
-The Core Team reviews and helps iterate on the RFC Issues from the community at large and acting as the approver of these RFCs. Team members help drive Texture forward in a coherent direction consistent with the goal of creating the best possible general purpose UI framework for iOS. Team members will have merge permissions on the repository.
-
 Members of the core team are appointed based on their technical expertise and proven contribution to the community. The current core team members are:
 
 - Norikazu Muramoto ([@](https://github.com/1amageek)[1amageek](https://github.com/1amageek))
