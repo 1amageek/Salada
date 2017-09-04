@@ -79,8 +79,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
 //        options.predicate = NSPredicate(format: "age == 21")
         options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
         let group: Group = Group(id: key)!
-        let reference: DatabaseReference = group.propertyRef(\.users)
-        self.datasource = DataSource(reference, options: options, block: { [weak self](changes) in
+        self.datasource = DataSource(parent: group, keyPath: \Group.users, options: options) { [weak self] (changes) in
             guard let tableView: UITableView = self?.tableView else { return }
 
             switch changes {
@@ -95,7 +94,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
             case .error(let error):
                 print(error)
             }
-        })
+        }
     }
 
     @objc func prev() {
@@ -168,7 +167,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.datasource?.removeObject(at: indexPath.item, parent: Group.self, block: { (key, error) in
+            self.datasource?.removeObject(at: indexPath.item, block: { (key, error) in
                 if let error: Error = error {
                     print(error)
                 }

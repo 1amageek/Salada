@@ -120,7 +120,7 @@ class UserDataSourceViewController: UIViewController, UITableViewDelegate, UITab
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.datasource?.removeObject(at: indexPath.item, parent: Group.self, block: { (key, error) in
+            self.datasource?.removeObject(at: indexPath.item, block: { (key, error) in
                 if let error: Error = error {
                     print(error)
                 }

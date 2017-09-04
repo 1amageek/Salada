@@ -206,3 +206,8 @@ extension Referenceable where Self: Object {
     }
 }
 
+extension DatabaseReference {
+    var _path: String {
+        return self.url.replacingOccurrences(of: self.root.url, with: "")
+    }
+}

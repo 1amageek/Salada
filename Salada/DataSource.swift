@@ -79,6 +79,10 @@ public class DataSource<T: Object> {
 
     private var isFirst: Bool = true
 
+    private(set) var parentRef: DatabaseReference?
+
+    private(set) var propertyKey: String?
+
     /// Firebase firstKey. Recently Created Key
     private var firstKey: String? {
         return self.keys.first
@@ -123,38 +127,34 @@ public class DataSource<T: Object> {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-//    public convenience init(parentKey: String, keyPath: KeyPath<T, Set<String>>, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
-//        self.init(parentKey: parentKey, childKey: keyPath._kvcKeyPathString!, options: options, block: block)
-//    }
-//
-//    /**
-//
-//     DataSource observes its value by defining a parent-child relationship.
-//     If there is a change in the value, it will receive and notify you of the change.
-//
-//     Handler blocks are called on the same thread that they were added on, and may only be added on threads which are
-//     currently within a run loop. Unless you are specifically creating and running a run loop on a background thread,
-//     this will normally only be the main thread.
-//
-//     - parameter parentKey: Key of parent node to reference
-//     - parameter childKey: Key of child node to reference
-//     - parameter options: DataSource Options
-//     - parameter block: A block which is called to process Firebase change evnet.
-//     */
-//    public convenience init(parentKey: String, childKey: String, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
-//
-//        self.parentKey = parentKey
-//
-//        self.referenceKey = childKey
-//
-//        self.options = options
-//
-//        self.parentRef = Parent.databaseRef.child(parentKey)
-//
-//        self.reference = self.parentRef.child(self.referenceKey)
-//
-//        self.changedBlock = block
-//    }
+    public convenience init<T: Object>(parent: T, keyPath: KeyPath<T, Set<String>>, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+        self.init(parent: parent, propertyKey: keyPath._kvcKeyPathString!, options: options, block: block)
+    }
+
+    /**
+
+     DataSource observes its value by defining a parent-child relationship.
+     If there is a change in the value, it will receive and notify you of the change.
+
+     Handler blocks are called on the same thread that they were added on, and may only be added on threads which are
+     currently within a run loop. Unless you are specifically creating and running a run loop on a background thread,
+     this will normally only be the main thread.
+
+     - parameter parentKey: Key of parent node to reference
+     - parameter childKey: Key of child node to reference
+     - parameter options: DataSource Options
+     - parameter block: A block which is called to process Firebase change evnet.
+     */
+    public convenience init<T: Object>(parent: T, propertyKey: String, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+
+        let reference: DatabaseReference = parent.ref.child(propertyKey)
+
+        self.init(reference, options: options, block: block)
+
+        self.parentRef = parent.ref
+
+        self.propertyKey = propertyKey
+    }
 
     public init(_ reference: DatabaseReference, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
 
@@ -304,16 +304,12 @@ public class DataSource<T: Object> {
      - parameter parent: Also deletes the data of the reference case of `true`.
      - parameter block: block The block that should be called. If there is an error it returns an error.
      */
-    public func removeObject<T: Referenceable>(at index: Int, parent: T.Type? = nil, block: @escaping (String, Error?) -> Void) {
+    public func removeObject(at index: Int, block: @escaping (String, Error?) -> Void) {
         let key: String = self.keys[index]
-
-        if let parent = parent {
-            // TODO: ここの処理の検証
+        if let parentRef: DatabaseReference = self.parentRef, let propertyKey: String = self.propertyKey {
             var values: [AnyHashable: Any] = [:]
-            if let parentKey: String = self.reference.parent?.parent?.key {
-                let parentPath: AnyHashable = "/\(parent._path)/\(parentKey)/\(self.reference.key)/\(key)"
-                values[parentPath] = NSNull()
-            }
+            let parentPath: AnyHashable = "\(parentRef._path)/\(propertyKey)/\(key)"
+            values[parentPath] = NSNull()
             let childPath: AnyHashable = "/\(Element._path)/\(key)"
             values[childPath] = NSNull()
             self.databaseRef.updateChildValues(values) { (error, ref) in
