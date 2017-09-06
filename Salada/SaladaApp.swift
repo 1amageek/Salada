@@ -21,8 +21,8 @@ public class SaladaApp: NSObject, NSCacheDelegate {
 
     private override init() {
         super.init()
-        _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
-            self.isConnected = snapshot.value as? Bool ?? false
+        _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { [weak self] (snapshot) in
+            self?.isConnected = snapshot.value as? Bool ?? false
         }
     }
 
