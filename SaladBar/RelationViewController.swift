@@ -13,13 +13,15 @@ class RelationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        (0..<100).forEach { (index) in
-            let user: User = User()
+        let user: User = User()
+
+        user.name = "aaaa"
+        (0..<10).forEach { (index) in
             let item: Item = Item()
-            user.name = "aaaa"
+            item.index = index
             user.relationItems.insert(item)
-            user.save()
         }
+        user.save()
     }
 
 }

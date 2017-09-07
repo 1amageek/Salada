@@ -30,6 +30,8 @@ public protocol Referenceable: NSObjectProtocol {
 
     var id: String { get }
 
+    var isObserved: Bool { get }
+
     init?(snapshot: DataSnapshot)
 }
 
@@ -181,6 +183,10 @@ public extension Referenceable {
 }
 
 extension Referenceable where Self: Object {
+
+    public var isObserved: Bool {
+        return self._isObserved
+    }
 
     public func propertyRef<T>(_ property: KeyPath<Self, T>) -> DatabaseReference {
         return self.ref.child(property._kvcKeyPathString!)

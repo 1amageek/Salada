@@ -35,6 +35,10 @@ public class Relation<T: Object>: Relationable, Collection, ExpressibleByArrayLi
         return _self.values()
     }
 
+    public var isObserved: Bool {
+        return self.parent?.isObserved ?? false
+    }
+
     public var package: [String : Any] {
         var package: [String: Any] = [:]
         self.values.forEach { (key, value) in

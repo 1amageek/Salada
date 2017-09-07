@@ -20,7 +20,7 @@ open class Object: Base, Referenceable {
     @objc private(set) var updatedAt: Date
 
     /// Object monitors the properties as they are saved.
-    private(set) var isObserved: Bool = false
+    private(set) var _isObserved: Bool = false
 
     /// If all File savings do not end within this time, save will be canceled. default 20 seconds.
     open var timeout: Int {
@@ -186,7 +186,7 @@ open class Object: Base, Referenceable {
                         }
                     }
                 }
-                self.isObserved = true
+                self._isObserved = true
             }
         }
     }
@@ -342,20 +342,6 @@ open class Object: Base, Referenceable {
      */
     @discardableResult
     public func save(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
-
-        // Is Persistenced
-        if SaladaApp.isPersistenced {
-            if let block = block {
-//                debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
-                return self._transactionSave(block)
-            }
-            return self._save(nil)
-        } else {
-            return self._save(block)
-        }
-    }
-
-    private func _save(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         let ref: DatabaseReference = self.ref
         if self.hasFiles {
             return self.saveFiles { (error) in
@@ -363,37 +349,15 @@ open class Object: Base, Referenceable {
                     block?(ref, error)
                     return
                 }
-                self._savePackage(block)
-//                var value: [AnyHashable: Any] = self.value
-//                let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-//                value["_createdAt"] = timestamp
-//                value["_updatedAt"] = timestamp
-//                ref.setValue(value, withCompletionBlock: { [weak self] (error, ref) in
-//                    ref.observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
-//                        guard let `self` = self else { return }
-//                        self.snapshot = snapshot
-//                        block?(ref, error)
-//                    })
-//                })
+                self._save(block)
             }
         } else {
-            _savePackage(block)
-//            var value: [AnyHashable: Any] = self.value
-//            let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-//            value["_createdAt"] = timestamp
-//            value["_updatedAt"] = timestamp
-//            ref.setValue(value, withCompletionBlock: { [weak self] (error, ref) in
-//                ref.observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
-//                    guard let `self` = self else { return }
-//                    self.snapshot = snapshot
-//                    block?(ref, error)
-//                })
-//            })
+            _save(block)
             return [:]
         }
     }
 
-    private func _savePackage(_ block: ((DatabaseReference?, Error?) -> Void)?) {
+    private func _save(_ block: ((DatabaseReference?, Error?) -> Void)?) {
         let package: [String: Any] = self.package
         Database.database().reference().updateChildValues(package) { (error, ref) in
             self.ref.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -454,19 +418,6 @@ open class Object: Base, Referenceable {
             return [:]
         }
     }
-
-//    /**
-//     Set new value. Save will fail in the off-line.
-//     - parameter key:
-//     - parameter value:
-//     - parameter completion: If successful reference will return. An error will return if it fails.
-//     */
-//    private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
-//
-//    public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {
-//        self.transactionBlock = completion
-//        self.setValue(value, forKey: key)
-//    }
 
     // MARK: - Remove
 
@@ -556,7 +507,7 @@ open class Object: Base, Referenceable {
     // MARK: - deinit
 
     deinit {
-        if self.isObserved {
+        if self._isObserved {
             Mirror(reflecting: self).children.forEach { (key, value) in
                 if let key: String = key {
                     if !self.ignore.contains(key) {
