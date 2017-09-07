@@ -51,7 +51,9 @@ public class SaladaOptions {
 
 /// DataSource class.
 /// Observe at a Firebase DataSource location.
-public class DataSource<T: Object> {
+public class DataSource<T: Object>: ExpressibleByArrayLiteral {
+
+    public typealias ArrayLiteralElement = T
 
     public typealias Element = T
 
@@ -102,7 +104,7 @@ public class DataSource<T: Object> {
 
     internal var keys: [String] = []
 
-    private var changedBlock: (SaladaCollectionChange) -> Void
+    private var changedBlock: ((SaladaCollectionChange) -> Void)?
 
     public var pool: [Element] = []
 
@@ -127,7 +129,7 @@ public class DataSource<T: Object> {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-    public convenience init<T: Object>(parent: T, keyPath: KeyPath<T, Set<String>>, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+    public convenience init<T: Object>(parent: T, keyPath: KeyPath<T, Set<String>>, options: SaladaOptions = SaladaOptions(), block: ((SaladaCollectionChange) -> Void)?) {
         self.init(parent: parent, propertyKey: keyPath._kvcKeyPathString!, options: options, block: block)
     }
 
@@ -145,7 +147,7 @@ public class DataSource<T: Object> {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-    public convenience init<T: Object>(parent: T, propertyKey: String, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+    public convenience init<T: Object>(parent: T, propertyKey: String, options: SaladaOptions = SaladaOptions(), block: ((SaladaCollectionChange) -> Void)?) {
 
         let reference: DatabaseReference = parent.ref.child(propertyKey)
 
@@ -156,13 +158,100 @@ public class DataSource<T: Object> {
         self.propertyKey = propertyKey
     }
 
-    public init(_ reference: DatabaseReference, options: SaladaOptions = SaladaOptions(), block: @escaping (SaladaCollectionChange) -> Void ) {
+    public init(_ reference: DatabaseReference, options: SaladaOptions = SaladaOptions(), block: ((SaladaCollectionChange) -> Void)?) {
 
         self.reference = reference
 
         self.options = options
 
         self.changedBlock = block
+
+        self.on(block).observe()
+
+//        prev(at: nil, toLast: self.options.limit) { [weak self] (change, error) in
+//
+//            guard let `self` = self else { return }
+//
+//            // Called only once when initialized
+//            // `changes` is always nil
+//            block?(SaladaCollectionChange(change: change, error: error))
+//
+//            // add
+//            var addReference: DatabaseQuery = self.reference
+//            if let firstKey: String = self.keys.first {
+//                addReference = addReference.queryOrderedByKey().queryStarting(atValue: firstKey)
+//            }
+//            self.addReference = addReference
+//            self.addedHandle = addReference.observe(.childAdded, with: { [weak self] (snapshot) in
+//                guard let `self` = self else { return }
+//                let key: String = snapshot.key
+//                if !self.keys.contains(key) {
+//                    self.keys.append(key)
+//                    self.keys = self.sortedKeys
+//                    Element.observeSingle(key, eventType: .value, block: { (element) in
+//                        guard let element: Element = element else {
+//                            return
+//                        }
+//                        self.pool.append(element)
+//                        self.pool = self.filteredPool.sort(sortDescriptors: self.options.sortDescirptors)
+//                        if let i: Int = self.pool.index(of: element) {
+//                            block?(SaladaCollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+//                        }
+//                    })
+//                }
+//                }, withCancel: { (error) in
+//                    block?(SaladaCollectionChange(change: nil, error: error))
+//            })
+//
+//            // change
+//            self.changedHandle = self.reference.observe(.childChanged, with: { [weak self] (snapshot) in
+//                guard let `self` = self else { return }
+//                let key: String = snapshot.key
+//                Element.observeSingle(key, eventType: .value, block: { (element) in
+//                    guard let element: Element = element else { return }
+//                    self.pool.append(element)
+//                    self.pool = self.filteredPool.sort(sortDescriptors: self.options.sortDescirptors)
+//                    if let i: Int = self.pool.index(of: element) {
+//                        block?(SaladaCollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+//                    }
+//                })
+//                }, withCancel: { (error) in
+//                    block?(SaladaCollectionChange(change: nil, error: error))
+//            })
+//
+//            // remove
+//            self.removedHandle = self.reference.observe(.childRemoved, with: { [weak self] (snapshot) in
+//                guard let `self` = self else { return }
+//                let key: String = snapshot.key
+//                if let i: Int = self.keys.index(of: key) {
+//                    self.keys.remove(at: i)
+//                }
+//                if let i: Int = self.pool.index(of: key) {
+//                    self.pool.remove(at: i)
+//                    block?(SaladaCollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+//                }
+//                }, withCancel: { (error) in
+//                    block?(SaladaCollectionChange(change: nil, error: error))
+//            })
+//        }
+    }
+
+    public required init(arrayLiteral elements: T...) {
+        self.reference = T.databaseRef
+        self.options = SaladaOptions()
+        self.pool = elements
+    }
+
+    public func on(_ block: ((SaladaCollectionChange) -> Void)?) -> Self {
+        self.changedBlock = block
+        return self
+    }
+
+    public func observe() {
+
+        guard let block: (SaladaCollectionChange) -> Void = self.changedBlock else {
+            return
+        }
 
         prev(at: nil, toLast: self.options.limit) { [weak self] (change, error) in
 
@@ -238,7 +327,7 @@ public class DataSource<T: Object> {
     public func prev() {
         self.prev(at: self.lastKey, toLast: self.options.limit) { [weak self](change, error) in
             guard let `self` = self else { return }
-            self.changedBlock(SaladaCollectionChange(change: change, error: error))
+            self.changedBlock?(SaladaCollectionChange(change: change, error: error))
         }
     }
 

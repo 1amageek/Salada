@@ -58,11 +58,23 @@ open class Object: Base, Referenceable {
 
     // MARK: - Initialize
 
+    private func _init() {
+        let mirror: Mirror = Mirror(reflecting: self)
+        mirror.children.forEach { (child) in
+            if child.value is Relationable {
+                var relation: Relationable = child.value as! Relationable
+                relation.parent = self
+            }
+        }
+    }
+
     public override init() {
         self.createdAt = Date()
         self.updatedAt = Date()
         self.ref = type(of: self).databaseRef.childByAutoId()
         self.id = self.ref.key
+        super.init()
+        self._init()
     }
 
     convenience required public init?(snapshot: DataSnapshot) {
@@ -293,6 +305,30 @@ open class Object: Base, Referenceable {
         }
     }
 
+    // MARK: - Relation
+
+    private var package: [String: Any] {
+        var package: [String: Any] = [:]
+        let mirror: Mirror = Mirror(reflecting: self)
+        mirror.children.forEach { (child) in
+            if child.value is Relationable {
+                let relation: Relationable = child.value as! Relationable
+                package.merge(relation.package, uniquingKeysWith: { (_, new) -> Any in
+                    return new
+                })
+            }
+        }
+        do {
+            var value: [AnyHashable: Any] = self.value
+            let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+            value["_createdAt"] = timestamp
+            value["_updatedAt"] = timestamp
+            let path: String = "\(type(of: self).self._path)/\(self.id)"
+            package[path] = value
+        }
+        return package
+    }
+
     // MARK: - Save
 
     @discardableResult
@@ -322,34 +358,48 @@ open class Object: Base, Referenceable {
     private func _save(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         let ref: DatabaseReference = self.ref
         if self.hasFiles {
-            return self.saveFiles(block: { (error) in
+            return self.saveFiles { (error) in
                 if let error = error {
                     block?(ref, error)
                     return
                 }
-                var value: [AnyHashable: Any] = self.value
-                let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-                value["_createdAt"] = timestamp
-                value["_updatedAt"] = timestamp
-                ref.setValue(value, withCompletionBlock: { (error, ref) in
-                    ref.observeSingleEvent(of: .value, with: { (snapshot) in
-                        self.snapshot = snapshot
-                        block?(ref, error)
-                    })
-                })
-            })
+                self._savePackage(block)
+//                var value: [AnyHashable: Any] = self.value
+//                let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+//                value["_createdAt"] = timestamp
+//                value["_updatedAt"] = timestamp
+//                ref.setValue(value, withCompletionBlock: { [weak self] (error, ref) in
+//                    ref.observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+//                        guard let `self` = self else { return }
+//                        self.snapshot = snapshot
+//                        block?(ref, error)
+//                    })
+//                })
+            }
         } else {
-            var value: [AnyHashable: Any] = self.value
-            let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-            value["_createdAt"] = timestamp
-            value["_updatedAt"] = timestamp
-            ref.setValue(value, withCompletionBlock: { (error, ref) in
-                ref.observeSingleEvent(of: .value, with: { (snapshot) in
-                    self.snapshot = snapshot
-                    block?(ref, error)
-                })
-            })
+            _savePackage(block)
+//            var value: [AnyHashable: Any] = self.value
+//            let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+//            value["_createdAt"] = timestamp
+//            value["_updatedAt"] = timestamp
+//            ref.setValue(value, withCompletionBlock: { [weak self] (error, ref) in
+//                ref.observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+//                    guard let `self` = self else { return }
+//                    self.snapshot = snapshot
+//                    block?(ref, error)
+//                })
+//            })
             return [:]
+        }
+    }
+
+    private func _savePackage(_ block: ((DatabaseReference?, Error?) -> Void)?) {
+        let package: [String: Any] = self.package
+        Database.database().reference().updateChildValues(package) { (error, ref) in
+            self.ref.observeSingleEvent(of: .value, with: { (snapshot) in
+                self.snapshot = snapshot
+                block?(ref, error)
+            })
         }
     }
 
@@ -369,7 +419,7 @@ open class Object: Base, Referenceable {
         value["_createdAt"] = timestamp
         value["_updatedAt"] = timestamp
         if self.hasFiles {
-            return self.saveFiles(block: { (error) in
+            return self.saveFiles { (error) in
                 if let error = error {
                     block?(nil, error)
                     return
@@ -388,7 +438,7 @@ open class Object: Base, Referenceable {
                         block?(nil, error)
                     }
                 }, withLocalEvents: false)
-            })
+            }
         } else {
             ref.runTransactionBlock({ (currentData) -> TransactionResult in
                 currentData.value = value
@@ -434,7 +484,7 @@ open class Object: Base, Referenceable {
      - parameter block: If saving succeeds or fails, this callback will be called.
      - returns: Returns the StorageUploadTask set in the property.
     */
-    private func saveFiles(block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
+    private func saveFiles(_ block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
 
         let group: DispatchGroup = DispatchGroup()
         var uploadTasks: [String: StorageUploadTask] = [:]

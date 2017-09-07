@@ -24,6 +24,10 @@ public protocol Referenceable: NSObjectProtocol {
 
     static var _path: String { get }
 
+    static var _version: String { get }
+
+    static var _modelName: String { get }
+
     var id: String { get }
 
     init?(snapshot: DataSnapshot)

@@ -16,9 +16,11 @@ class SamplesViewController: UITableViewController {
         case dataSource = "DataSource(TableView or CollectionView)"
         case allUsers   = "Get all users"
         case file       = "Upload Image file"
+        case growth     = "Growth Property handle"
+        case property   = "Growth Relation"
 
         static var values: [Sample] {
-            return [.simple, .relation, .dataSource, .allUsers, .file]
+            return [.simple, .relation, .dataSource, .allUsers, .file, .growth, .property]
         }
     }
 
@@ -67,6 +69,13 @@ class SamplesViewController: UITableViewController {
         case .file:
             let storyboard: UIStoryboard = UIStoryboard(name: "ImageUploadViewController", bundle: nil)
             let viewController: ImageUploadViewController = storyboard.instantiateInitialViewController() as! ImageUploadViewController
+            self.navigationController?.pushViewController(viewController, animated: true)
+        case .growth:
+            let storyboard: UIStoryboard = UIStoryboard(name: "GrowthProperty", bundle: nil)
+            let viewController: GrowthPropertyViewController = storyboard.instantiateInitialViewController() as! GrowthPropertyViewController
+            self.navigationController?.pushViewController(viewController, animated: true)
+        case .property:
+            let viewController: RelationViewController = RelationViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         default: break
         }

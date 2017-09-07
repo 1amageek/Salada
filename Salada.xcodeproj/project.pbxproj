@@ -57,6 +57,13 @@
 		12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A621D95184300E69000 /* LaunchScreen.storyboard */; };
 		12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */; };
 		12DA17F91F5C146800749224 /* UserDataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA17F81F5C146800749224 /* UserDataSourceViewController.swift */; };
+		12DA17FB1F5D9BE300749224 /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA17FA1F5D9BE300749224 /* Relation.swift */; };
+		12DA17FC1F5D9BE300749224 /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA17FA1F5D9BE300749224 /* Relation.swift */; };
+		12DA17FE1F5FD45200749224 /* GrowthPropertyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA17FD1F5FD45200749224 /* GrowthPropertyViewController.swift */; };
+		12DA17FF1F5FD45200749224 /* GrowthPropertyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA17FD1F5FD45200749224 /* GrowthPropertyViewController.swift */; };
+		12DA18011F5FD51400749224 /* GrowthProperty.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12DA18001F5FD51400749224 /* GrowthProperty.storyboard */; };
+		12DA18021F5FD51400749224 /* GrowthProperty.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12DA18001F5FD51400749224 /* GrowthProperty.storyboard */; };
+		12DA18041F60DB4B00749224 /* RelationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA18031F60DB4B00749224 /* RelationViewController.swift */; };
 		12DA5D621EDBE4E700D2A73D /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D611EDBE4E700D2A73D /* File.swift */; };
 		12DA5D941EDC198B00D2A73D /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5D931EDC198B00D2A73D /* DataSource.swift */; };
 		12DA5DBC1EDC29D200D2A73D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DA5DBB1EDC29D200D2A73D /* AppDelegate.swift */; };
@@ -143,6 +150,10 @@
 		12D0BE151E6D1ABD008E9AD0 /* Salada.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Salada.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Referenceable.swift; sourceTree = "<group>"; };
 		12DA17F81F5C146800749224 /* UserDataSourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataSourceViewController.swift; sourceTree = "<group>"; };
+		12DA17FA1F5D9BE300749224 /* Relation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relation.swift; sourceTree = "<group>"; };
+		12DA17FD1F5FD45200749224 /* GrowthPropertyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthPropertyViewController.swift; sourceTree = "<group>"; };
+		12DA18001F5FD51400749224 /* GrowthProperty.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GrowthProperty.storyboard; sourceTree = "<group>"; };
+		12DA18031F60DB4B00749224 /* RelationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationViewController.swift; sourceTree = "<group>"; };
 		12DA5D611EDBE4E700D2A73D /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		12DA5D931EDC198B00D2A73D /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		12DA5DB91EDC29D200D2A73D /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -279,9 +290,12 @@
 				1253BFA91F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard */,
 				12CB1A5B1D95184300E69000 /* DataSourceViewController.swift */,
 				12DA17F81F5C146800749224 /* UserDataSourceViewController.swift */,
+				12DA17FD1F5FD45200749224 /* GrowthPropertyViewController.swift */,
+				12DA18001F5FD51400749224 /* GrowthProperty.storyboard */,
 				12A3CFF01F56BDA3007238D9 /* TableViewCell.swift */,
 				120281B21F3ACE3100EABC5C /* ImageUploadViewController.swift */,
 				120281B01F3ACE1F00EABC5C /* ImageUploadViewController.storyboard */,
+				12DA18031F60DB4B00749224 /* RelationViewController.swift */,
 			);
 			name = SampleCode;
 			sourceTree = "<group>";
@@ -355,6 +369,7 @@
 				12DA5D931EDC198B00D2A73D /* DataSource.swift */,
 				1253BFAD1F3478AD0078C5D1 /* SaladaApp.swift */,
 				16F7D3F81F4AADAE00A43617 /* Disposer.swift */,
+				12DA17FA1F5D9BE300749224 /* Relation.swift */,
 			);
 			path = Salada;
 			sourceTree = "<group>";
@@ -622,6 +637,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12DA18021F5FD51400749224 /* GrowthProperty.storyboard in Resources */,
 				12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */,
 				1253BFAA1F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard in Resources */,
 				120281B11F3ACE1F00EABC5C /* ImageUploadViewController.storyboard in Resources */,
@@ -636,6 +652,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12DA18011F5FD51400749224 /* GrowthProperty.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -934,6 +951,8 @@
 				1274D1261F383C2E0037D9F1 /* DataSource.swift in Sources */,
 				12DA17F91F5C146800749224 /* UserDataSourceViewController.swift in Sources */,
 				1272DA701F0C9A35000A094E /* ChatViewController.swift in Sources */,
+				12DA17FC1F5D9BE300749224 /* Relation.swift in Sources */,
+				12DA18041F60DB4B00749224 /* RelationViewController.swift in Sources */,
 				125904191F3451D5004B271D /* SimpleModelViewController.swift in Sources */,
 				1272DA771F0C9A96000A094E /* ChatTextCell.swift in Sources */,
 				1274D1191F38369F0037D9F1 /* CustomUser.swift in Sources */,
@@ -949,6 +968,7 @@
 				12C097E11E653F19001B2010 /* TransactionTestViewController.swift in Sources */,
 				123C27A51E6696E100A2655F /* FileTestViewController.swift in Sources */,
 				12C097DF1E653CEF001B2010 /* Item.swift in Sources */,
+				12DA17FF1F5FD45200749224 /* GrowthPropertyViewController.swift in Sources */,
 				12A3CFF11F56BDA3007238D9 /* TableViewCell.swift in Sources */,
 				1274D1241F383C2E0037D9F1 /* Object.swift in Sources */,
 				120281B31F3ACE3100EABC5C /* ImageUploadViewController.swift in Sources */,
@@ -972,6 +992,8 @@
 				12DA5D621EDBE4E700D2A73D /* File.swift in Sources */,
 				12523B8F1EDBD5820074DACB /* Base.swift in Sources */,
 				1253BFAE1F3478AD0078C5D1 /* SaladaApp.swift in Sources */,
+				12DA17FB1F5D9BE300749224 /* Relation.swift in Sources */,
+				12DA17FE1F5FD45200749224 /* GrowthPropertyViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

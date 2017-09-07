@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13189.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QnI-8T-1uE">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13165.3"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Growth Property View Controller-->
+        <scene sceneID="oqO-ST-GOp">
+            <objects>
+                <viewController id="QnI-8T-1uE" customClass="GrowthPropertyViewController" customModule="SaladBar" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="krn-V4-iwm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sGX-gR-gJj">
+                                <rect key="frame" x="164" y="120" width="46" height="30"/>
+                                <state key="normal" title="Create"/>
+                                <connections>
+                                    <action selector="create:" destination="QnI-8T-1uE" eventType="touchUpInside" id="tyZ-sI-GV6"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="property" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wgx-hr-CfC">
+                                <rect key="frame" x="154" y="166" width="66" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sT1-lX-Xnw">
+                                <rect key="frame" x="160" y="203" width="55" height="30"/>
+                                <state key="normal" title="observe"/>
+                                <connections>
+                                    <action selector="observe:" destination="QnI-8T-1uE" eventType="touchUpInside" id="HGH-wT-0mF"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ve1-Nz-2CF">
+                                <rect key="frame" x="172" y="249" width="30" height="30"/>
+                                <state key="normal" title="Add"/>
+                                <connections>
+                                    <action selector="add:" destination="QnI-8T-1uE" eventType="touchUpInside" id="wN1-mY-rFB"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Wgx-hr-CfC" firstAttribute="centerX" secondItem="krn-V4-iwm" secondAttribute="centerX" id="3dn-zh-PFD"/>
+                            <constraint firstItem="Ve1-Nz-2CF" firstAttribute="top" secondItem="sT1-lX-Xnw" secondAttribute="bottom" constant="16" id="DfO-8H-0Le"/>
+                            <constraint firstItem="sGX-gR-gJj" firstAttribute="top" secondItem="j3i-nV-SYQ" secondAttribute="top" constant="100" id="FKi-B6-8Id"/>
+                            <constraint firstItem="sGX-gR-gJj" firstAttribute="centerX" secondItem="krn-V4-iwm" secondAttribute="centerX" id="NQr-oi-FdI"/>
+                            <constraint firstItem="sT1-lX-Xnw" firstAttribute="centerX" secondItem="krn-V4-iwm" secondAttribute="centerX" id="mFO-vm-AuC"/>
+                            <constraint firstItem="sT1-lX-Xnw" firstAttribute="top" secondItem="Wgx-hr-CfC" secondAttribute="bottom" constant="16" id="pGP-At-5Jp"/>
+                            <constraint firstItem="Ve1-Nz-2CF" firstAttribute="centerX" secondItem="krn-V4-iwm" secondAttribute="centerX" id="yJb-Q5-jcS"/>
+                            <constraint firstItem="Wgx-hr-CfC" firstAttribute="top" secondItem="sGX-gR-gJj" secondAttribute="bottom" constant="16" id="zIB-P9-cqj"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="j3i-nV-SYQ"/>
+                    </view>
+                    <connections>
+                        <outlet property="propertyLabel" destination="Wgx-hr-CfC" id="W3F-5Q-RuE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AXk-ow-JVH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-46" y="150"/>
+        </scene>
+    </scenes>
+</document>
