@@ -20,7 +20,7 @@ open class Object: Base, Referenceable {
     @objc private(set) var updatedAt: Date
 
     /// Object monitors the properties as they are saved.
-    private(set) var isObserved: Bool = false
+    private(set) var _isObserved: Bool = false
 
     /// If all File savings do not end within this time, save will be canceled. default 20 seconds.
     open var timeout: Int {
@@ -58,11 +58,23 @@ open class Object: Base, Referenceable {
 
     // MARK: - Initialize
 
+    private func _init() {
+        let mirror: Mirror = Mirror(reflecting: self)
+        mirror.children.forEach { (child) in
+            if child.value is Relationable {
+                var relation: Relationable = child.value as! Relationable
+                relation.parent = self
+            }
+        }
+    }
+
     public override init() {
         self.createdAt = Date()
         self.updatedAt = Date()
         self.ref = type(of: self).databaseRef.childByAutoId()
         self.id = self.ref.key
+        super.init()
+        self._init()
     }
 
     convenience required public init?(snapshot: DataSnapshot) {
@@ -88,7 +100,8 @@ open class Object: Base, Referenceable {
         return nil
     }
 
-    public var value: [AnyHashable: Any] {
+    /// Object raw value
+    public var rawValue: [AnyHashable: Any] {
         let mirror = Mirror(reflecting: self)
         var object: [AnyHashable: Any] = [:]
         mirror.children.forEach { (key, value) in
@@ -121,6 +134,28 @@ open class Object: Base, Referenceable {
             }
         }
         return object
+    }
+
+    /// Object value
+    public var value: [AnyHashable: Any] {
+        var value: [AnyHashable: Any] = self.rawValue
+        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+        value["_createdAt"] = timestamp
+        value["_updatedAt"] = timestamp
+        return value
+    }
+
+    /// Package
+    public func pack() -> Package {
+        var package: Package = Package(self)
+        let mirror: Mirror = Mirror(reflecting: self)
+        mirror.children.forEach { (child) in
+            if child.value is Relationable {
+                let relation: Relationable = child.value as! Relationable
+                package.merge(relation.pack())
+            }
+        }
+        return package
     }
 
     // MARK: - Snapshot
@@ -174,7 +209,7 @@ open class Object: Base, Referenceable {
                         }
                     }
                 }
-                self.isObserved = true
+                self._isObserved = true
             }
         }
     }
@@ -306,50 +341,30 @@ open class Object: Base, Referenceable {
      */
     @discardableResult
     public func save(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
-
-        // Is Persistenced
-        if SaladaApp.isPersistenced {
-            if let block = block {
-//                debugPrint("<Warning> [Salada.Object] Firebase is configured to be persistent. When this process is executed offline and the application is terminated, the processing in Completion will be thinned. Please use `TransactionSave` to fail processing when offline.")
-                return self._transactionSave(block)
-            }
-            return self._save(nil)
-        } else {
-            return self._save(block)
+        if isObserved {
+            fatalError("[Salada.Object] *** error: \(type(of: self)) has already been saved.")
         }
-    }
-
-    private func _save(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         let ref: DatabaseReference = self.ref
         if self.hasFiles {
-            return self.saveFiles(block: { (error) in
+            return self.saveFiles { (error) in
                 if let error = error {
                     block?(ref, error)
                     return
                 }
-                var value: [AnyHashable: Any] = self.value
-                let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-                value["_createdAt"] = timestamp
-                value["_updatedAt"] = timestamp
-                ref.setValue(value, withCompletionBlock: { (error, ref) in
-                    ref.observeSingleEvent(of: .value, with: { (snapshot) in
-                        self.snapshot = snapshot
-                        block?(ref, error)
-                    })
-                })
-            })
+                self._save(block)
+            }
         } else {
-            var value: [AnyHashable: Any] = self.value
-            let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-            value["_createdAt"] = timestamp
-            value["_updatedAt"] = timestamp
-            ref.setValue(value, withCompletionBlock: { (error, ref) in
-                ref.observeSingleEvent(of: .value, with: { (snapshot) in
-                    self.snapshot = snapshot
-                    block?(ref, error)
-                })
-            })
+            _save(block)
             return [:]
+        }
+    }
+
+    private func _save(_ block: ((DatabaseReference?, Error?) -> Void)?) {
+        self.pack().submit { (ref, error) in
+            self.ref.observeSingleEvent(of: .value, with: { (snapshot) in
+                self.snapshot = snapshot
+                block?(ref, error)
+            })
         }
     }
 
@@ -364,12 +379,9 @@ open class Object: Base, Referenceable {
 
     private func _transactionSave(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         let ref: DatabaseReference = self.ref
-        var value: [AnyHashable: Any] = self.value
-        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-        value["_createdAt"] = timestamp
-        value["_updatedAt"] = timestamp
+        let value: [AnyHashable: Any] = self.value
         if self.hasFiles {
-            return self.saveFiles(block: { (error) in
+            return self.saveFiles { (error) in
                 if let error = error {
                     block?(nil, error)
                     return
@@ -388,7 +400,7 @@ open class Object: Base, Referenceable {
                         block?(nil, error)
                     }
                 }, withLocalEvents: false)
-            })
+            }
         } else {
             ref.runTransactionBlock({ (currentData) -> TransactionResult in
                 currentData.value = value
@@ -404,19 +416,6 @@ open class Object: Base, Referenceable {
             return [:]
         }
     }
-
-//    /**
-//     Set new value. Save will fail in the off-line.
-//     - parameter key:
-//     - parameter value:
-//     - parameter completion: If successful reference will return. An error will return if it fails.
-//     */
-//    private var transactionBlock: ((DatabaseReference?, Error?) -> Void)?
-//
-//    public func transaction(key: String, value: Any, completion: ((DatabaseReference?, Error?) -> Void)?) {
-//        self.transactionBlock = completion
-//        self.setValue(value, forKey: key)
-//    }
 
     // MARK: - Remove
 
@@ -434,7 +433,7 @@ open class Object: Base, Referenceable {
      - parameter block: If saving succeeds or fails, this callback will be called.
      - returns: Returns the StorageUploadTask set in the property.
     */
-    private func saveFiles(block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
+    private func saveFiles(_ block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
 
         let group: DispatchGroup = DispatchGroup()
         var uploadTasks: [String: StorageUploadTask] = [:]
@@ -506,7 +505,7 @@ open class Object: Base, Referenceable {
     // MARK: - deinit
 
     deinit {
-        if self.isObserved {
+        if self._isObserved {
             Mirror(reflecting: self).children.forEach { (key, value) in
                 if let key: String = key {
                     if !self.ignore.contains(key) {

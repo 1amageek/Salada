@@ -278,20 +278,6 @@ open class Base: NSObject {
         }
     }
 
-    private(set) var _connectedHandle: DatabaseHandle!
-
-    public override init() {
-        super.init()
-        _connectedHandle = Database.database().reference(withPath: ".info/connected").observe(.value) { (snapshot) in
-            //debugPrint("[Salada.Base] .info/connected", snapshot)
-            self.isConnected = snapshot.value as? Bool ?? SaladaApp.shared.isConnected
-        }
-    }
-
-    deinit {
-        Database.database().reference(withPath: ".info/connected").removeObserver(withHandle: _connectedHandle)
-    }
-
     open class var _version: String {
         return "v1"
     }
@@ -304,7 +290,9 @@ open class Base: NSObject {
         return "\(self._version)/\(self._modelName)"
     }
 
-    private(set) var isConnected: Bool = false
+    public var isConnected: Bool {
+        return SaladaApp.shared.isConnected
+    }
 
     public static var database: DatabaseReference { return Database.database().reference() }
 

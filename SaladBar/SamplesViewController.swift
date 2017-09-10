@@ -14,10 +14,13 @@ class SamplesViewController: UITableViewController {
         case simple     = "Simple Model"
         case relation   = "Relation"
         case dataSource = "DataSource(TableView or CollectionView)"
+        case allUsers   = "Get all users"
         case file       = "Upload Image file"
+        case growth     = "Growth Property handle"
+        case property   = "Growth Relation"
 
         static var values: [Sample] {
-            return [.simple, .relation, .dataSource, .file]
+            return [.simple, .relation, .dataSource, .allUsers, .file, .growth, .property]
         }
     }
 
@@ -60,9 +63,20 @@ class SamplesViewController: UITableViewController {
         case .dataSource:
             let viewController: DataSourceViewController = DataSourceViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
+        case . allUsers:
+            let viewController: UserDataSourceViewController = UserDataSourceViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
         case .file:
             let storyboard: UIStoryboard = UIStoryboard(name: "ImageUploadViewController", bundle: nil)
             let viewController: ImageUploadViewController = storyboard.instantiateInitialViewController() as! ImageUploadViewController
+            self.navigationController?.pushViewController(viewController, animated: true)
+        case .growth:
+            let storyboard: UIStoryboard = UIStoryboard(name: "GrowthProperty", bundle: nil)
+            let viewController: GrowthPropertyViewController = storyboard.instantiateInitialViewController() as! GrowthPropertyViewController
+            self.navigationController?.pushViewController(viewController, animated: true)
+        case .property:
+            let storyboard: UIStoryboard = UIStoryboard(name: "RelationViewController", bundle: nil)
+            let viewController: RelationViewController = storyboard.instantiateInitialViewController() as! RelationViewController
             self.navigationController?.pushViewController(viewController, animated: true)
         default: break
         }

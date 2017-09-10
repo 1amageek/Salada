@@ -15,7 +15,7 @@ class MessageViewController: ChatViewController {
 
     let user: User = User()
     
-    private(set) var dataSource: DataSource<Room, Message>?
+    private(set) var dataSource: DataSource<Message>?
     
     override func loadView() {
         super.loadView()

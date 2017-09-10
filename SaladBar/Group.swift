@@ -11,5 +11,5 @@ import Foundation
 class Group: Object {
     @objc dynamic var name: String?
     @objc dynamic var cover: File?
-    @objc dynamic var users: Set<String> = []
+    let users: Relation<User> = []
 }

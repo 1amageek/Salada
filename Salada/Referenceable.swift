@@ -24,7 +24,17 @@ public protocol Referenceable: NSObjectProtocol {
 
     static var _path: String { get }
 
+    static var _version: String { get }
+
+    static var _modelName: String { get }
+
     var id: String { get }
+
+    var isObserved: Bool { get }
+
+    var rawValue: [AnyHashable: Any] { get }
+
+    var value: [AnyHashable: Any] { get }
 
     init?(snapshot: DataSnapshot)
 }
@@ -177,6 +187,15 @@ public extension Referenceable {
 }
 
 extension Referenceable where Self: Object {
+
+    public var isObserved: Bool {
+        return self._isObserved
+    }
+
+    public func propertyRef<T>(_ property: KeyPath<Self, T>) -> DatabaseReference {
+        return self.ref.child(property._kvcKeyPathString!)
+    }
+
     /**
      A function that gets all data from DB whenever DB has been changed.
 
@@ -201,3 +220,8 @@ extension Referenceable where Self: Object {
     }
 }
 
+extension DatabaseReference {
+    var _path: String {
+        return self.url.replacingOccurrences(of: self.root.url, with: "")
+    }
+}

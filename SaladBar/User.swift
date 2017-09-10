@@ -28,6 +28,7 @@ class User: Object {
     @objc dynamic var cover: File?
     @objc dynamic var type: UserType = .first
     @objc dynamic var testItems: Set<String> = []
+    let relationItems: Relation<Item> = []
     
     var tempName: String? 
     
