@@ -21,14 +21,16 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         view.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
         return view
     }()
-    
-    var datasource: DataSource<User>?
-    
+
     override func loadView() {
         super.loadView()
         self.view.addSubview(tableView)
     }
-    
+
+    var dataSource: DataSource<User>?
+
+    var group: Group?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.rightBarButtonItems = [
@@ -37,49 +39,41 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
         ]
         self.view.backgroundColor = UIColor.white
 
-//        self.setupDatasource(key: "-KquiCfl7kN0p-IWM9FX")
 
         let group: Group = Group()
+        self.group = group
         group.name = "iOS Development Team"
+
+        (0..<10).forEach({ (index) in
+            let user: User = User()
+            let image: UIImage = #imageLiteral(resourceName: "salada")
+            let data: Data = UIImageJPEGRepresentation(image, 1)!
+            user.thumbnail = File(data: data, mimeType: .jpeg)
+            user.tempName = "Test1_name"
+            user.name = "\(index)"
+            user.gender = "man"
+            user.age = index
+            user.url = URL(string: "https://www.google.co.jp/")
+            user.items = ["Book", "Pen"]
+            user.groups.insert(group.id)
+            user.location = CLLocation(latitude: 1, longitude: 1)
+            user.type = .second
+            user.birth = Date()
+            group.users.insert(user)
+        })
+
         group.save { [weak self](ref, error) in
-
-            self?.setupDatasource(key: ref!.key)
-            (0..<30).forEach({ (index) in
-                let user: User = User()
-                let image: UIImage = #imageLiteral(resourceName: "salada")
-                let data: Data = UIImageJPEGRepresentation(image, 1)!
-                user.thumbnail = File(data: data, mimeType: .jpeg)
-                user.tempName = "Test1_name"
-                user.name = "\(index)"
-                user.gender = "man"
-                user.age = index
-                user.url = URL(string: "https://www.google.co.jp/")
-                user.items = ["Book", "Pen"]
-                user.groups.insert(ref!.key)
-                user.location = CLLocation(latitude: 1, longitude: 1)
-                user.type = .second
-                user.birth = Date()
-                user.save({ (ref, error) in
-                    if let error: Error = error {
-                        print(error)
-                        return
-                    }
-                    group.users.insert(ref!.key)
-
-                })
-            })
+            self?.setupDataSource(key: group.id)
         }
     }
 
-    var groupKey: String?
-    func setupDatasource(key: String) {
-        self.groupKey = key
+    func setupDataSource(key: String) {
         let options: SaladaOptions = SaladaOptions()
         options.limit = 10
 //        options.predicate = NSPredicate(format: "age == 21")
         options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
-        let group: Group = Group(id: key)!
-        self.datasource = DataSource(parent: group, keyPath: \Group.users, options: options) { [weak self] (changes) in
+
+        self.dataSource = DataSource(self.group!.users.ref, options: options) { [weak self] (changes) in
             guard let tableView: UITableView = self?.tableView else { return }
 
             switch changes {
@@ -98,41 +92,30 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     @objc func prev() {
-        self.datasource?.prev()
+        self.dataSource?.prev()
 
     }
 
     @objc func add() {
-        guard let key: String = self.groupKey else {
-            return
-        }
-        Group.observeSingle(key, eventType: .value) { (group) in
-            guard let group: Group = group else { return }
-            let user: User = User()
-            let image: UIImage = #imageLiteral(resourceName: "salada")
-            let data: Data = UIImageJPEGRepresentation(image, 1)!
-            user.thumbnail = File(data: data, mimeType: .jpeg)
-            user.tempName = "Test1_name"
-            user.name = "ADD"
-            user.gender = "man"
-            user.url = URL(string: "https://www.google.co.jp/")
-            user.items = ["Book", "Pen"]
-            user.groups.insert(key)
-            user.location = CLLocation(latitude: 1, longitude: 1)
-            user.type = .second
-            user.birth = Date()
-            user.save({ (ref, error) in
-                if let error: Error = error {
-                    print(error)
-                    return
-                }
-                group.users.insert(ref!.key)
-            })
-        }
+        guard let group: Group = self.group else { return }
+        let user: User = User()
+        let image: UIImage = #imageLiteral(resourceName: "salada")
+        let data: Data = UIImageJPEGRepresentation(image, 1)!
+        user.thumbnail = File(data: data, mimeType: .jpeg)
+        user.tempName = "Test1_name"
+        user.name = "ADD"
+        user.gender = "man"
+        user.url = URL(string: "https://www.google.co.jp/")
+        user.items = ["Book", "Pen"]
+        user.groups.insert(group.id)
+        user.location = CLLocation(latitude: 1, longitude: 1)
+        user.type = .second
+        user.birth = Date()
+        group.users.insert(user)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.datasource?.count ?? 0
+        return self.dataSource?.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -142,13 +125,13 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func configure(_ cell: TableViewCell, atIndexPath indexPath: IndexPath) {
-//        let user: User = self.datasource![indexPath.item]
+//        let user: User = self.dataSource![indexPath.item]
 //        cell.imageView?.contentMode = .scaleAspectFill
 //        cell.textLabel?.text = user.name
 //        cell.setNeedsLayout()
 
         //
-        cell.disposer = self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+        cell.disposer = self.dataSource?.observeObject(at: indexPath.item, block: { (user) in
             guard let user: User = user else { return }
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user.name
@@ -157,7 +140,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     private func tableView(_ tableView: UITableView, didEndDisplaying cell: TableViewCell, forRowAt indexPath: IndexPath) {
-        //self.datasource?.removeObserver(at: indexPath.item)
+        //self.dataSource?.removeObserver(at: indexPath.item)
         cell.disposer?.dispose()
     }
     
@@ -167,7 +150,7 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.datasource?.removeObject(at: indexPath.item, block: { (key, error) in
+            self.dataSource?.removeObject(at: indexPath.item, block: { (key, error) in
                 if let error: Error = error {
                     print(error)
                 }

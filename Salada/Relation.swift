@@ -46,6 +46,10 @@ public class Relation<T: Object>: RelationalCollection, ExpressibleByArrayLitera
         return "\(parentType._version)/\(parentType._modelName)-\(T.self._modelName)/\(parent.id)"
     }
 
+    public var ref: DatabaseReference {
+        return Database.database().reference().child(self.path)
+    }
+
     public required init(arrayLiteral elements: ArrayLiteralElement...) {
         self._self = DataSource(elements)
     }

@@ -341,6 +341,9 @@ open class Object: Base, Referenceable {
      */
     @discardableResult
     public func save(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
+        if isObserved {
+            fatalError("[Salada.Object] *** error: \(type(of: self)) has already been saved.")
+        }
         let ref: DatabaseReference = self.ref
         if self.hasFiles {
             return self.saveFiles { (error) in
@@ -363,13 +366,6 @@ open class Object: Base, Referenceable {
                 block?(ref, error)
             })
         }
-//        let package: [AnyHashable: Any] = self.pack().value
-//        Database.database().reference().updateChildValues(package) { (error, ref) in
-//            self.ref.observeSingleEvent(of: .value, with: { (snapshot) in
-//                self.snapshot = snapshot
-//                block?(ref, error)
-//            })
-//        }
     }
 
     // MARK: - Transaction
