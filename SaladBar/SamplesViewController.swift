@@ -75,7 +75,8 @@ class SamplesViewController: UITableViewController {
             let viewController: GrowthPropertyViewController = storyboard.instantiateInitialViewController() as! GrowthPropertyViewController
             self.navigationController?.pushViewController(viewController, animated: true)
         case .property:
-            let viewController: RelationViewController = RelationViewController()
+            let storyboard: UIStoryboard = UIStoryboard(name: "RelationViewController", bundle: nil)
+            let viewController: RelationViewController = storyboard.instantiateInitialViewController() as! RelationViewController
             self.navigationController?.pushViewController(viewController, animated: true)
         default: break
         }

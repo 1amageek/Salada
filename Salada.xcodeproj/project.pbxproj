@@ -51,6 +51,10 @@
 		12A4FE361DB5C987003A3104 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A4FE331DB5C987003A3104 /* User.swift */; };
 		12C097DF1E653CEF001B2010 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C097DE1E653CEF001B2010 /* Item.swift */; };
 		12C097E11E653F19001B2010 /* TransactionTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C097E01E653F19001B2010 /* TransactionTestViewController.swift */; };
+		12C26F2D1F651A20006D7B37 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C26F2C1F651A20006D7B37 /* Package.swift */; };
+		12C26F2E1F651D61006D7B37 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C26F2C1F651A20006D7B37 /* Package.swift */; };
+		12C26F2F1F651D62006D7B37 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C26F2C1F651A20006D7B37 /* Package.swift */; };
+		12C26F311F653E54006D7B37 /* RelationViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12C26F301F653E54006D7B37 /* RelationViewController.storyboard */; };
 		12CB1A5A1D95184300E69000 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CB1A591D95184300E69000 /* AppDelegate.swift */; };
 		12CB1A5C1D95184300E69000 /* DataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CB1A5B1D95184300E69000 /* DataSourceViewController.swift */; };
 		12CB1A611D95184300E69000 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 12CB1A601D95184300E69000 /* Assets.xcassets */; };
@@ -141,6 +145,8 @@
 		12A4FE3F1DB5CA21003A3104 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12C097DE1E653CEF001B2010 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		12C097E01E653F19001B2010 /* TransactionTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionTestViewController.swift; sourceTree = "<group>"; };
+		12C26F2C1F651A20006D7B37 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		12C26F301F653E54006D7B37 /* RelationViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RelationViewController.storyboard; sourceTree = "<group>"; };
 		12CB1A571D95184300E69000 /* SaladBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaladBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		12CB1A591D95184300E69000 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		12CB1A5B1D95184300E69000 /* DataSourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceViewController.swift; sourceTree = "<group>"; };
@@ -296,6 +302,7 @@
 				120281B21F3ACE3100EABC5C /* ImageUploadViewController.swift */,
 				120281B01F3ACE1F00EABC5C /* ImageUploadViewController.storyboard */,
 				12DA18031F60DB4B00749224 /* RelationViewController.swift */,
+				12C26F301F653E54006D7B37 /* RelationViewController.storyboard */,
 			);
 			name = SampleCode;
 			sourceTree = "<group>";
@@ -364,6 +371,7 @@
 				8DDA53C01ED38684000C1F06 /* Info.plist */,
 				12D0BE1D1E6D1ADA008E9AD0 /* Referenceable.swift */,
 				12523B8E1EDBD5820074DACB /* Base.swift */,
+				12C26F2C1F651A20006D7B37 /* Package.swift */,
 				12523B8C1EDBB74A0074DACB /* Object.swift */,
 				12DA5D611EDBE4E700D2A73D /* File.swift */,
 				12DA5D931EDC198B00D2A73D /* DataSource.swift */,
@@ -638,6 +646,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				12DA18021F5FD51400749224 /* GrowthProperty.storyboard in Resources */,
+				12C26F311F653E54006D7B37 /* RelationViewController.storyboard in Resources */,
 				12CB1A641D95184300E69000 /* LaunchScreen.storyboard in Resources */,
 				1253BFAA1F3465FF0078C5D1 /* UserGroupRelationViewController.storyboard in Resources */,
 				120281B11F3ACE1F00EABC5C /* ImageUploadViewController.storyboard in Resources */,
@@ -975,6 +984,7 @@
 				12A4FE361DB5C987003A3104 /* User.swift in Sources */,
 				1274D1221F383C2E0037D9F1 /* Referenceable.swift in Sources */,
 				1274D1251F383C2E0037D9F1 /* File.swift in Sources */,
+				12C26F2E1F651D61006D7B37 /* Package.swift in Sources */,
 				1274D1271F383C2E0037D9F1 /* SaladaApp.swift in Sources */,
 				1272DA711F0C9A35000A094E /* ChatViewDataSource.swift in Sources */,
 				12A4FE351DB5C987003A3104 /* Group.swift in Sources */,
@@ -991,6 +1001,7 @@
 				12D0BE211E6D1ADA008E9AD0 /* Referenceable.swift in Sources */,
 				12DA5D621EDBE4E700D2A73D /* File.swift in Sources */,
 				12523B8F1EDBD5820074DACB /* Base.swift in Sources */,
+				12C26F2D1F651A20006D7B37 /* Package.swift in Sources */,
 				1253BFAE1F3478AD0078C5D1 /* SaladaApp.swift in Sources */,
 				12DA17FB1F5D9BE300749224 /* Relation.swift in Sources */,
 				12DA17FE1F5FD45200749224 /* GrowthPropertyViewController.swift in Sources */,
@@ -1011,6 +1022,7 @@
 				120282331F3FF70500EABC5C /* File.swift in Sources */,
 				12DA5DF21EDD17A400D2A73D /* TestFlow.swift in Sources */,
 				126479621EDE92A90097ED9E /* TableViewCell.swift in Sources */,
+				12C26F2F1F651D62006D7B37 /* Package.swift in Sources */,
 				122BEDF91EE3E6430009123C /* ActionCell.swift in Sources */,
 				120282341F3FF70500EABC5C /* DataSource.swift in Sources */,
 				12DA5DBC1EDC29D200D2A73D /* AppDelegate.swift in Sources */,

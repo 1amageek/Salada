@@ -12,26 +12,21 @@ import Firebase
 public protocol Relationable {
     var path: String { get }
     var parent: Referenceable? { get set }
-    var value: [String: Bool] { get }
-    var values: [String: Any] { get }
-    var package: [String: Any] { get }
+    var values: [AnyHashable: Any] { get }
+    func pack() -> Package
 }
 
-public class Relation<T: Object>: Relationable, Collection, ExpressibleByArrayLiteral {
+public typealias RelationalCollection = Relationable & Collection
+
+public class Relation<T: Object>: RelationalCollection, ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 
-    private var _self: [T] = []
-
-    private var _dataSource: DataSource<T> = []
+    private var _self: DataSource<T>
 
     public weak var parent: Referenceable?
 
-    public var value: [String: Bool] {
-        return _self.keys.toKeys()
-    }
-
-    public var values: [String: Any] {
+    public var values: [AnyHashable: Any] {
         return _self.values()
     }
 
@@ -39,24 +34,8 @@ public class Relation<T: Object>: Relationable, Collection, ExpressibleByArrayLi
         return self.parent?.isObserved ?? false
     }
 
-    public var package: [String : Any] {
-        var package: [String: Any] = [:]
-        self.values.forEach { (key, value) in
-
-            // body
-            do {
-                let path: String = "\(T.self._path)/\(key)"
-                package[path] = value
-            }
-
-            // relation
-            do {
-
-                let path: String = "\(self.path)/\(key)"
-                package[path] = true
-            }
-        }
-        return package
+    public func pack() -> Package {
+        return Package(self)
     }
 
     public var path: String {
@@ -67,12 +46,8 @@ public class Relation<T: Object>: Relationable, Collection, ExpressibleByArrayLi
         return "\(parentType._version)/\(parentType._modelName)-\(T.self._modelName)/\(parent.id)"
     }
 
-    public required init(arrayLiteral elements: Relation.ArrayLiteralElement...) {
-        self._self = elements
-    }
-
-    public func save() {
-
+    public required init(arrayLiteral elements: ArrayLiteralElement...) {
+        self._self = DataSource(elements)
     }
 
     public var startIndex: Int {
@@ -117,14 +92,20 @@ public class Relation<T: Object>: Relationable, Collection, ExpressibleByArrayLi
 
     // MARK: -
     public func insert(_ newMember: Element) {
-        if !_self.contains(newMember) {
-            _self.append(newMember)
+        if isObserved {
+            let package: Package = Package(self, object: newMember)
+            package.submit(nil)
+        } else {
+            _self.insert(newMember)
         }
     }
 
     public func remove(_ member: Element) {
-        if let index: Int = _self.index(of: member) {
-            _self.remove(at: index)
+        if isObserved {
+            let package: Package = Package(self, object: member)
+            package.delete(nil)
+        } else {
+            _self.remove(member)
         }
     }
 
@@ -137,7 +118,7 @@ public class Relation<T: Object>: Relationable, Collection, ExpressibleByArrayLi
         if _self.isEmpty {
             return "Relation([])"
         }
-        return "\(_self.description)"
+        return "\(_self.pool.description)"
     }
 }
 
@@ -145,12 +126,8 @@ fileprivate extension Collection where Iterator.Element: Object {
     func values() -> [String: Any] {
         if self.isEmpty { return [:] }
         var values: [String: Any] = [:]
-        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
         self.forEach { (object) in
-            var value: [AnyHashable: Any] = object.value
-            value["_createdAt"] = timestamp
-            value["_updatedAt"] = timestamp
-            values[object.id] = value
+            values[object.id] = object.value
         }
         return values
     }

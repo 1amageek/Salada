@@ -100,7 +100,8 @@ open class Object: Base, Referenceable {
         return nil
     }
 
-    public var value: [AnyHashable: Any] {
+    /// Object raw value
+    public var rawValue: [AnyHashable: Any] {
         let mirror = Mirror(reflecting: self)
         var object: [AnyHashable: Any] = [:]
         mirror.children.forEach { (key, value) in
@@ -133,6 +134,28 @@ open class Object: Base, Referenceable {
             }
         }
         return object
+    }
+
+    /// Object value
+    public var value: [AnyHashable: Any] {
+        var value: [AnyHashable: Any] = self.rawValue
+        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
+        value["_createdAt"] = timestamp
+        value["_updatedAt"] = timestamp
+        return value
+    }
+
+    /// Package
+    public func pack() -> Package {
+        var package: Package = Package(self)
+        let mirror: Mirror = Mirror(reflecting: self)
+        mirror.children.forEach { (child) in
+            if child.value is Relationable {
+                let relation: Relationable = child.value as! Relationable
+                package.merge(relation.pack())
+            }
+        }
+        return package
     }
 
     // MARK: - Snapshot
@@ -305,30 +328,6 @@ open class Object: Base, Referenceable {
         }
     }
 
-    // MARK: - Relation
-
-    private var package: [String: Any] {
-        var package: [String: Any] = [:]
-        let mirror: Mirror = Mirror(reflecting: self)
-        mirror.children.forEach { (child) in
-            if child.value is Relationable {
-                let relation: Relationable = child.value as! Relationable
-                package.merge(relation.package, uniquingKeysWith: { (_, new) -> Any in
-                    return new
-                })
-            }
-        }
-        do {
-            var value: [AnyHashable: Any] = self.value
-            let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-            value["_createdAt"] = timestamp
-            value["_updatedAt"] = timestamp
-            let path: String = "\(type(of: self).self._path)/\(self.id)"
-            package[path] = value
-        }
-        return package
-    }
-
     // MARK: - Save
 
     @discardableResult
@@ -358,13 +357,19 @@ open class Object: Base, Referenceable {
     }
 
     private func _save(_ block: ((DatabaseReference?, Error?) -> Void)?) {
-        let package: [String: Any] = self.package
-        Database.database().reference().updateChildValues(package) { (error, ref) in
+        self.pack().submit { (ref, error) in
             self.ref.observeSingleEvent(of: .value, with: { (snapshot) in
                 self.snapshot = snapshot
                 block?(ref, error)
             })
         }
+//        let package: [AnyHashable: Any] = self.pack().value
+//        Database.database().reference().updateChildValues(package) { (error, ref) in
+//            self.ref.observeSingleEvent(of: .value, with: { (snapshot) in
+//                self.snapshot = snapshot
+//                block?(ref, error)
+//            })
+//        }
     }
 
     // MARK: - Transaction
@@ -378,10 +383,7 @@ open class Object: Base, Referenceable {
 
     private func _transactionSave(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         let ref: DatabaseReference = self.ref
-        var value: [AnyHashable: Any] = self.value
-        let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-        value["_createdAt"] = timestamp
-        value["_updatedAt"] = timestamp
+        let value: [AnyHashable: Any] = self.value
         if self.hasFiles {
             return self.saveFiles { (error) in
                 if let error = error {

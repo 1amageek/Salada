@@ -55,7 +55,7 @@ public class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 
-    public typealias Element = T
+    public typealias Element = ArrayLiteralElement
 
     /// DatabaseReference
     public var databaseRef: DatabaseReference { return Database.database().reference() }
@@ -236,8 +236,12 @@ public class DataSource<T: Object>: ExpressibleByArrayLiteral {
 //        }
     }
 
-    public required init(arrayLiteral elements: T...) {
-        self.reference = T.databaseRef
+    public required convenience init(arrayLiteral elements: Element...) {
+        self.init(elements)
+    }
+
+    public init(_ elements: [Element]) {
+        self.reference = Element.databaseRef
         self.options = SaladaOptions()
         self.pool = elements
     }
@@ -480,6 +484,18 @@ extension DataSource: Collection {
     public var last: Element? {
         if self.pool.isEmpty { return nil }
         return self.pool[endIndex - 1]
+    }
+
+    public func insert(_ newMember: Element) {
+        if !self.pool.contains(newMember) {
+            self.pool.append(newMember)
+        }
+    }
+
+    public func remove(_ member: Element) {
+        if let index: Int = self.pool.index(of: member) {
+            self.pool.remove(at: index)
+        }
     }
 
     public subscript(index: Int) -> Element {

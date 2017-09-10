@@ -32,6 +32,10 @@ public protocol Referenceable: NSObjectProtocol {
 
     var isObserved: Bool { get }
 
+    var rawValue: [AnyHashable: Any] { get }
+
+    var value: [AnyHashable: Any] { get }
+
     init?(snapshot: DataSnapshot)
 }
 
