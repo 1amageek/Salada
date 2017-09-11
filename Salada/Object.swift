@@ -295,6 +295,9 @@ open class Object: Base, Referenceable {
                 } else {
                     updateValue(keyPath, child: nil, value: value)
                 }
+            } else {
+                // remove value
+                updateValue(keyPath, child: nil, value: nil)
             }
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
