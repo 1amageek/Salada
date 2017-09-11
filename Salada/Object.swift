@@ -10,9 +10,9 @@ import FirebaseDatabase
 import FirebaseStorage
 
 open class Object: Base, Referenceable {
-    public struct Const {
-        public static let createdAtKey = "_createdAt"
-        public static let updatedAtKey = "_updatedAt"
+    internal struct Const {
+        static let createdAtKey = "_createdAt"
+        static let updatedAtKey = "_updatedAt"
     }
 
     // MARK: -
