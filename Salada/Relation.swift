@@ -128,11 +128,6 @@ public class Relation<T: Object>: RelationalCollection, ExpressibleByArrayLitera
 
 fileprivate extension Collection where Iterator.Element: Object {
     func values() -> [String: Any] {
-        if self.isEmpty { return [:] }
-        var values: [String: Any] = [:]
-        self.forEach { (object) in
-            values[object.id] = object.value
-        }
-        return values
+        return reduce(into: [:]) { $0[$1.id] = $1.value }
     }
 }

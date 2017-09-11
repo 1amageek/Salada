@@ -555,12 +555,7 @@ public func == (lhs: Object, rhs: Object) -> Bool {
 
 extension Collection where Iterator.Element == String {
     func toKeys() -> [String: Bool] {
-        if self.isEmpty { return [:] }
-        var keys: [String: Bool] = [:]
-        self.forEach { (object) in
-            keys[object] = true
-        }
-        return keys
+        return reduce(into: [:]) { $0[$1] = true }
     }
 }
 
