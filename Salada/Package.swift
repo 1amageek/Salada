@@ -9,77 +9,93 @@
 import Foundation
 import Firebase
 
+/**
+ Package for transferring data to Firebase
+ */
 public struct Package {
 
     public typealias Path = AnyHashable
 
     public typealias AnyValue = Any
 
-    public var value: [Path: AnyValue]
+    /// Transfer to Firebase body
+    public var body: [Path: AnyValue]
 
+    /// Initialize Package
     public init() {
-        self.value = [:]
+        self.body = [:]
     }
 
+    /// Initialize Package from Object
     public init<T: Referenceable>(_ object: T) {
         self.init()
         self.add(object)
     }
 
+    /// Initialize Package from Relation
     public init<T>(_ relation: Relation<T>) {
         self.init()
         self.add(relation)
     }
 
+    /// Initialize Package from Relation and Object
     public init<T, U: Referenceable>(_ relation: Relation<T>, object: U) {
         self.init()
         self.add(relation, object: object)
     }
 
+    /// Add Object to Package.
     public mutating func add<T: Referenceable>(_ newObject: T) {
         let path: String = "\(type(of: newObject).self._path)/\(newObject.id)"
-        var value: [Path: AnyValue] = self.value
-        value[path] = newObject.value
-        self.value = value
+        var body: [Path: AnyValue] = self.body
+        body[path] = newObject.value
+        self.body = body
     }
 
+    /// Add all Objects held by Relation to Package.
     public mutating func add<T>(_ newRelation: Relation<T>) {
         newRelation.forEach { (object) in
             self.add(newRelation, object: object)
         }
     }
 
+    /// Add Relation and Object to Package.
     public mutating func add<T, U: Referenceable>(_ relation: Relation<T>, object: U) {
-        var value: [Path: AnyValue] = self.value
+        var body: [Path: AnyValue] = self.body
         do {
             let path: String = "\(relation.path)/\(object.id)"
-            value[path] = true
+            body[path] = true
         }
         do {
             let path: String = "\(type(of: object).self._path)/\(object.id)"
-            value[path] = object.value
+            body[path] = object.value
         }
-        self.value = value
+        self.body = body
     }
 
+    /// Merge the two packages.
     public mutating func merge(_ package: Package) {
-        self.value.merge(package.value, uniquingKeysWith: { (_, new) -> Any in
+        self.body.merge(package.body, uniquingKeysWith: { (_, new) -> Any in
             return new
         })
     }
 
+    // MARK: -
+
+    /// Transfer the Package's Body.
     public func submit(_ block: ((DatabaseReference?, Error?) -> Void)?) {
-        Database.database().reference().updateChildValues(self.value) { (error, ref) in
+        Database.database().reference().updateChildValues(self.body) { (error, ref) in
             block?(ref, error)
         }
     }
 
+    /// Delete references to Package.
     public func delete(_ block: ((DatabaseReference?, Error?) -> Void)?) {
-        var value: [Path: AnyValue] = [:]
-        self.value.forEach { (key, _) in
-            value[key] = NSNull()
+        var body: [Path: AnyValue] = [:]
+        self.body.forEach { (key, _) in
+            body[key] = NSNull()
         }
-        Database.database().reference().updateChildValues(value) { (error, ref) in
+        Database.database().reference().updateChildValues(body) { (error, ref) in
             block?(ref, error)
         }
     }

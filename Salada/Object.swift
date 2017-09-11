@@ -330,6 +330,9 @@ open class Object: Base, Referenceable {
     // MARK: - Save
 
     @discardableResult
+    /**
+     Save the new Object to Firebase.
+     */
     public func save() -> [String: StorageUploadTask] {
         return self.save(nil)
     }
@@ -372,6 +375,7 @@ open class Object: Base, Referenceable {
     /**
      Save failing when offline
      */
+    @available(*, deprecated, message: "use save")
     public func transactionSave(_ block: ((DatabaseReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         return self._transactionSave(block)
     }
