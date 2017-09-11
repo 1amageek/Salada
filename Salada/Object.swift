@@ -549,10 +549,10 @@ extension Object {
     open override var hashValue: Int {
         return self.id.hash
     }
-}
 
-public func == (lhs: Object, rhs: Object) -> Bool {
-    return lhs.id == rhs.id
+    public static func == (lhs: Object, rhs: Object) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 // MARK: -
