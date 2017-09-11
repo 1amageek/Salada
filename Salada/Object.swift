@@ -10,6 +10,10 @@ import FirebaseDatabase
 import FirebaseStorage
 
 open class Object: Base, Referenceable {
+    public struct Const {
+        public static let createdAtKey = "_createdAt"
+        public static let updatedAtKey = "_updatedAt"
+    }
 
     // MARK: -
 
@@ -140,8 +144,8 @@ open class Object: Base, Referenceable {
     public var value: [AnyHashable: Any] {
         var value: [AnyHashable: Any] = self.rawValue
         let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
-        value["_createdAt"] = timestamp
-        value["_updatedAt"] = timestamp
+        value[Const.createdAtKey] = timestamp
+        value[Const.updatedAtKey] = timestamp
         return value
     }
 
@@ -169,8 +173,8 @@ open class Object: Base, Referenceable {
 
                 guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
 
-                let createdAt: Double = snapshot["_createdAt"] as! Double
-                let updatedAt: Double = snapshot["_updatedAt"] as! Double
+                let createdAt: Double = snapshot[Const.createdAtKey] as! Double
+                let updatedAt: Double = snapshot[Const.updatedAtKey] as! Double
 
                 let createdAtTimestamp: TimeInterval = (createdAt / 1000)
                 let updatedAtTimestamp: TimeInterval = (updatedAt / 1000)
@@ -319,7 +323,7 @@ open class Object: Base, Referenceable {
         let updateValue: Any = value.map { $0 } ?? NSNull()
         let path = child.map { "\(keyPath)/\($0)" } ?? keyPath
         print(path, updateValue)
-        reference.updateChildValues([path: updateValue, "_updatedAt": timestamp], withCompletionBlock: {_,_ in
+        reference.updateChildValues([path: updateValue, Const.updatedAtKey: timestamp], withCompletionBlock: {_,_ in
             // Nothing
         })
     }
