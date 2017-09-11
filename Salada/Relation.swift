@@ -16,28 +16,35 @@ public protocol Relationable {
     func pack() -> Package
 }
 
-public typealias RelationalCollection = Relationable & Collection
-
-public class Relation<T: Object>: RelationalCollection, ExpressibleByArrayLiteral {
+/**
+ Relation class
+ Relation works with the property of Object.
+ */
+public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 
     private var _self: DataSource<T>
 
+    /// Contains the Object holding the property.
     public weak var parent: Referenceable?
 
+    /// It is an Object whose ID is Key.
     public var values: [AnyHashable: Any] {
         return _self.values()
     }
 
+    /// You can retrieve whether the parent Object is saved.
     public var isObserved: Bool {
         return self.parent?.isObserved ?? false
     }
 
+    /// Package an object to be saved in Firebase.
     public func pack() -> Package {
         return Package(self)
     }
 
+    /// It is a Path stored in Firebase.
     public var path: String {
         guard let parent: Referenceable = self.parent else {
             fatalError("[Salada.Relation] It is necessary to set parent.")
@@ -46,13 +53,60 @@ public class Relation<T: Object>: RelationalCollection, ExpressibleByArrayLitera
         return "\(parentType._version)/\(parentType._modelName)-\(T.self._modelName)/\(parent.id)"
     }
 
+    /// It is a Reference stored in Firebase.
     public var ref: DatabaseReference {
         return Database.database().reference().child(self.path)
     }
 
+    /**
+     Initialize Relation.
+     */
     public required init(arrayLiteral elements: ArrayLiteralElement...) {
         self._self = DataSource(elements)
     }
+
+    /// Returns the Object of the specified indexes.
+    public func objects(at indexes: IndexSet) -> [Element] {
+        return indexes.filter { $0 < self.count }.map { self[$0] }
+    }
+
+    // MARK: -
+
+    /// Save the new Object.
+    public func insert(_ newMember: Element) {
+        if isObserved {
+            let package: Package = Package(self, object: newMember)
+            package.submit(nil)
+        } else {
+            _self.insert(newMember)
+        }
+    }
+
+    /// Deletes the Object from the reference destination.
+    public func remove(_ member: Element) {
+        if isObserved {
+            let package: Package = Package(self, object: member)
+            package.delete(nil)
+        } else {
+            _self.remove(member)
+        }
+    }
+
+    public func removeAll() {
+        _self = []
+    }
+
+    // MARK: -
+
+    public var description: String {
+        if _self.isEmpty {
+            return "Relation([])"
+        }
+        return "\(_self.objects.description)"
+    }
+}
+
+extension Relation: Collection {
 
     public var startIndex: Int {
         return _self.startIndex
@@ -74,8 +128,12 @@ public class Relation<T: Object>: RelationalCollection, ExpressibleByArrayLitera
         return _self[i]
     }
 
-    func index(of element: T) -> Int? {
+    public func index(of element: T) -> Int? {
         return _self.index(of: element)
+    }
+
+    public func index(where predicate: (T) throws -> Bool) rethrows -> Int? {
+        return try _self.index(where: predicate)
     }
 
     public func index(after i: Int) -> Int {
@@ -88,41 +146,6 @@ public class Relation<T: Object>: RelationalCollection, ExpressibleByArrayLitera
 
     public func index(_ i: Int, offsetBy n: Int, limitedBy limit: Int) -> Int? {
         return _self.index(i, offsetBy: n, limitedBy: limit)
-    }
-
-    public func objects(at indexes: IndexSet) -> [Element] {
-        return indexes.filter { $0 < self.count }.map{ self[$0] }
-    }
-
-    // MARK: -
-    public func insert(_ newMember: Element) {
-        if isObserved {
-            let package: Package = Package(self, object: newMember)
-            package.submit(nil)
-        } else {
-            _self.insert(newMember)
-        }
-    }
-
-    public func remove(_ member: Element) {
-        if isObserved {
-            let package: Package = Package(self, object: member)
-            package.delete(nil)
-        } else {
-            _self.remove(member)
-        }
-    }
-
-    public func removeAll() {
-        _self = []
-    }
-
-    // MARK: -
-    public var description: String {
-        if _self.isEmpty {
-            return "Relation([])"
-        }
-        return "\(_self.pool.description)"
     }
 }
 

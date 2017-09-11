@@ -68,12 +68,12 @@ class DataSourceViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     func setupDataSource(key: String) {
-        let options: SaladaOptions = SaladaOptions()
+        let options: Options = Options()
         options.limit = 10
 //        options.predicate = NSPredicate(format: "age == 21")
         options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
 
-        self.dataSource = DataSource(self.group!.users.ref, options: options) { [weak self] (changes) in
+        self.dataSource = DataSource(reference: self.group!.users.ref, options: options) { [weak self] (changes) in
             guard let tableView: UITableView = self?.tableView else { return }
 
             switch changes {

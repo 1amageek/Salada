@@ -68,6 +68,7 @@ open class Object: Base, Referenceable {
         }
     }
 
+    /// Initialize Object
     public override init() {
         self.createdAt = Date()
         self.updatedAt = Date()
@@ -77,11 +78,13 @@ open class Object: Base, Referenceable {
         self._init()
     }
 
+    /// Initialize Object from snapshot.
     convenience required public init?(snapshot: DataSnapshot) {
         self.init()
         _setSnapshot(snapshot)
     }
 
+    /// Initialize the object with the specified ID.
     convenience required public init?(id: String) {
         self.init()
         self.id = id

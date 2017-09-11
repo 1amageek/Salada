@@ -36,10 +36,10 @@ class UserDataSourceViewController: UIViewController, UITableViewDelegate, UITab
             UIBarButtonItem(title: "Prev", style: UIBarButtonItemStyle.plain, target: self, action: #selector(prev))
         ]
         self.view.backgroundColor = UIColor.white
-        let options: SaladaOptions = SaladaOptions()
+        let options: Options = Options()
         options.limit = 10
         options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
-        self.datasource = DataSource(User.databaseRef, options: options, block: { [weak self](changes) in
+        self.datasource = DataSource(reference: User.databaseRef, options: options, block: { [weak self](changes) in
             guard let tableView: UITableView = self?.tableView else { return }
 
             switch changes {
