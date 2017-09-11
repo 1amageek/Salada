@@ -295,6 +295,9 @@ open class Object: Base, Referenceable {
                 } else {
                     updateValue(keyPath, child: nil, value: value)
                 }
+            } else {
+                // remove value
+                updateValue(keyPath, child: nil, value: nil)
             }
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
@@ -313,19 +316,12 @@ open class Object: Base, Referenceable {
         let reference: DatabaseReference = self.ref
         let timestamp: [AnyHashable : Any] = ServerValue.timestamp() as [AnyHashable : Any]
         SaladaApp.cache?.removeObject(forKey: reference.url as AnyObject)
-        if let value: Any = value {
-            var path: String = keyPath
-            if let child: String = child {
-                path = "\(keyPath)/\(child)"
-            }
-            reference.updateChildValues([path: value, "_updatedAt": timestamp], withCompletionBlock: {_,_ in 
-                // Nothing
-            })
-        } else {
-            if let childKey: String = child {
-                reference.child(keyPath).child(childKey).removeValue()
-            }
-        }
+        let updateValue: Any = value.map { $0 } ?? NSNull()
+        let path = child.map { "\(keyPath)/\($0)" } ?? keyPath
+        print(path, updateValue)
+        reference.updateChildValues([path: updateValue, "_updatedAt": timestamp], withCompletionBlock: {_,_ in
+            // Nothing
+        })
     }
 
     // MARK: - Save
