@@ -303,44 +303,51 @@ User.observeSingle(friend, eventType: .value, block: { (user) in
  })
 ```
 
-# Salada datasource
+# DataSource
 
 see SaladBar
 
 For example
 
-``` Swift
-// in ViewController property
-var datasource: Datasource<Group, User>?
-```
+``` Swift 
+// ViewController Sample
 
-``` Swift
-// in viewDidLoad
-let options: SaladaOptions = SaladaOptions()
-options.limit = 10
-options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
-self.datasource = DataSource(parentKey: key, keyPath: \Group.users, options: options, block: { [weak self](changes) in
-    guard let tableView: UITableView = self?.tableView else { return }
+var dataSource: DataSource<User>?
 
-    switch changes {
-    case .initial:
-        tableView.reloadData()
-    case .update(let deletions, let insertions, let modifications):
-        tableView.beginUpdates()
-        tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-        tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-        tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-        tableView.endUpdates()
-    case .error(let error):
-        print(error)
-    }
-})
+override func viewDidLoad() {
+    super.viewDidLoad()
+    self.navigationItem.rightBarButtonItems = [
+        UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(add)),
+        UIBarButtonItem(title: "Prev", style: UIBarButtonItemStyle.plain, target: self, action: #selector(prev))
+    ]
+    self.view.backgroundColor = UIColor.white
+    let options: Options = Options()
+    options.limit = 10
+    options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
+    self.dataSource = DataSource(reference: User.databaseRef, options: options, block: { [weak self](changes) in
+        guard let tableView: UITableView = self?.tableView else { return }
+        
+        switch changes {
+        case .initial:
+            tableView.reloadData()
+        case .update(let deletions, let insertions, let modifications):
+            tableView.beginUpdates()
+            tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.endUpdates()
+        case .error(let error):
+            print(error)
+        }
+    })
+}
+
 ```
 
 ``` Swift
 // TableViewDatasource
 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.datasource?.count ?? 0
+    return self.dataSource?.count ?? 0
 }
 
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -350,7 +357,7 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
 }
 
 func configure(_ cell: TableViewCell, atIndexPath indexPath: IndexPath) {
-    cell.disposer = self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+    cell.disposer = self.dataSource?.observeObject(at: indexPath.item, block: { (user) in
         cell.imageView?.contentMode = .scaleAspectFill
         cell.textLabel?.text = user?.name
     })
@@ -366,7 +373,7 @@ func tableView(_ tableView: UITableView, canPerformAction action: Selector, forR
 
 func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
-        self.datasource?.removeObject(at: indexPath.item, cascade: true, block: { (key, error) in
+        self.dataSource?.removeObject(at: indexPath.item, cascade: true, block: { (key, error) in
             if let error: Error = error {
                 print(error)
             }
