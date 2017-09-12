@@ -36,6 +36,8 @@ public protocol Referenceable: NSObjectProtocol {
 
     var value: [AnyHashable: Any] { get }
 
+    var ref: DatabaseReference { get }
+
     init?(snapshot: DataSnapshot)
 }
 

@@ -47,9 +47,7 @@ public struct Package {
     /// Add Object to Package.
     public mutating func add<T: Referenceable>(_ newObject: T) {
         let path: String = "\(type(of: newObject).self._path)/\(newObject.id)"
-        var body: [Path: AnyValue] = self.body
-        body[path] = newObject.value
-        self.body = body
+        self.add(path: path, value: newObject.value)
     }
 
     /// Add all Objects held by Relation to Package.
@@ -61,15 +59,19 @@ public struct Package {
 
     /// Add Relation and Object to Package.
     public mutating func add<T, U: Referenceable>(_ relation: Relation<T>, object: U) {
-        var body: [Path: AnyValue] = self.body
         do {
             let path: String = "\(relation.path)/\(object.id)"
-            body[path] = true
+            self.add(path: path, value: true)
         }
         do {
             let path: String = "\(type(of: object).self._path)/\(object.id)"
-            body[path] = object.value
+            self.add(path: path, value: object.value)
         }
+    }
+
+    public mutating func add(path: Path, value: AnyValue) {
+        var body: [Path: AnyValue] = self.body
+        body[path] = value
         self.body = body
     }
 

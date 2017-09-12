@@ -11,7 +11,7 @@ import Firebase
 
 class GrowthPropertyViewController: UIViewController {
 
-    var id: String?
+    var id: String? = "-KtnvHJSrA8IchAxYlI_"
 
     @IBAction func add(_ sender: Any) {
 
@@ -47,7 +47,7 @@ class GrowthPropertyViewController: UIViewController {
                 print(error)
                 return
             }
-            (0..<10).forEach { (index) in
+            (0..<1000).forEach { (index) in
                 print("Index : \(index)")
                 let item: Item = Item()
                 item.index = index

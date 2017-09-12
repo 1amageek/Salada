@@ -22,12 +22,12 @@ class UserDataSourceViewController: UIViewController, UITableViewDelegate, UITab
         return view
     }()
 
-    var datasource: DataSource<User>?
-
     override func loadView() {
         super.loadView()
         self.view.addSubview(tableView)
     }
+
+    var dataSource: DataSource<User>?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +39,7 @@ class UserDataSourceViewController: UIViewController, UITableViewDelegate, UITab
         let options: Options = Options()
         options.limit = 10
         options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
-        self.datasource = DataSource(reference: User.databaseRef, options: options, block: { [weak self](changes) in
+        self.dataSource = DataSource(reference: User.databaseRef, options: options, block: { [weak self](changes) in
             guard let tableView: UITableView = self?.tableView else { return }
 
             switch changes {
@@ -55,11 +55,10 @@ class UserDataSourceViewController: UIViewController, UITableViewDelegate, UITab
                 print(error)
             }
         })
-
     }
 
     @objc func prev() {
-        self.datasource?.prev()
+        self.dataSource?.prev()
     }
 
     @objc func add() {
@@ -92,7 +91,7 @@ class UserDataSourceViewController: UIViewController, UITableViewDelegate, UITab
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.datasource?.count ?? 0
+        return self.dataSource?.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -102,7 +101,7 @@ class UserDataSourceViewController: UIViewController, UITableViewDelegate, UITab
     }
 
     func configure(_ cell: TableViewCell, atIndexPath indexPath: IndexPath) {
-        cell.disposer = self.datasource?.observeObject(at: indexPath.item, block: { (user) in
+        cell.disposer = self.dataSource?.observeObject(at: indexPath.item, block: { (user) in
             guard let user: User = user else { return }
             cell.imageView?.contentMode = .scaleAspectFill
             cell.textLabel?.text = user.name
@@ -120,7 +119,7 @@ class UserDataSourceViewController: UIViewController, UITableViewDelegate, UITab
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.datasource?.removeObject(at: indexPath.item, block: { (key, error) in
+            self.dataSource?.removeObject(at: indexPath.item, block: { (key, error) in
                 if let error: Error = error {
                     print(error)
                 }

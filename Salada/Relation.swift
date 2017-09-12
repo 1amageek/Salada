@@ -11,8 +11,11 @@ import Firebase
 
 public protocol Relationable {
     var path: String { get }
+    var keyPath: String? { get set }
     var parent: Referenceable? { get set }
+    var value: [AnyHashable: Any] { get }
     var values: [AnyHashable: Any] { get }
+    func setValue(_ value: Any?, forKey key: String)
     func pack() -> Package
 }
 
@@ -26,8 +29,24 @@ public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
 
     private var _self: DataSource<T>
 
+    private var _count: Int = 0
+
     /// Contains the Object holding the property.
     public weak var parent: Referenceable?
+
+    public var keyPath: String?
+
+    private var parentRef: DatabaseReference? {
+        guard let key: String = self.keyPath else { return nil }
+        return self.parent?.ref.child(key)
+    }
+
+    /// Relation detail value
+    public var value: [AnyHashable: Any] {
+        let count: Int = self.count
+        let value: [AnyHashable: Any] = ["count": count]
+        return value
+    }
 
     /// It is an Object whose ID is Key.
     public var values: [AnyHashable: Any] {
@@ -37,6 +56,10 @@ public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     /// You can retrieve whether the parent Object is saved.
     public var isObserved: Bool {
         return self.parent?.isObserved ?? false
+    }
+
+    public var count: Int {
+        return self.isObserved ? _count : _self.count
     }
 
     /// Package an object to be saved in Firebase.
@@ -65,6 +88,23 @@ public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
         self._self = DataSource(elements)
     }
 
+    private var countHandle: UInt?
+
+    public func setValue(_ value: Any?, forKey key: String) {
+        self.keyPath = key
+        guard let value: [AnyHashable: Any] = value as? [AnyHashable: Any] else {
+            return
+        }
+        if let count: Int = value["count"] as? Int {
+            self._count = count
+            self.countHandle = self.parent?.ref.child(key).observe(.value, with: { [weak self] (snapshot) in
+                if let count: Int = snapshot.value as? Int {
+                    self?._count = count
+                }
+            })
+        }
+    }
+    
     /// Returns the Object of the specified indexes.
     public func objects(at indexes: IndexSet) -> [Element] {
         return indexes.filter { $0 < self.count }.map { self[$0] }
@@ -75,8 +115,32 @@ public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     /// Save the new Object.
     public func insert(_ newMember: Element) {
         if isObserved {
-            let package: Package = Package(self, object: newMember)
-            package.submit(nil)
+            var package: Package = Package(self, object: newMember)
+            if let path: String = self.parentRef?._path {
+                let count: Int = self.count + 1
+                package.add(path: path, value: count)
+            }
+            package.submit({ (ref, error) in
+                if let error: Error = error {
+                    print(error)
+                    return
+                }
+                self.parentRef?.runTransactionBlock({ (data) -> TransactionResult in
+                    if var relation: [AnyHashable: Any] = data.value as? [AnyHashable: Any] {
+                        var count: Int = relation["count"] as? Int ?? 0
+                        count += 1
+                        relation["count"] = count
+                        data.value = relation
+                        return .success(withValue: data)
+                    }
+                    return .success(withValue: data)
+                }, andCompletionBlock: { (error, committed, snapshot) in
+                    if let error: Error = error {
+                        print(error)
+                        return
+                    }
+                })
+            })
         } else {
             _self.insert(newMember)
         }
@@ -104,6 +168,14 @@ public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
         }
         return "\(_self.objects.description)"
     }
+
+    // MARK: -
+
+    deinit {
+        if let handle: UInt = self.countHandle, let key: String = self.keyPath {
+            self.parent?.ref.child(key).removeObserver(withHandle: handle)
+        }
+    }
 }
 
 extension Relation: Collection {
@@ -114,10 +186,6 @@ extension Relation: Collection {
 
     public var endIndex: Int {
         return _self.endIndex
-    }
-
-    public var count: Int {
-        return _self.count
     }
 
     public var first: T? {
