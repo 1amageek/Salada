@@ -316,11 +316,7 @@ var dataSource: DataSource<User>?
 
 override func viewDidLoad() {
     super.viewDidLoad()
-    self.navigationItem.rightBarButtonItems = [
-        UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(add)),
-        UIBarButtonItem(title: "Prev", style: UIBarButtonItemStyle.plain, target: self, action: #selector(prev))
-    ]
-    self.view.backgroundColor = UIColor.white
+    
     let options: Options = Options()
     options.limit = 10
     options.sortDescirptors = [NSSortDescriptor(key: "age", ascending: false)]
