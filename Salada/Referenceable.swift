@@ -184,6 +184,21 @@ public extension Referenceable {
             }
         })
     }
+
+    /**
+     Remove the observer.
+     */
+    public static func removeObserver(_ key: String, with handle: UInt) {
+        self.databaseRef.child(key).removeObserver(withHandle: handle)
+    }
+
+    /**
+     Remove the observer.
+     */
+    public static func removeObserver(with handle: UInt) {
+        self.databaseRef.removeObserver(withHandle: handle)
+    }
+
 }
 
 extension Referenceable where Self: Object {
