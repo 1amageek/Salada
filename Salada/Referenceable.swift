@@ -186,6 +186,29 @@ public extension Referenceable {
     }
 
     /**
+     A function that gets all data from DB whenever DB has been changed.
+
+     - parameter eventType: Set the event to be observed.
+     - parameter block: If the specified event fires, this callback is invoked.
+     - returns: A disposer for removing observe handler
+     */
+    public static func observe(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> Disposer<Self> {
+        return .init(.array(observe(eventType, block: block)))
+    }
+
+    /**
+     A function that gets data of key within the variable from DB whenever data of the key has been changed.
+
+     - parameter key: Observe the Object of the specified Key.
+     - parameter eventType: Set the event to be observed.
+     - parameter block: If the specified event fires, this callback is invoked.
+     - returns: A disposer for removing observe handler
+     */
+    public static func observe(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> Disposer<Self> {
+        return .init(.value(id, observe(id, eventType: eventType, block: block)))
+    }
+
+    /**
      Remove the observer.
      */
     public static func removeObserver(_ key: String, with handle: UInt) {
@@ -209,29 +232,6 @@ extension Referenceable where Self: Object {
 
     public func propertyRef<T>(_ property: KeyPath<Self, T>) -> DatabaseReference {
         return self.ref.child(property._kvcKeyPathString!)
-    }
-
-    /**
-     A function that gets all data from DB whenever DB has been changed.
-
-     - parameter eventType: Set the event to be observed.
-     - parameter block: If the specified event fires, this callback is invoked.
-     - returns: A disposer for removing observe handler
-     */
-    public static func observe(_ eventType: DataEventType, block: @escaping ([Self]) -> Void) -> Disposer<Self> {
-        return .init(.array(observe(eventType, block: block)))
-    }
-
-    /**
-     A function that gets data of key within the variable from DB whenever data of the key has been changed.
-
-     - parameter key: Observe the Object of the specified Key.
-     - parameter eventType: Set the event to be observed.
-     - parameter block: If the specified event fires, this callback is invoked.
-     - returns: A disposer for removing observe handler
-     */
-    public static func observe(_ id: String, eventType: DataEventType, block: @escaping (Self?) -> Void) -> Disposer<Self> {
-        return .init(.value(id, observe(id, eventType: eventType, block: block)))
     }
 }
 
