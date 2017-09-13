@@ -495,20 +495,6 @@ open class Object: Base, Referenceable {
         return uploadTasks
     }
 
-    /**
-     Remove the observer.
-     */
-    public class func removeObserver(_ key: String, with handle: UInt) {
-        self.databaseRef.child(key).removeObserver(withHandle: handle)
-    }
-
-    /**
-     Remove the observer.
-     */
-    public class func removeObserver(with handle: UInt) {
-        self.databaseRef.removeObserver(withHandle: handle)
-    }
-
     // MARK: - deinit
 
     deinit {
