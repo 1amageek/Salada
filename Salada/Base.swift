@@ -38,6 +38,7 @@ open class Base: NSObject {
         case nestedString(String, [String: String])
         case nestedInt(String, [String: Int])
         case object(String, Any)
+        case relation(String, [AnyHashable: Any], Relationable)
         case null
 
         // Object -> Firebase Snapshot
@@ -114,6 +115,11 @@ open class Base: NSObject {
                     self = .file(key, value)
                     return
                 }
+            case is Relationable:
+                if let relation: Relationable = value as? Relationable {
+                    self = .relation(key, [:], relation)
+                    return
+                }
             case is [String: String]:
                 if let value: [String: String] = value as? [String: String] {
                     self = .nestedString(key, value)
@@ -143,7 +149,8 @@ open class Base: NSObject {
         }
 
         // Firebase Snapshot -> Object
-        init(key: String, mirror: Mirror, snapshot: [AnyHashable: Any]) {
+        init(key: String, value: Any, snapshot: [AnyHashable: Any]) {
+            let mirror: Mirror = Mirror(reflecting: value)
             let subjectType: Any.Type = mirror.subjectType
             if subjectType == Bool.self || subjectType == Bool?.self {
                 if let value: Bool = snapshot[key] as? Bool {
@@ -269,6 +276,12 @@ open class Base: NSObject {
                 } else if let value: String = snapshot[key] as? String {
                     let file: File = File(name: value)
                     self = .file(key, file)
+                    return
+                }
+            } else if value is Relationable {
+                let relation: Relationable = value as! Relationable
+                if let value: [AnyHashable: Any] = snapshot[key] as? [AnyHashable: Any] {
+                    self = .relation(key, value, relation)
                     return
                 }
             } else {

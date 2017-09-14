@@ -42,10 +42,14 @@ open class Object: Base, Referenceable {
     /// The IndexKey of the Object.
     @objc public var id: String
 
-    /// A reference to Object.
-    private(set) var ref: DatabaseReference
+    private var _ref: DatabaseReference
 
-    ///
+    /// A reference to Object.
+    public var ref: DatabaseReference {
+        return _ref
+    }
+
+    /// Has Files
     private var hasFiles: Bool {
         let mirror = Mirror(reflecting: self)
         for (_, child) in mirror.children.enumerated() {
@@ -68,6 +72,7 @@ open class Object: Base, Referenceable {
             if child.value is Relationable {
                 var relation: Relationable = child.value as! Relationable
                 relation.parent = self
+                relation.keyPath = child.label
             }
         }
     }
@@ -76,8 +81,8 @@ open class Object: Base, Referenceable {
     public override init() {
         self.createdAt = Date()
         self.updatedAt = Date()
-        self.ref = type(of: self).databaseRef.childByAutoId()
-        self.id = self.ref.key
+        self._ref = type(of: self).databaseRef.childByAutoId()
+        self.id = self._ref.key
         super.init()
         self._init()
     }
@@ -92,7 +97,7 @@ open class Object: Base, Referenceable {
     convenience required public init?(id: String) {
         self.init()
         self.id = id
-        self.ref = type(of: self).databaseRef.child(id)
+        self._ref = type(of: self).databaseRef.child(id)
     }
 
     // MARK: - Encode, Decode
@@ -135,6 +140,7 @@ open class Object: Base, Referenceable {
                     case .nestedString(let key, let value):     object[key] = value
                     case .nestedInt(let key, let value):        object[key] = value
                     case .object(let key, let value):           object[key] = value
+                    case .relation(let key, _, let relation):   object[key] = relation.value
                     case .null: break
                     }
                 }
@@ -171,7 +177,7 @@ open class Object: Base, Referenceable {
         didSet {
             if let snapshot: DataSnapshot = snapshot {
 
-                self.ref = snapshot.ref
+                self._ref = snapshot.ref
                 self.id = snapshot.key
 
                 guard let snapshot: [String: Any] = snapshot.value as? [String: Any] else { return }
@@ -192,8 +198,7 @@ open class Object: Base, Referenceable {
                                 self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                                 return
                             }
-                            let mirror: Mirror = Mirror(reflecting: value)
-                            switch ValueType(key: key, mirror: mirror, snapshot: snapshot) {
+                            switch ValueType(key: key, value: value, snapshot: snapshot) {
                             case .bool(let key, let value): self.setValue(value, forKey: key)
                             case .int(let key, let value): self.setValue(value, forKey: key)
                             case .float(let key, let value): self.setValue(value, forKey: key)
@@ -210,6 +215,7 @@ open class Object: Base, Referenceable {
                             case .nestedString(let key, let value): self.setValue(value, forKey: key)
                             case .nestedInt(let key, let value): self.setValue(value, forKey: key)
                             case .object(let key, let value): self.setValue(value, forKey: key)
+                            case .relation(let key, let value, let relation): relation.setValue(value, forKey: key)
                             case .null: break
                             }
                             self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)

@@ -11,7 +11,7 @@ import Firebase
 
 class GrowthPropertyViewController: UIViewController {
 
-    var id: String?
+    var id: String?// = "-Ktzdd-AWGb7A5FmMLoy"
 
     @IBAction func add(_ sender: Any) {
 
@@ -22,17 +22,11 @@ class GrowthPropertyViewController: UIViewController {
             guard let user: User = user else {
                 return
             }
-            (0..<1000).forEach { (index) in
+            (0..<100).forEach { (index) in
                 print("Index : \(index)")
                 let item: Item = Item()
                 item.index = index
-                item.save({ (ref, error) in
-                    if let error = error {
-                        print(error)
-                        return
-                    }
-                    user.testItems.insert(item.id)
-                })
+                user.relationItems.insert(item)
             }
         }
 
@@ -42,23 +36,18 @@ class GrowthPropertyViewController: UIViewController {
         let user: User = User()
         self.id = user.id
         user.name = "growth property"
+        (0..<10).forEach { (index) in
+            print("Index : \(index)")
+            let item: Item = Item()
+            item.index = index
+            user.relationItems.insert(item)
+        }
         user.save { (ref, error) in
             if let error = error {
                 print(error)
                 return
             }
-            (0..<10).forEach { (index) in
-                print("Index : \(index)")
-                let item: Item = Item()
-                item.index = index
-                item.save({ (ref, error) in
-                    if let error = error {
-                        print(error)
-                        return
-                    }
-                    user.testItems.insert(item.id)
-                })
-            }
+
         }
     }
 
