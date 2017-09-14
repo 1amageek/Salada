@@ -115,11 +115,7 @@ public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     /// Save the new Object.
     public func insert(_ newMember: Element) {
         if isObserved {
-            var package: Package = Package(self, object: newMember)
-            if let path: String = self.parentRef?._path {
-                let count: Int = self.count + 1
-                package.add(path: path, value: count)
-            }
+            let package: Package = Package(self, object: newMember)
             package.submit({ (ref, error) in
                 if let error: Error = error {
                     print(error)
