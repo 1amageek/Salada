@@ -146,7 +146,27 @@ public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     public func remove(_ member: Element) {
         if isObserved {
             let package: Package = Package(self, object: member)
-            package.delete(nil)
+            package.delete({ (ref, error) in
+                if let error: Error = error {
+                    print(error)
+                    return
+                }
+                self.parentRef?.runTransactionBlock({ (data) -> TransactionResult in
+                    if var relation: [AnyHashable: Any] = data.value as? [AnyHashable: Any] {
+                        var count: Int = relation["count"] as? Int ?? 0
+                        count -= 1
+                        relation["count"] = count
+                        data.value = relation
+                        return .success(withValue: data)
+                    }
+                    return .success(withValue: data)
+                }, andCompletionBlock: { (error, committed, snapshot) in
+                    if let error: Error = error {
+                        print(error)
+                        return
+                    }
+                })
+            })
         } else {
             _self.remove(member)
         }
