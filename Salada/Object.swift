@@ -375,7 +375,7 @@ open class Object: Base, Referenceable {
         self.pack().submit { (ref, error) in
             self.ref.observeSingleEvent(of: .value, with: { (snapshot) in
                 self.snapshot = snapshot
-                block?(ref, error)
+                block?(snapshot.ref, error)
             })
         }
     }
