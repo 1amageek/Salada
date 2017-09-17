@@ -23,7 +23,7 @@ public protocol Relationable {
  Relation class
  Relation works with the property of Object.
  */
-public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
+open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 
@@ -73,12 +73,25 @@ public class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
             fatalError("[Salada.Relation] It is necessary to set parent.")
         }
         let parentType = type(of: parent)
-        return "\(parentType._version)/\(parentType._modelName)-\(T.self._modelName)/\(parent.id)"
+        return "\(parentType._version)/\(self._name)/\(parent.id)"
     }
 
     /// It is a Reference stored in Firebase.
     public var ref: DatabaseReference {
         return Database.database().reference().child(self.path)
+    }
+
+    /// Relation name
+    open var _name: String {
+        let name: String = String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!.lowercased()
+        if name == "Relation" {
+            guard let parent: Referenceable = self.parent else {
+                fatalError("[Salada.Relation] It is necessary to set parent.")
+            }
+            let parentType = type(of: parent)
+            return "\(parentType._modelName)-\(T.self._modelName)"
+        }
+        return name
     }
 
     /**
