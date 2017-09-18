@@ -84,7 +84,7 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     /// Relation name
     open var _name: String {
         let name: String = String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!.lowercased()
-        if name == "Relation" {
+        if name.contains("relation") {
             guard let parent: Referenceable = self.parent else {
                 fatalError("[Salada.Relation] It is necessary to set parent.")
             }
@@ -97,8 +97,13 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     /**
      Initialize Relation.
      */
-    public required init(arrayLiteral elements: ArrayLiteralElement...) {
+
+    public init(_ elements: [ArrayLiteralElement]) {
         self._self = DataSource(elements)
+    }
+    
+    public required convenience init(arrayLiteral elements: ArrayLiteralElement...) {
+        self.init(elements)
     }
 
     private var countHandle: UInt?

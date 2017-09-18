@@ -29,6 +29,7 @@
 		1259041B1F34522A004B271D /* SamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1259041A1F34522A004B271D /* SamplesViewController.swift */; };
 		126479601EDE8CF70097ED9E /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1264795F1EDE8CF70097ED9E /* TableViewController.swift */; };
 		126479621EDE92A90097ED9E /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126479611EDE92A90097ED9E /* TableViewCell.swift */; };
+		127134E21F6ED3FB0016A4D9 /* Follower.swift in Sources */ = {isa = PBXBuildFile; fileRef = 127134E11F6ED3FB0016A4D9 /* Follower.swift */; };
 		1272DA5F1F0C8D43000A094E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12F2EC641EDE8ABB00AF9A08 /* GoogleService-Info.plist */; };
 		1272DA631F0C97B8000A094E /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA621F0C97B8000A094E /* Room.swift */; };
 		1272DA651F0C97BF000A094E /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1272DA641F0C97BF000A094E /* Message.swift */; };
@@ -125,6 +126,7 @@
 		1259041A1F34522A004B271D /* SamplesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesViewController.swift; sourceTree = "<group>"; };
 		1264795F1EDE8CF70097ED9E /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		126479611EDE92A90097ED9E /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		127134E11F6ED3FB0016A4D9 /* Follower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Follower.swift; sourceTree = "<group>"; };
 		1272DA621F0C97B8000A094E /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 		1272DA641F0C97BF000A094E /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		1272DA671F0C9A35000A094E /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
@@ -352,6 +354,7 @@
 				123C27A81E66B95E00A2655F /* SaladaFileTestViewController.swift */,
 				12A4FE321DB5C987003A3104 /* Group.swift */,
 				12A4FE331DB5C987003A3104 /* User.swift */,
+				127134E11F6ED3FB0016A4D9 /* Follower.swift */,
 				1253BFAB1F34785D0078C5D1 /* CustomUser.swift */,
 				12C097DE1E653CEF001B2010 /* Item.swift */,
 				1272DA661F0C97CB000A094E /* Nested */,
@@ -969,6 +972,7 @@
 				1272DA651F0C97BF000A094E /* Message.swift in Sources */,
 				1272DA631F0C97B8000A094E /* Room.swift in Sources */,
 				1253BFA81F3465F20078C5D1 /* UserGroupRelationViewController.swift in Sources */,
+				127134E21F6ED3FB0016A4D9 /* Follower.swift in Sources */,
 				12CB1A5A1D95184300E69000 /* AppDelegate.swift in Sources */,
 				1272DA6E1F0C9A35000A094E /* ChatToolBar.swift in Sources */,
 				12C097E11E653F19001B2010 /* TransactionTestViewController.swift in Sources */,

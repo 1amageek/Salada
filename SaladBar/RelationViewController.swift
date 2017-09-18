@@ -32,6 +32,10 @@ class RelationViewController: UIViewController {
             item.index = index
             self.items.append(item)
             user.relationItems.insert(item)
+
+            let aUser: User = User()
+            aUser.name = "\(index)"
+            user.followers.insert(aUser)
         }
         user.save()
     }
