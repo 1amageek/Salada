@@ -331,7 +331,6 @@ open class Object: Base, Referenceable {
         SaladaApp.cache?.removeObject(forKey: reference.url as AnyObject)
         let updateValue: Any = value.map { $0 } ?? NSNull()
         let path = child.map { "\(keyPath)/\($0)" } ?? keyPath
-        print(path, updateValue)
         reference.updateChildValues([path: updateValue, Const.updatedAtKey: timestamp], withCompletionBlock: {_,_ in
             // Nothing
         })
