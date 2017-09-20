@@ -120,7 +120,11 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
 
     /// Package an object to be saved in Firebase.
     public func pack() -> Package {
-        return Package(self)
+        var package: Package = Package(self)
+        self.forEach { (object) in
+            package.add(object)
+        }
+        return package
     }
 
     /// It is a Path stored in Firebase.
@@ -176,7 +180,10 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     public func insert(_ newMember: Element) {
         if isObserved {
             guard let parentRef: DatabaseReference = self.parentRef else { return }
-            let package: Package = Package(self, object: newMember)
+            var package: Package = Package(self, object: newMember)
+            if !newMember.isObserved {
+                package.add(newMember)
+            }
             package.submit({ (ref, error) in
                 if let error: Error = error {
                     print(error)
@@ -204,10 +211,13 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     }
 
     /// Deletes the Object from the reference destination.
-    public func remove(_ member: Element) {
+    public func remove(_ member: Element, isHard: Bool = false) {
         if isObserved {
             guard let parentRef: DatabaseReference = self.parentRef else { return }
-            let package: Package = Package(self, object: member)
+            var package: Package = Package(self, object: member)
+            if isHard {
+                package.add(member)
+            }
             package.delete({ (ref, error) in
                 if let error: Error = error {
                     print(error)

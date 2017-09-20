@@ -63,10 +63,6 @@ public struct Package {
             let path: String = "\(relation.path)/\(object.id)"
             self.add(path: path, value: true)
         }
-        do {
-            let path: String = "\(type(of: object).self._path)/\(object.id)"
-            self.add(path: path, value: object.value)
-        }
     }
 
     public mutating func add(path: Path, value: AnyValue) {
