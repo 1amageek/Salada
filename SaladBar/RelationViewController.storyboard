@@ -34,6 +34,14 @@
                                     <action selector="removeAction:" destination="Oxx-i0-SZg" eventType="touchUpInside" id="m8j-Dz-hgQ"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TQK-uq-UZt">
+                                <rect key="frame" x="165" y="214" width="44" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Follow"/>
+                                <connections>
+                                    <action selector="followAction:" destination="Oxx-i0-SZg" eventType="touchUpInside" id="pOK-W0-7hw"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="4Ym-rY-HqT"/>

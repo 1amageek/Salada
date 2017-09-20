@@ -24,8 +24,17 @@ class RelationViewController: UIViewController {
         self.user?.followers.remove(self.checkUser!)
     }
     
+    @IBAction func followAction(_ sender: Any) {
+        let aUser: User = User()
+        aUser.name = "followUser"
+        self.user?.followers.insert(aUser)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+
+//        User.observeSingle("-KuT1SNcNRFvXm345001", eventType: .value) { (user) in
+//            self.user = user
+//        }
 
         let user: User = User()
         self.user = user
