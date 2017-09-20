@@ -126,7 +126,7 @@ public class DataSource<T: Object>: ExpressibleByArrayLiteral {
     /**
      DataSource retrieves data from the referenced data. Change the acquisition of data by setting Options.
      If there is a change in the value, it will receive and notify you of the change.
-     
+
      Handler blocks are called on the same thread that they were added on, and may only be added on threads which are
      currently within a run loop. Unless you are specifically creating and running a run loop on a background thread,
      this will normally only be the main thread.
@@ -243,6 +243,9 @@ public class DataSource<T: Object>: ExpressibleByArrayLiteral {
                 let key: String = snapshot.key
                 Element.observeSingle(key, eventType: .value, block: { (element) in
                     guard let element: Element = element else { return }
+                    if let i: Int = self.objects.index(of: element.id) {
+                        self.objects.remove(at: i)
+                    }
                     self.objects.append(element)
                     self.objects = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
                     if let i: Int = self.objects.index(of: element) {
@@ -463,3 +466,4 @@ extension Array where Element: Object {
         return self.keys.index(of: key)
     }
 }
+
