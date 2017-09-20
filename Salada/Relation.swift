@@ -197,6 +197,8 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
                         data.value = relation
                         return .success(withValue: data)
                     }
+                    let relation: [AnyHashable: Any] = ["count": 1]
+                    data.value = relation
                     return .success(withValue: data)
                 }, andCompletionBlock: { (error, committed, snapshot) in
                     if let error: Error = error {
