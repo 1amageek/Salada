@@ -24,9 +24,9 @@ class GrowthPropertyViewController: UIViewController {
             }
             (0..<100).forEach { (index) in
                 print("Index : \(index)")
-                let item: Item = Item()
-                item.index = index
-                user.relationItems.insert(item)
+                let auser: User = User()
+                auser.name = "\(index)"
+                user.followers.insert(auser)
             }
         }
 
@@ -38,9 +38,9 @@ class GrowthPropertyViewController: UIViewController {
         user.name = "growth property"
         (0..<10).forEach { (index) in
             print("Index : \(index)")
-            let item: Item = Item()
-            item.index = index
-            user.relationItems.insert(item)
+            let auser: User = User()
+            auser.name = "\(index)"
+            user.followers.insert(auser)
         }
         user.save { (ref, error) in
             if let error = error {
@@ -64,7 +64,7 @@ class GrowthPropertyViewController: UIViewController {
                 return
             }
             self.user = user
-            self.propertyLabel.text = String(user.testItems.count)
+            self.propertyLabel.text = String(user.followers.count)
         }
 
     }

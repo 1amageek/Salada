@@ -10,17 +10,20 @@ import UIKit
 
 class RelationViewController: UIViewController {
 
-    @IBAction func deleteItems(_ sender: Any) {
+    var user: User?
 
-        if let item: Item = self.items.first {
-            self.user?.relationItems.remove(item)
-            self.items.remove(at: 0)
+    var checkUser: User?
+
+    @IBAction func containsAction(_ sender: Any) {
+        Follower.child(self.user!.id).contains(checkUser!.id) { (contain) in
+            print(contain)
         }
     }
 
-    var user: User?
-    var items: [Item] = []
-
+    @IBAction func removeAction(_ sender: Any) {
+        self.user?.followers.remove(self.checkUser!)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,12 +31,8 @@ class RelationViewController: UIViewController {
         self.user = user
         user.name = "aaaa"
         (0..<3).forEach { (index) in
-            let item: Item = Item()
-            item.index = index
-            self.items.append(item)
-            user.relationItems.insert(item)
-
             let aUser: User = User()
+            self.checkUser = aUser
             aUser.name = "\(index)"
             user.followers.insert(aUser)
         }

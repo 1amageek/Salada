@@ -10,6 +10,17 @@ import Foundation
 import Firebase
 
 public protocol Relationable {
+
+    static var _version: String { get }
+
+    static var _name: String { get }
+
+    static var _path: String { get }
+
+    static var database: DatabaseReference { get }
+
+    static var databaseRef: DatabaseReference { get }
+
     var path: String { get }
     var keyPath: String? { get set }
     var parent: Referenceable? { get set }
@@ -19,6 +30,39 @@ public protocol Relationable {
     func pack() -> Package
 }
 
+public struct RelationNode {
+
+    let id: String
+
+    let relation: Relationable.Type
+
+    var ref: DatabaseReference {
+        return self.relation.databaseRef.child(self.id)
+    }
+
+    public init<T: Relationable>(relation: T.Type, id: String) {
+        self.relation = relation
+        self.id = id
+    }
+
+    public func contains(_ id: String, block: @escaping (Bool) -> Void) {
+        self.ref.child(id).observeSingleEvent(of: .value) { (snapshot) in
+            block(snapshot.value as? Bool ?? false)
+        }
+    }
+}
+
+public extension Relationable {
+    static var database: DatabaseReference { return Database.database().reference() }
+    static var databaseRef: DatabaseReference { return self.database.child(self._path) }
+}
+
+public extension Relationable where Self: Relationable {
+    static func child(_ id: String) -> RelationNode {
+        return RelationNode(relation: self, id: id)
+    }
+}
+
 /**
  Relation class
  Relation works with the property of Object.
@@ -26,6 +70,18 @@ public protocol Relationable {
 open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
+
+    open class var _version: String {
+        return "v1"
+    }
+
+    open class var _name: String {
+        return String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!.lowercased()
+    }
+
+    open class var _path: String {
+        return "\(self._version)/\(self._name)"
+    }
 
     private var _self: DataSource<T>
 
@@ -72,26 +128,12 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
         guard let parent: Referenceable = self.parent else {
             fatalError("[Salada.Relation] It is necessary to set parent.")
         }
-        let parentType = type(of: parent)
-        return "\(parentType._version)/\(self._name)/\(parent.id)"
+        return "\(type(of: self)._version)/\(type(of: self)._name)/\(parent.id)"
     }
 
     /// It is a Reference stored in Firebase.
     public var ref: DatabaseReference {
         return Database.database().reference().child(self.path)
-    }
-
-    /// Relation name
-    open var _name: String {
-        let name: String = String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!.lowercased()
-        if name.contains("relation") {
-            guard let parent: Referenceable = self.parent else {
-                fatalError("[Salada.Relation] It is necessary to set parent.")
-            }
-            let parentType = type(of: parent)
-            return "\(parentType._modelName)-\(T.self._modelName)"
-        }
-        return name
     }
 
     /**
@@ -190,8 +232,12 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
         }
     }
 
-    public func removeAll() {
-        _self = []
+    // MARK: -
+
+    public func contains(_ element: T, block: @escaping (Bool) -> Void) {
+        self.ref.observeSingleEvent(of: .value) { (snapshot) in
+            return block(snapshot.value as? Bool ?? false)
+        }
     }
 
     // MARK: -
