@@ -143,7 +143,7 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     public init(_ elements: [ArrayLiteralElement]) {
         self._self = DataSource(elements)
     }
-    
+
     public required convenience init(arrayLiteral elements: ArrayLiteralElement...) {
         self.init(elements)
     }
@@ -164,7 +164,7 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
             })
         }
     }
-    
+
     /// Returns the Object of the specified indexes.
     public func objects(at indexes: IndexSet) -> [Element] {
         return indexes.filter { $0 < self.count }.map { self[$0] }
@@ -175,13 +175,14 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     /// Save the new Object.
     public func insert(_ newMember: Element) {
         if isObserved {
+            guard let parentRef: DatabaseReference = self.parentRef else { return }
             let package: Package = Package(self, object: newMember)
             package.submit({ (ref, error) in
                 if let error: Error = error {
                     print(error)
                     return
                 }
-                self.parentRef?.runTransactionBlock({ (data) -> TransactionResult in
+                parentRef.runTransactionBlock({ (data) -> TransactionResult in
                     if var relation: [AnyHashable: Any] = data.value as? [AnyHashable: Any] {
                         var count: Int = relation["count"] as? Int ?? 0
                         count += 1
@@ -205,13 +206,14 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     /// Deletes the Object from the reference destination.
     public func remove(_ member: Element) {
         if isObserved {
+            guard let parentRef: DatabaseReference = self.parentRef else { return }
             let package: Package = Package(self, object: member)
             package.delete({ (ref, error) in
                 if let error: Error = error {
                     print(error)
                     return
                 }
-                self.parentRef?.runTransactionBlock({ (data) -> TransactionResult in
+                parentRef.runTransactionBlock({ (data) -> TransactionResult in
                     if var relation: [AnyHashable: Any] = data.value as? [AnyHashable: Any] {
                         var count: Int = relation["count"] as? Int ?? 0
                         count -= 1
@@ -302,3 +304,4 @@ fileprivate extension Collection where Iterator.Element: Object {
         return reduce(into: [:]) { $0[$1.id] = $1.value }
     }
 }
+
