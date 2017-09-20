@@ -305,6 +305,8 @@ open class Object: Base, Referenceable {
                     updateValue(keyPath, child: nil, value: value)
                 } else if let value: Date = value as? Date {
                     updateValue(keyPath, child: nil, value: value.timeIntervalSince1970)
+                } else if let value: URL = value as? URL {
+                    updateValue(keyPath, child: nil, value: value.absoluteString)
                 } else {
                     updateValue(keyPath, child: nil, value: value)
                 }
@@ -317,10 +319,10 @@ open class Object: Base, Referenceable {
         }
     }
 
-    /** 
+    /**
      Update the data on Firebase.
      When this function is called, updatedAt of Object is updated at the same time.
-     
+
      - parameter keyPath: Target key path
      - parameter child: Target child
      - parameter value: Save to value. If you enter nil, the data will be deleted.
@@ -441,10 +443,10 @@ open class Object: Base, Referenceable {
 
     /**
      Save the file set in the object.
-     
+
      - parameter block: If saving succeeds or fails, this callback will be called.
      - returns: Returns the StorageUploadTask set in the property.
-    */
+     */
     private func saveFiles(_ block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
 
         let group: DispatchGroup = DispatchGroup()
@@ -519,8 +521,8 @@ open class Object: Base, Referenceable {
     override open var description: String {
 
         let base: String =
-        "  key: \(self.id)\n" +
-        "  createdAt: \(self.createdAt)\n" +
+            "  key: \(self.id)\n" +
+                "  createdAt: \(self.createdAt)\n" +
         "  updatedAt: \(self.updatedAt)\n"
 
         let values: String = Mirror(reflecting: self).children.reduce(base) { (result, children) -> String in
