@@ -73,7 +73,7 @@ class User: Object {
     dynamic var url: URL?
     dynamic var birth: Date?
     dynamic var thumbnail: File?
-
+    dynamic var followers: Relation<User> = []
 }
 ```
 
@@ -99,6 +99,7 @@ Property are four that can be specified in Salada.
 | Date | date |
 | Array\<String\> | Array of strings. |
 | Set \<String\>| Array of strings. Set is used in relationships. |
+| Reation\<Object\>| Reference |
 | [String: Any] | Object |
 | AnyObject | Use encode, decode function. |
 
