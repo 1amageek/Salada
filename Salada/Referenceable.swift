@@ -226,6 +226,20 @@ public extension Referenceable {
 
 }
 
+extension Referenceable {
+    public static func get(_ id: String, block: @escaping (Self?, Error?) -> Void) {
+        self.observeSingle(id, eventType: .value) { (obj) in
+            block(obj, nil)
+        }
+    }
+
+    public static func listen(_ id: String, block: @escaping (Self?, Error?) -> Void) -> Disposer<Self> {
+        return self.observe(id, eventType: .value) { (obj) in
+            block(obj, nil)
+        }
+    }
+}
+
 extension Referenceable where Self: Object {
 
     public var isObserved: Bool {
