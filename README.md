@@ -26,35 +26,11 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 - [Cocoapods](https://github.com/CocoaPods/CocoaPods/milestone/32) 1.4 ❗️  ` gem install cocoapods --pre `
 
 ## Installation ⚙
-<!--
-#### [Carthage] (https://github.com/Carthage/Carthage)
-
-- Insert `github "1amageek/Salada"` to your Cartfile.
-- Run `carthage update`
-- Link your app with Salada.framework in Carthage/Checkouts.
--->
-
-<!--
-__CocoaPods__
+#### [CocoaPods](https://github.com/cocoapods/cocoapods)
 
 - Insert `pod 'Salada' ` to your Podfile.
 - Run `pod install`.
 
-Note: CocoaPods 1.1.0 is required to install Salada.
-
--->
-
-
- Add the following to the pod file, `Pods install`
-
- ``` ruby
- pod 'Firebase'
- pod 'Firebase/Database'
- pod 'Firebase/Storage'
- ```
-
- 1. [Download this project](https://github.com/1amageek/Salada/archive/master.zip)
- 1. Put `SaladaApp.swift`, `Referenceable.swift`, `Base.swift`, `Object.swift`, `File.swift`, `DataSource.swift` in your project.
 
 ## Usage 👀
 
