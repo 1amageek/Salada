@@ -6,8 +6,7 @@
 //  Copyright © 2017年 Stamp. All rights reserved.
 //
 
-import Foundation
-import Firebase
+import FirebaseDatabase
 
 public protocol Relationable {
 
