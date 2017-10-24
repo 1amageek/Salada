@@ -82,9 +82,9 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
         return "\(self._version)/\(self._name)"
     }
 
-    private var _self: DataSource<T>
+    internal var _self: DataSource<T>
 
-    private var _count: Int = 0
+    internal var _count: Int = 0
 
     /// Contains the Object holding the property.
     public weak var parent: Referenceable?
