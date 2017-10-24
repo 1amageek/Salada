@@ -19,10 +19,11 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 ☑️ You can create a reactive UI.</br>
 
 ## Requirements ❗️
-- iOS 8 or later
-- Swift 3.0 or later
-- [Firebase database](https://firebase.google.com/docs/database/ios/start)
+- iOS 10 or later
+- Swift 4.0 or later
+- [Firebase firestore](https://firebase.google.com/docs/database/ios/start)
 - [Firebase storage](https://firebase.google.com/docs/storage/ios/start)
+- [Cocoapods](https://github.com/CocoaPods/CocoaPods/milestone/32) 1.4 ❗️  ` gem install cocoapods --pre `
 
 ## Installation ⚙
 <!--
