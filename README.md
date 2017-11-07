@@ -13,7 +13,7 @@
 -->
 Salad is a Model for Firebase database. It can handle Snapshot of Firebase easily.
 
-[Make a User Model using Firebase Model Framework Salada](https://medium.com/@1amageek/make-a-user-model-using-firebase-model-framework-salada-8c343fbe8800)
+[Make a Model with Salada](https://medium.com/@1amageek/make-a-user-model-using-firebase-model-framework-salada-8c343fbe8800)
 
 ☑️ You no longer need to create a server.</br>
 ☑️ You no longer need to make a mock.</br>
