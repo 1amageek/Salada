@@ -55,10 +55,9 @@ open class Object: Base, Referenceable {
         for (_, child) in mirror.children.enumerated() {
             if let key: String = child.label {
                 switch ValueType(key: key, value: child.value) {
-                case .file(_, _): return true
-                default: break
+                case .file: return true
+                default: continue
                 }
-                return true
             }
         }
         return false
