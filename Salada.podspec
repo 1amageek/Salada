@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                    = "Salada"
-  s.version                 = "4.0"
+  s.version                 = "4.1"
   s.summary                 = "Firebase Realtime database model framework"
   s.homepage                = "https://github.com/1amageek/Salada"
   s.license                 = { :type => 'BSD', :file => 'SaladaFrameworks/LICENSE' }
