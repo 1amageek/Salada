@@ -300,7 +300,7 @@ class User: Object {
     let followers: Follower = []
 }
 ```
-
+<img src="https://github.com/1amageek/Salada/blob/master/SaladBar/sample_code_1.png" width="400">
 
 # DataSource
 
