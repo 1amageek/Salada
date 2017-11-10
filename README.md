@@ -82,6 +82,8 @@ Property are four that can be specified in Salada.
 | [String: Any] | Object |
 | AnyObject | Use encode, decode function. |
 
+⚠️ `Bool` `Int` `Float` `Double` are not supported optional type. 
+
 ### Save and Update
 
 <b>Do not forget to change the database rule</b>
