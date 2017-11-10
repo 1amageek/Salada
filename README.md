@@ -282,6 +282,25 @@ User.observeSingle(friend, eventType: .value, block: { (user) in
     }
  })
 ```
+# Relatioinship
+
+Please use `Relation` to create a relationship between models.
+It can be defined by inheriting Relation class.
+
+``` swift
+class Follower: Relation<User> {
+    override class var _name: String {
+        return "follower"
+    }
+}
+```
+
+``` swift
+class User: Object {
+    let followers: Follower = []
+}
+```
+
 
 # DataSource
 
