@@ -248,7 +248,7 @@ open class Relation<T: Object>: Relationable, ExpressibleByArrayLiteral {
     // MARK: -
 
     public func contains(_ element: T, block: @escaping (Bool) -> Void) {
-        self.ref.observeSingleEvent(of: .value) { (snapshot) in
+        self.ref.child(element.id).observeSingleEvent(of: .value) { (snapshot) in
             return block(snapshot.value as? Bool ?? false)
         }
     }
