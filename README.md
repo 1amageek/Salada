@@ -15,10 +15,10 @@ Salad is a Model for Firebase database. It can handle Snapshot of Firebase easil
 
 [Make a Model with Salada](https://medium.com/@1amageek/make-a-user-model-using-firebase-model-framework-salada-8c343fbe8800)
 
-☑️ You no longer need to create a server.</br>
-☑️ You no longer need to make a mock.</br>
-☑️ It operates in real time.</br>
-☑️ You can create a reactive UI.</br>
+ - [x] You no longer need to create a server.  
+ - [x] You no longer need to make a mock.  
+ - [x] It operates in real time.  
+ - [x] You can create a reactive UI.  
 
 ## Requirements ❗️
 - iOS 10 or later
@@ -70,7 +70,7 @@ class Group: Object {
 
 Property are four that can be specified in Salada.
 
-| Propery | Description |
+| Property | Description |
 | --- | --- |
 | String | Simple string. |
 | Number\(Int, UInt, Double ...\) | Simple number. |
@@ -82,11 +82,12 @@ Property are four that can be specified in Salada.
 | [String: Any] | Object |
 | AnyObject | Use encode, decode function. |
 
-⚠️ `Bool` `Int` `Float` `Double` are not supported optional type. 
+⚠️ `Bool`, `Int`, `Float`, and `Double` are not supported optional types. 
 
 ### Save and Update
 
-<b>Do not forget to change the database rule</b>
+**Do not forget to change the database rules.**
+
 ```
 {
   "rules": {
@@ -100,7 +101,7 @@ Property are four that can be specified in Salada.
 https://firebase.google.com/docs/database/security/
 
 The new model is stored in the `save()` or `save(completion: ((NSError?, FIRDatabaseReference) -> Void)?)`.
-It is updated automatically when you change the property Model that have already been saved.
+It is updated automatically when you change the property Model that has already been saved.
 
 ``` Swift
 let group: Group = Group()
@@ -166,7 +167,7 @@ if let groupId: String = user.groups.first {
 
 ```
 
-### Custom property
+### Custom Property
 ``` Swift
 class User: Salada.Object {
 
@@ -225,7 +226,7 @@ class User: Salada.Object {
 You can easily save the file if you use the File.
 File saves the File in FirebaseStorage.
 
-<b>Do not forget to change the storage rule</b>
+**Do not forget to change the storage rules.**
 
 ``` Swift
 let user: User = User()
@@ -270,6 +271,7 @@ user.thumbnail?.dataWithMaxSize(1 * 2000 * 2000, completion: { (data, error) in
 ```
 
 FirebaseUI makes it even easier to access.
+
 ``` Ruby
 # Only pull in FirebaseUI Storage features
 pod 'FirebaseUI/Storage', '~> 3.0'
@@ -284,7 +286,8 @@ User.observeSingle(friend, eventType: .value, block: { (user) in
     }
  })
 ```
-# Relatioinship
+
+# Relationship
 
 Please use `Relation` to create a relationship between models.
 It can be defined by inheriting Relation class.
@@ -304,9 +307,9 @@ class User: Object {
 ```
 <img src="https://github.com/1amageek/Salada/blob/master/SaladBar/sample_code_1.png" width="400">
 
-# DataSource
+# Data Source
 
-see SaladBar
+See SaladBar.
 
 For example
 
@@ -415,6 +418,7 @@ See details: `Disposer.swift`
 
 # Contributing
 
-We welcome any contributions. See the [CONTRIBUTING](https://github.com/1amageek/Salada/blob/master/CONTRIBUTING.md) file for how to get involved.
+We welcome any contributions. See the [CONTRIBUTING](https://github.com/1amageek/Salada/blob/master/CONTRIBUTING.md) file for how to get involved.  
+
 Saladaは日本製です。日本人のコントリビューター大歓迎🎉
 
